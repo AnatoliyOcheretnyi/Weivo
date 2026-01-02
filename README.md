@@ -4,9 +4,9 @@ Weivo is a weight-tracking app focused on expressive animations, high performanc
 
 ## Demo
 
-<video src="docs/demo/Weivo_demo_1.mp4" width="360" controls muted playsinline></video>
+<video src="https://github.com/AnatoliyOcheretnyi/Weivo/releases/download/devo-v1/Weivo_demo_1.mp4" width="360" controls muted playsinline></video>
 
-[Download demo](docs/demo/Weivo_demo_1.mp4)
+[Download demo](https://github.com/AnatoliyOcheretnyi/Weivo/releases/download/devo-v1/Weivo_demo_1.mp4)
 
 ## What this app is for
 
