@@ -5,6 +5,7 @@ import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { WeightProvider } from '@/features/weight';
+import { texts } from '@/texts';
 
 export const unstable_settings = {
   anchor: '(tabs)',
@@ -20,7 +21,7 @@ export default function RootLayout() {
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen
             name="modal"
-            options={{ presentation: 'modal', title: 'Add entry', headerShown: false }}
+            options={{ presentation: 'modal', title: texts.modal.addEntryTitle, headerShown: false }}
           />
         </Stack>
         <StatusBar style="auto" />

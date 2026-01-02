@@ -6,7 +6,8 @@ import { ChartFooter } from '../chart-footer';
 import { ChartGrid } from '../chart-grid';
 import { ChartHeader } from '../chart-header';
 import { getBarHeight, getWeightStats } from '../utils';
-import { barGap, barWidth, chartHeight, itemSize, styles } from './styles';
+import { colors, dimensions } from '@/theme';
+import { weightChartStyles } from '@/theme/styles/weight-chart/weight-chart';
 import type { WeightChartProps } from './types';
 
 export function WeightChart({ data }: WeightChartProps) {
@@ -16,11 +17,11 @@ export function WeightChart({ data }: WeightChartProps) {
   const range = Math.max(max - min, 1);
 
   return (
-    <View style={styles.card}>
+    <View style={weightChartStyles.card}>
       <ChartHeader min={min} max={max} total={data.length} />
 
-      <View style={styles.chartFrame}>
-        <ChartGrid height={chartHeight} />
+      <View style={weightChartStyles.chartFrame}>
+        <ChartGrid height={dimensions.chart.height} />
 
         <FlatList
           ref={listRef}
@@ -28,8 +29,8 @@ export function WeightChart({ data }: WeightChartProps) {
           horizontal
           showsHorizontalScrollIndicator={false}
           keyExtractor={(item) => item.dateISO}
-          contentContainerStyle={styles.chartContent}
-          ListFooterComponent={<View style={styles.trailingSpacer} />}
+          contentContainerStyle={weightChartStyles.chartContent}
+          ListFooterComponent={<View style={weightChartStyles.trailingSpacer} />}
           initialScrollIndex={Math.max(data.length - 1, 0)}
           initialNumToRender={80}
           windowSize={6}
@@ -38,24 +39,38 @@ export function WeightChart({ data }: WeightChartProps) {
             listRef.current?.scrollToEnd({ animated: false });
           }}
           getItemLayout={(_, index) => ({
-            length: itemSize,
-            offset: itemSize * index,
+            length: dimensions.chart.barWidth + dimensions.chart.barGap,
+            offset: (dimensions.chart.barWidth + dimensions.chart.barGap) * index,
             index,
           })}
           renderItem={({ item, index }) => {
-            const height = getBarHeight(item.weightKg, min, range, chartHeight);
+            const height = getBarHeight(item.weightKg, min, range, dimensions.chart.height);
             const isLast = index === data.length - 1;
 
             return (
-              <View style={styles.barSlot}>
-                {isLast && <View style={[styles.currentGlow, { bottom: height - 10 }]} />}
+              <View style={weightChartStyles.barSlot}>
+                {isLast && (
+                  <View
+                    style={[
+                      weightChartStyles.currentGlow,
+                      { bottom: height - dimensions.chart.currentGlowOffset },
+                    ]}
+                  />
+                )}
                 <View
                   style={[
-                    styles.bar,
-                    { height, backgroundColor: isLast ? '#101010' : '#C86B33' },
+                    weightChartStyles.bar,
+                    { height, backgroundColor: isLast ? colors.inkStrong : colors.accentOrange },
                   ]}
                 />
-                {isLast && <View style={[styles.currentDot, { bottom: height - 6 }]} />}
+                {isLast && (
+                  <View
+                    style={[
+                      weightChartStyles.currentDot,
+                      { bottom: height - dimensions.chart.currentDotOffset },
+                    ]}
+                  />
+                )}
               </View>
             );
           }}
@@ -67,4 +82,7 @@ export function WeightChart({ data }: WeightChartProps) {
   );
 }
 
-export { barGap, barWidth, chartHeight, itemSize };
+export const barGap = dimensions.chart.barGap;
+export const barWidth = dimensions.chart.barWidth;
+export const chartHeight = dimensions.chart.height;
+export const itemSize = dimensions.chart.barWidth + dimensions.chart.barGap;

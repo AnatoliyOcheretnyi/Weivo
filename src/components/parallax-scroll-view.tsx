@@ -1,5 +1,4 @@
 import type { PropsWithChildren, ReactElement } from 'react';
-import { StyleSheet } from 'react-native';
 import Animated, {
   interpolate,
   useAnimatedRef,
@@ -10,8 +9,8 @@ import Animated, {
 import { ThemedView } from '@/components/themed-view';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useThemeColor } from '@/hooks/use-theme-color';
-
-const HEADER_HEIGHT = 250;
+import { dimensions } from '@/theme';
+import { parallaxScrollViewStyles } from '@/theme/styles/parallax-scroll-view';
 
 type Props = PropsWithChildren<{
   headerImage: ReactElement;
@@ -33,12 +32,20 @@ export default function ParallaxScrollView({
         {
           translateY: interpolate(
             scrollOffset.value,
-            [-HEADER_HEIGHT, 0, HEADER_HEIGHT],
-            [-HEADER_HEIGHT / 2, 0, HEADER_HEIGHT * 0.75]
+            [-dimensions.parallax.headerHeight, 0, dimensions.parallax.headerHeight],
+            [
+              -dimensions.parallax.headerHeight / 2,
+              0,
+              dimensions.parallax.headerHeight * 0.75,
+            ]
           ),
         },
         {
-          scale: interpolate(scrollOffset.value, [-HEADER_HEIGHT, 0, HEADER_HEIGHT], [2, 1, 1]),
+          scale: interpolate(
+            scrollOffset.value,
+            [-dimensions.parallax.headerHeight, 0, dimensions.parallax.headerHeight],
+            [2, 1, 1]
+          ),
         },
       ],
     };
@@ -47,33 +54,17 @@ export default function ParallaxScrollView({
   return (
     <Animated.ScrollView
       ref={scrollRef}
-      style={{ backgroundColor, flex: 1 }}
+      style={[parallaxScrollViewStyles.container, { backgroundColor }]}
       scrollEventThrottle={16}>
       <Animated.View
         style={[
-          styles.header,
+          parallaxScrollViewStyles.header,
           { backgroundColor: headerBackgroundColor[colorScheme] },
           headerAnimatedStyle,
         ]}>
         {headerImage}
       </Animated.View>
-      <ThemedView style={styles.content}>{children}</ThemedView>
+      <ThemedView style={parallaxScrollViewStyles.content}>{children}</ThemedView>
     </Animated.ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  header: {
-    height: HEADER_HEIGHT,
-    overflow: 'hidden',
-  },
-  content: {
-    flex: 1,
-    padding: 32,
-    gap: 16,
-    overflow: 'hidden',
-  },
-});

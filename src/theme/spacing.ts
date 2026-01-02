@@ -1,0 +1,17 @@
+export const spacing = {
+  xs: 2,
+  sm: 4,
+  md: 6,
+  lg: 8,
+  xl: 10,
+  xxl: 12,
+  xxxl: 14,
+  huge: 16,
+  giant: 18,
+  mega: 20,
+  ultra: 22,
+  xxlLarge: 24,
+  massive: 28,
+  xMassive: 32,
+  hugePlus: 40,
+};

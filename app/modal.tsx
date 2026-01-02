@@ -1,15 +1,18 @@
 import { useMemo, useState } from 'react';
-import { Pressable, SafeAreaView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Pressable, SafeAreaView, Text, TextInput, View } from 'react-native';
 import { useRouter } from 'expo-router';
 
 import { useWeightStore } from '@/features/weight';
 import type { Mood } from '@/features/weight';
+import { modalStyles } from '@/theme/styles/modal';
+import { colors } from '@/theme';
+import { texts } from '@/texts';
 
 const moodOptions: { key: Mood; label: string }[] = [
-  { key: 'happy', label: '🙂' },
-  { key: 'neutral', label: '😐' },
-  { key: 'sad', label: '😔' },
-  { key: 'angry', label: '😠' },
+  { key: 'happy', label: texts.moods.happy },
+  { key: 'neutral', label: texts.moods.neutral },
+  { key: 'sad', label: texts.moods.sad },
+  { key: 'angry', label: texts.moods.angry },
 ];
 
 export default function AddEntryModal() {
@@ -35,148 +38,49 @@ export default function AddEntryModal() {
   };
 
   return (
-    <SafeAreaView style={styles.screen}>
-      <View style={styles.card}>
-        <Text style={styles.title}>New weigh-in</Text>
-        <Text style={styles.subtitle}>Add today&apos;s value and optional mood.</Text>
+    <SafeAreaView style={modalStyles.screen}>
+      <View style={modalStyles.card}>
+        <Text style={modalStyles.title}>{texts.modal.title}</Text>
+        <Text style={modalStyles.subtitle}>{texts.modal.subtitle}</Text>
 
-        <View style={styles.inputRow}>
+        <View style={modalStyles.inputRow}>
           <TextInput
             value={weightText}
             onChangeText={setWeightText}
-            placeholder="0.0"
+            placeholder={texts.modal.placeholderWeight}
             keyboardType="decimal-pad"
-            style={styles.input}
-            placeholderTextColor="#B9A999"
+            style={modalStyles.input}
+            placeholderTextColor={colors.inkAccent}
           />
-          <Text style={styles.unit}>kg</Text>
+          <Text style={modalStyles.unit}>{texts.home.units.kg}</Text>
         </View>
 
-        <Text style={styles.sectionLabel}>Mood (optional)</Text>
-        <View style={styles.moodRow}>
+        <Text style={modalStyles.sectionLabel}>{texts.modal.moodLabel}</Text>
+        <View style={modalStyles.moodRow}>
           {moodOptions.map((option) => {
             const active = option.key === mood;
             return (
               <Pressable
                 key={option.key}
                 onPress={() => setMood(active ? undefined : option.key)}
-                style={[styles.moodButton, active && styles.moodButtonActive]}>
-                <Text style={styles.moodLabel}>{option.label}</Text>
+                style={[modalStyles.moodButton, active && modalStyles.moodButtonActive]}>
+                <Text style={modalStyles.moodLabel}>{option.label}</Text>
               </Pressable>
             );
           })}
         </View>
 
-        <View style={styles.actionRow}>
-          <Pressable style={styles.cancelButton} onPress={() => router.back()}>
-            <Text style={styles.cancelText}>Cancel</Text>
+        <View style={modalStyles.actionRow}>
+          <Pressable style={modalStyles.cancelButton} onPress={() => router.back()}>
+            <Text style={modalStyles.cancelText}>{texts.modal.cancel}</Text>
           </Pressable>
           <Pressable
-            style={[styles.saveButton, !canSave && styles.saveButtonDisabled]}
+            style={[modalStyles.saveButton, !canSave && modalStyles.saveButtonDisabled]}
             onPress={handleSave}>
-            <Text style={styles.saveText}>Save</Text>
+            <Text style={modalStyles.saveText}>{texts.modal.save}</Text>
           </Pressable>
         </View>
       </View>
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    backgroundColor: '#EFE4D7',
-    padding: 20,
-    justifyContent: 'center',
-  },
-  card: {
-    backgroundColor: '#F7F1E9',
-    borderRadius: 28,
-    padding: 24,
-    shadowColor: '#1B1B1B',
-    shadowOpacity: 0.08,
-    shadowRadius: 18,
-    shadowOffset: { width: 0, height: 10 },
-  },
-  title: {
-    fontSize: 24,
-    color: '#1B1B1B',
-  },
-  subtitle: {
-    marginTop: 6,
-    fontSize: 12,
-    color: '#6B5647',
-    textTransform: 'uppercase',
-    letterSpacing: 1,
-  },
-  inputRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 18,
-    paddingVertical: 12,
-    paddingHorizontal: 14,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-  },
-  input: {
-    flex: 1,
-    fontSize: 22,
-    color: '#1B1B1B',
-  },
-  unit: {
-    fontSize: 16,
-    color: '#9A7E69',
-  },
-  sectionLabel: {
-    marginTop: 18,
-    fontSize: 11,
-    textTransform: 'uppercase',
-    letterSpacing: 0.8,
-    color: '#9A7E69',
-  },
-  moodRow: {
-    flexDirection: 'row',
-    gap: 12,
-    marginTop: 12,
-  },
-  moodButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 14,
-    backgroundColor: '#EFE4D7',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  moodButtonActive: {
-    backgroundColor: '#1B1B1B',
-  },
-  moodLabel: {
-    fontSize: 20,
-  },
-  actionRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 24,
-  },
-  cancelButton: {
-    paddingVertical: 12,
-    paddingHorizontal: 18,
-  },
-  cancelText: {
-    color: '#6B5647',
-    fontSize: 14,
-  },
-  saveButton: {
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 14,
-    backgroundColor: '#1B1B1B',
-  },
-  saveButtonDisabled: {
-    backgroundColor: '#B9A999',
-  },
-  saveText: {
-    color: '#F7EFE6',
-    fontSize: 14,
-  },
-});

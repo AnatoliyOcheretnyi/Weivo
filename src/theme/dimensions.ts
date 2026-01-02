@@ -1,0 +1,58 @@
+export const dimensions = {
+  chart: {
+    height: 220,
+    barWidth: 6,
+    barGap: 4,
+    barMinHeight: 12,
+    barPadding: 24,
+    framePaddingVertical: 12,
+    trailingSpacer: 56,
+    currentGlowOffset: 10,
+    currentDotOffset: 6,
+  },
+  tabBar: {
+    height: 62,
+    paddingTop: 8,
+    paddingBottom: 10,
+    addButtonSize: 46,
+    addButtonRadius: 16,
+    iconSize: 26,
+    addIconSize: 26,
+    addIconLineHeight: 28,
+    addShadowRadius: 12,
+    addShadowOffsetY: 8,
+  },
+  modal: {
+    margin: 16,
+    padding: 24,
+    paddingTop: 14,
+    handleWidth: 48,
+    handleHeight: 5,
+    inputRadius: 16,
+    moodButton: 44,
+    moodButtonRadius: 14,
+  },
+  home: {
+    orbLarge: 280,
+    orbSmall: 160,
+    orbLargeOffsetTop: -120,
+    orbLargeOffsetRight: -80,
+    orbSmallOffsetBottom: -60,
+    orbSmallOffsetLeft: -50,
+    heroValueSize: 46,
+    brandSize: 30,
+  },
+  explore: {
+    headerBottom: 8,
+    rowPadding: 16,
+  },
+  entries: {
+    paddingBottom: 80,
+  },
+  parallax: {
+    headerHeight: 250,
+  },
+  list: {
+    moodSize: 14,
+  },
+};

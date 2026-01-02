@@ -1,23 +1,26 @@
 import { Text, View } from 'react-native';
 
 import type { ChartFooterProps } from './types';
-import { styles } from './styles';
+import { chartFooterStyles } from '@/theme/styles/weight-chart/chart-footer';
+import { texts } from '@/texts';
 import { formatShortDate } from '../utils';
 
 export function ChartFooter({ first, last }: ChartFooterProps) {
   return (
-    <View style={styles.footerRow}>
+    <View style={chartFooterStyles.footerRow}>
       <View>
-        <Text style={styles.footerLabel}>Start</Text>
-        <Text style={styles.footerValue}>{formatShortDate(first.dateISO)}</Text>
+        <Text style={chartFooterStyles.footerLabel}>{texts.chart.start}</Text>
+        <Text style={chartFooterStyles.footerValue}>{formatShortDate(first.dateISO)}</Text>
       </View>
       <View>
-        <Text style={styles.footerLabel}>Latest</Text>
-        <Text style={styles.footerValue}>{formatShortDate(last.dateISO)}</Text>
+        <Text style={chartFooterStyles.footerLabel}>{texts.chart.latest}</Text>
+        <Text style={chartFooterStyles.footerValue}>{formatShortDate(last.dateISO)}</Text>
       </View>
       <View>
-        <Text style={styles.footerLabel}>Latest</Text>
-        <Text style={styles.footerValue}>{last.weightKg.toFixed(1)} kg</Text>
+        <Text style={chartFooterStyles.footerLabel}>{texts.chart.latest}</Text>
+        <Text style={chartFooterStyles.footerValue}>
+          {last.weightKg.toFixed(1)} {texts.chart.unit}
+        </Text>
       </View>
     </View>
   );

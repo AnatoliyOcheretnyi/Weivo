@@ -1,4 +1,5 @@
 import type { WeightEntry } from '../../data/weight-mock';
+import { dimensions } from '@/theme';
 
 type WeightStats = {
   min: number;
@@ -31,5 +32,8 @@ export const getWeightStats = (data: WeightEntry[]): WeightStats => {
 
 export const getBarHeight = (weightKg: number, min: number, range: number, maxHeight: number) => {
   const normalized = (weightKg - min) / range;
-  return 12 + normalized * (maxHeight - 24);
+  return (
+    dimensions.chart.barMinHeight +
+    normalized * (maxHeight - dimensions.chart.barPadding)
+  );
 };
