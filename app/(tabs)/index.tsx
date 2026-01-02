@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { SafeAreaView, ScrollView, Text, View } from 'react-native';
 
-import { WeightChart, useWeightStore } from '@/features/weight';
+import { SkiaWeightChart, useWeightStore } from '@/features/weight';
 import { homeStyles } from '@/theme/styles/home';
 import { texts } from '@/texts';
 
@@ -71,7 +71,7 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        <WeightChart data={entries} />
+        <SkiaWeightChart data={entries} />
       </ScrollView>
     </SafeAreaView>
   );
