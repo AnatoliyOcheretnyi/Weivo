@@ -15,6 +15,10 @@ export const dimensions = {
     currentGlowOffset: 10,
     currentDotOffset: 6,
     dragSmoothing: 0.25,
+    introPointCount: 10,
+    introDurationMs: 1700,
+    introDelayMs: 220,
+    introExtraPoints: 3,
   },
   tabBar: {
     height: 62,

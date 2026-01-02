@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import {
@@ -8,13 +8,14 @@ import {
   Skia,
 } from '@shopify/react-native-skia';
 import {
+  Easing,
   runOnJS,
   useAnimatedReaction,
   useDerivedValue,
   useSharedValue,
   withDecay,
+  withDelay,
   withTiming,
-  withSpring,
 } from 'react-native-reanimated';
 
 import { ChartFooter } from '../weight-chart/chart-footer';
@@ -35,9 +36,10 @@ export function SkiaWeightChart({ data }: SkiaWeightChartProps) {
   const weightsValue = useSharedValue<number[]>([]);
   const minValue = useSharedValue(0);
   const rangeValue = useSharedValue(1);
+  const introProgress = useSharedValue(1);
+  const hasAnimatedIntro = useRef(false);
 
   const { min, max, first, last } = useMemo(() => getWeightStats(data), [data]);
-  const range = Math.max(max - min, 1);
   const pointGap = dimensions.chart.barWidth + dimensions.chart.barGap;
   const totalWidth = Math.max(1, (data.length - 1) * pointGap);
   const weights = useMemo(() => data.map((entry) => entry.weightKg), [data]);
@@ -77,13 +79,66 @@ export function SkiaWeightChart({ data }: SkiaWeightChartProps) {
     );
     minTranslate.value = nextMinTranslate;
     translateX.value = nextMinTranslate;
-  }, [frameWidth, totalWidth, translateX, minTranslate]);
+    if (!hasAnimatedIntro.current && weights.length > 1) {
+      hasAnimatedIntro.current = true;
+      const length = weights.length;
+      const visiblePoints = Math.max(2, Math.floor(frameWidth / pointGap));
+      const introPoints = Math.min(
+        dimensions.chart.introPointCount + dimensions.chart.introExtraPoints,
+        visiblePoints,
+        length
+      );
+      const introStartIndex = Math.max(length - introPoints, 0);
+      const windowStartIndex = clamp(
+        Math.floor(-nextMinTranslate / pointGap) - 2,
+        0,
+        length - 1
+      );
+      const windowEndIndex = clamp(
+        windowStartIndex + Math.ceil(frameWidth / pointGap) + 4,
+        0,
+        length - 1
+      );
+      let nextMin = weights[windowStartIndex];
+      let nextMax = weights[windowStartIndex];
+      for (let index = windowStartIndex + 1; index <= windowEndIndex; index += 1) {
+        const weight = weights[index];
+        if (weight < nextMin) {
+          nextMin = weight;
+        }
+        if (weight > nextMax) {
+          nextMax = weight;
+        }
+      }
+      minValue.value = nextMin;
+      rangeValue.value = Math.max(nextMax - nextMin, 1);
+      updateAxisLabels(nextMin, nextMax);
+      introProgress.value = 0;
+      introProgress.value = withDelay(
+        dimensions.chart.introDelayMs,
+        withTiming(1, {
+          duration: dimensions.chart.introDurationMs,
+          easing: Easing.linear,
+        })
+      );
+    }
+  }, [
+    frameWidth,
+    totalWidth,
+    translateX,
+    minTranslate,
+    weights.length,
+    introProgress,
+    pointGap,
+    weights,
+    updateAxisLabels,
+    minValue,
+    rangeValue,
+  ]);
 
   useEffect(() => {
     weightsValue.value = weights;
-    minValue.value = min;
-    rangeValue.value = range;
-  }, [weights, min, range, weightsValue, minValue, rangeValue]);
+  }, [weights, weightsValue]);
 
   useEffect(() => {
     setAxisLabels(initialAxisLabels);
@@ -94,19 +149,35 @@ export function SkiaWeightChart({ data }: SkiaWeightChartProps) {
       if (!frameWidth || weightsValue.value.length === 0) {
         return null;
       }
-      const startIndex = clamp(
+      if (introProgress.value < 1) {
+        return null;
+      }
+      const length = weightsValue.value.length;
+      const visiblePoints = Math.max(2, Math.floor(frameWidth / pointGap));
+      const introPoints = Math.min(
+        dimensions.chart.introPointCount + dimensions.chart.introExtraPoints,
+        visiblePoints,
+        length
+      );
+      const introStartIndex = Math.max(length - introPoints, 0);
+      const isIntro = introProgress.value < 1;
+      const windowStartIndex = clamp(
         Math.floor(-translateX.value / pointGap) - 2,
         0,
-        weightsValue.value.length - 1
+        length - 1
       );
-      const endIndex = clamp(
-        startIndex + Math.ceil(frameWidth / pointGap) + 4,
+      const windowEndIndex = clamp(
+        windowStartIndex + Math.ceil(frameWidth / pointGap) + 4,
         0,
-        weightsValue.value.length - 1
+        length - 1
       );
-      let nextMin = weightsValue.value[startIndex];
-      let nextMax = weightsValue.value[startIndex];
-      for (let index = startIndex + 1; index <= endIndex; index += 1) {
+      const rangeStartIndex = isIntro ? introStartIndex : windowStartIndex;
+      const rangeEndIndex = isIntro
+        ? Math.min(introStartIndex + introPoints - 1, length - 1)
+        : windowEndIndex;
+      let nextMin = weightsValue.value[rangeStartIndex];
+      let nextMax = weightsValue.value[rangeStartIndex];
+      for (let index = rangeStartIndex + 1; index <= rangeEndIndex; index += 1) {
         const weight = weightsValue.value[index];
         if (weight < nextMin) {
           nextMin = weight;
@@ -133,25 +204,37 @@ export function SkiaWeightChart({ data }: SkiaWeightChartProps) {
       rangeValue.value = withTiming(nextRange, { duration: 140 });
       runOnJS(updateAxisLabels)(result.min, result.max);
     },
-    [frameWidth, pointGap, updateAxisLabels]
+    [frameWidth, pointGap, translateX, introProgress, updateAxisLabels]
   );
 
   const linePath = useDerivedValue(() => {
-    const path = Skia.Path.Make();
     if (!frameWidth || weightsValue.value.length === 0) {
-      return path;
+      return Skia.Path.Make();
     }
-
-    const startIndex = clamp(
+    const length = weightsValue.value.length;
+    const visiblePoints = Math.max(2, Math.floor(frameWidth / pointGap));
+    const introPoints = Math.min(
+      dimensions.chart.introPointCount + dimensions.chart.introExtraPoints,
+      visiblePoints,
+      length
+    );
+    const introStartIndex = Math.max(length - introPoints, 0);
+    const isIntro = introProgress.value < 1;
+    const windowStartIndex = clamp(
       Math.floor(-translateX.value / pointGap) - 2,
       0,
-      weightsValue.value.length - 1
+      length - 1
     );
-    const endIndex = clamp(
-      startIndex + Math.ceil(frameWidth / pointGap) + 4,
+    const windowEndIndex = clamp(
+      windowStartIndex + Math.ceil(frameWidth / pointGap) + 4,
       0,
-      weightsValue.value.length - 1
+      length - 1
     );
+    const startIndex = isIntro ? introStartIndex : windowStartIndex;
+    const endIndex = isIntro
+      ? Math.min(introStartIndex + introPoints - 1, length - 1)
+      : windowEndIndex;
+    const path = Skia.Path.Make();
     const height = dimensions.chart.height;
     const padding = dimensions.chart.linePadding;
 
@@ -172,11 +255,31 @@ export function SkiaWeightChart({ data }: SkiaWeightChartProps) {
     return path;
   });
 
+  const pathEnd = useDerivedValue(() => {
+    return introProgress.value < 1 ? introProgress.value : 1;
+  }, []);
+
   const latestX = useDerivedValue(() => {
     if (!frameWidth || weightsValue.value.length === 0) {
       return 0;
     }
-    return (weightsValue.value.length - 1) * pointGap + translateX.value;
+    const length = weightsValue.value.length;
+    if (introProgress.value < 1) {
+      const visiblePoints = Math.max(2, Math.floor(frameWidth / pointGap));
+      const introPoints = Math.min(
+        dimensions.chart.introPointCount + dimensions.chart.introExtraPoints,
+        visiblePoints,
+        length
+      );
+      const introStartIndex = Math.max(length - introPoints, 0);
+      const segmentCount = Math.max(introPoints - 1, 1);
+      const segmentProgress = introProgress.value * segmentCount;
+      const baseIndex = Math.floor(segmentProgress);
+      const t = segmentProgress - baseIndex;
+      const currentIndex = clamp(introStartIndex + baseIndex, 0, length - 1);
+      return (currentIndex + t) * pointGap + translateX.value;
+    }
+    return (length - 1) * pointGap + translateX.value;
   }, [frameWidth, pointGap]);
 
   const latestY = useDerivedValue(() => {
@@ -184,10 +287,33 @@ export function SkiaWeightChart({ data }: SkiaWeightChartProps) {
       return 0;
     }
     const padding = dimensions.chart.linePadding;
-    const normalized =
-      (weightsValue.value[weightsValue.value.length - 1] - minValue.value) / rangeValue.value;
+    const height = dimensions.chart.height;
+    const length = weightsValue.value.length;
+    if (introProgress.value < 1) {
+      const visiblePoints = Math.max(2, Math.floor(frameWidth / pointGap));
+      const introPoints = Math.min(
+        dimensions.chart.introPointCount + dimensions.chart.introExtraPoints,
+        visiblePoints,
+        length
+      );
+      const introStartIndex = Math.max(length - introPoints, 0);
+      const segmentCount = Math.max(introPoints - 1, 1);
+      const segmentProgress = introProgress.value * segmentCount;
+      const baseIndex = Math.floor(segmentProgress);
+      const t = segmentProgress - baseIndex;
+      const currentIndex = clamp(introStartIndex + baseIndex, 0, length - 1);
+      const nextIndex = clamp(currentIndex + 1, 0, length - 1);
+      const currentWeight = weightsValue.value[currentIndex];
+      const nextWeight = weightsValue.value[nextIndex];
+      const interpolatedWeight = currentWeight + (nextWeight - currentWeight) * t;
+      const normalized = (interpolatedWeight - minValue.value) / rangeValue.value;
+      const exaggerated = exaggerateNormalized(normalized, dimensions.chart.valueExaggeration);
+      return padding + (1 - exaggerated) * (height - padding * 2);
+    }
+    const weight = weightsValue.value[length - 1];
+    const normalized = (weight - minValue.value) / rangeValue.value;
     const exaggerated = exaggerateNormalized(normalized, dimensions.chart.valueExaggeration);
-    return padding + (1 - exaggerated) * (dimensions.chart.height - padding * 2);
+    return padding + (1 - exaggerated) * (height - padding * 2);
   }, [frameWidth]);
 
   const panGesture = Gesture.Pan()
@@ -226,6 +352,7 @@ export function SkiaWeightChart({ data }: SkiaWeightChartProps) {
               style="stroke"
               strokeWidth={dimensions.chart.lineWidth}
               color={colors.accentOrange}
+              end={pathEnd}
             />
             <Circle
               cx={latestX}
