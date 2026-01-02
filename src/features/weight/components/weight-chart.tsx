@@ -42,7 +42,7 @@ export function WeightChart({ data }: WeightChartProps) {
       <View style={styles.headerRow}>
         <View>
           <Text style={styles.title}>Weight Flow</Text>
-          <Text style={styles.subtitle}>500 entries - daily log</Text>
+          <Text style={styles.subtitle}>{data.length} entries - daily log</Text>
         </View>
         <View style={styles.rangePill}>
           <Text style={styles.rangeText}>{min.toFixed(1)}-{max.toFixed(1)} kg</Text>

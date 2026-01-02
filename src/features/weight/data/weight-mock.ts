@@ -1,6 +1,9 @@
+export type Mood = 'happy' | 'neutral' | 'sad' | 'angry';
+
 export type WeightEntry = {
   dateISO: string;
   weightKg: number;
+  mood?: Mood;
 };
 
 const totalEntries = 500;
@@ -35,9 +38,22 @@ const buildSegment = (count: number, from: number, to: number, offset: number) =
     const jitter = (rand() - 0.5) * 0.9 + Math.sin((offset + i) / 11) * 0.15;
     const date = new Date(startDate);
     date.setDate(startDate.getDate() + offset + i);
+    const moodRoll = rand();
+    const mood: Mood | undefined =
+      moodRoll > 0.82
+        ? 'happy'
+        : moodRoll > 0.74
+          ? 'neutral'
+          : moodRoll > 0.68
+            ? 'sad'
+            : moodRoll > 0.64
+              ? 'angry'
+              : undefined;
+
     output.push({
       dateISO: date.toISOString(),
       weightKg: Math.round((base + jitter) * 10) / 10,
+      mood,
     });
   }
   return output;

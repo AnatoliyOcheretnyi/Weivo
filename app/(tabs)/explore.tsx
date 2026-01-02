@@ -1,7 +1,14 @@
 import { useMemo } from 'react';
 import { FlatList, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 
-import { weightEntries } from '@/features/weight';
+import { useWeightStore } from '@/features/weight';
+
+const moodMap = {
+  happy: '🙂',
+  neutral: '😐',
+  sad: '😔',
+  angry: '😠',
+} as const;
 
 const formatFullDate = (dateISO: string) =>
   new Date(dateISO).toLocaleDateString('en-US', {
@@ -11,7 +18,8 @@ const formatFullDate = (dateISO: string) =>
   });
 
 export default function EntriesScreen() {
-  const data = useMemo(() => [...weightEntries].reverse(), []);
+  const { entries } = useWeightStore();
+  const data = useMemo(() => [...entries].reverse(), [entries]);
 
   return (
     <SafeAreaView style={styles.screen}>
@@ -39,9 +47,12 @@ export default function EntriesScreen() {
               </View>
               <View style={styles.weightBlock}>
                 <Text style={styles.weight}>{item.weightKg.toFixed(1)} kg</Text>
-                <Text style={[styles.delta, delta > 0 ? styles.deltaUp : styles.deltaDown]}>
-                  {deltaLabel} kg
-                </Text>
+                <View style={styles.deltaRow}>
+                  <Text style={[styles.delta, delta > 0 ? styles.deltaUp : styles.deltaDown]}>
+                    {deltaLabel} kg
+                  </Text>
+                  {item.mood && <Text style={styles.mood}>{moodMap[item.mood]}</Text>}
+                </View>
               </View>
             </View>
           );
@@ -105,6 +116,15 @@ const styles = StyleSheet.create({
   delta: {
     marginTop: 4,
     fontSize: 11,
+  },
+  deltaRow: {
+    marginTop: 4,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  mood: {
+    fontSize: 14,
   },
   deltaUp: {
     color: '#B96A2C',

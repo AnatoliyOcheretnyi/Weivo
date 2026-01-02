@@ -8,21 +8,22 @@ import {
   View,
 } from 'react-native';
 
-import { WeightChart, weightEntries } from '@/features/weight';
+import { WeightChart, useWeightStore } from '@/features/weight';
 
 const fontTitle = Platform.select({ ios: 'Avenir Next', android: 'serif', default: 'Avenir Next' });
 const fontMono = Platform.select({ ios: 'Menlo', android: 'monospace', default: 'Menlo' });
 
 export default function HomeScreen() {
+  const { entries } = useWeightStore();
   const stats = useMemo(() => {
     let minValue = Number.POSITIVE_INFINITY;
     let maxValue = Number.NEGATIVE_INFINITY;
-    for (const entry of weightEntries) {
+    for (const entry of entries) {
       minValue = Math.min(minValue, entry.weightKg);
       maxValue = Math.max(maxValue, entry.weightKg);
     }
-    const current = weightEntries[weightEntries.length - 1];
-    const lookback = weightEntries[weightEntries.length - 10] ?? current;
+    const current = entries[entries.length - 1];
+    const lookback = entries[entries.length - 10] ?? current;
     const delta = Number((current.weightKg - lookback.weightKg).toFixed(1));
 
     return {
@@ -31,9 +32,9 @@ export default function HomeScreen() {
       current: current.weightKg,
       delta,
       trendLabel: delta <= 0 ? 'Trending down' : 'Trending up',
-      total: weightEntries.length,
+      total: entries.length,
     };
-  }, []);
+  }, [entries]);
 
   return (
     <SafeAreaView style={styles.screen}>
@@ -77,7 +78,7 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        <WeightChart data={weightEntries} />
+        <WeightChart data={entries} />
       </ScrollView>
     </SafeAreaView>
   );
