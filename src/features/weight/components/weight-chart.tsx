@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
 import { FlatList, Platform, StyleSheet, Text, View } from 'react-native';
 
 import type { WeightEntry } from '../data/weight-mock';
@@ -19,6 +19,7 @@ type WeightChartProps = {
 };
 
 export function WeightChart({ data }: WeightChartProps) {
+  const listRef = useRef<FlatList<WeightEntry>>(null);
   const { min, max, first, last } = useMemo(() => {
     let minValue = Number.POSITIVE_INFINITY;
     let maxValue = Number.NEGATIVE_INFINITY;
@@ -57,14 +58,20 @@ export function WeightChart({ data }: WeightChartProps) {
         </View>
 
         <FlatList
+          ref={listRef}
           data={data}
           horizontal
           showsHorizontalScrollIndicator={false}
           keyExtractor={(item) => item.dateISO}
           contentContainerStyle={styles.chartContent}
+          ListFooterComponent={<View style={styles.trailingSpacer} />}
+          initialScrollIndex={Math.max(data.length - 1, 0)}
           initialNumToRender={80}
           windowSize={6}
           maxToRenderPerBatch={80}
+          onContentSizeChange={() => {
+            listRef.current?.scrollToEnd({ animated: false });
+          }}
           getItemLayout={(_, index) => ({
             length: itemSize,
             offset: itemSize * index,
@@ -174,6 +181,9 @@ const styles = StyleSheet.create({
   chartContent: {
     paddingHorizontal: 16,
     alignItems: 'flex-end',
+  },
+  trailingSpacer: {
+    width: 56,
   },
   barSlot: {
     width: itemSize,
