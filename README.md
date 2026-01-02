@@ -2,6 +2,12 @@
 
 Weivo is a weight-tracking app focused on expressive animations, high performance, and native-quality interactions. The goal is to explore gesture-driven experiences, Reanimated, and Skia while keeping the UI clean and data-dense.
 
+## Demo
+
+<video src="docs/demo/Weivo_demo_1.mp4" width="360" controls muted playsinline></video>
+
+[Download demo](docs/demo/Weivo_demo_1.mp4)
+
 ## What this app is for
 
 - Track weight over time with a visual-first experience.
