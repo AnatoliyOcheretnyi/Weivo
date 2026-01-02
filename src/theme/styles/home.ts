@@ -2,9 +2,9 @@ import { StyleSheet } from 'react-native';
 
 import { colors } from '../colors';
 import { dimensions } from '../dimensions';
-import { fontFamilies, fontSizes, letterSpacings } from '../typography';
 import { radii } from '../radii';
 import { spacing } from '../spacing';
+import { fontFamilies, fontSizes, letterSpacings } from '../typography';
 
 export const homeStyles = StyleSheet.create({
   screen: {
@@ -13,7 +13,7 @@ export const homeStyles = StyleSheet.create({
   },
   content: {
     padding: spacing.mega,
-    paddingBottom: spacing.hugePlus,
+    paddingBottom: spacing.hugePlus + dimensions.tabBar.height,
     gap: spacing.mega,
   },
   orbLarge: {

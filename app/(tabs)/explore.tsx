@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
-import { FlatList, SafeAreaView, Text, View } from 'react-native';
+import { FlatList, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useWeightStore } from '@/features/weight';
 import { entriesStyles } from '@/theme/styles/entries';
@@ -24,7 +25,7 @@ export default function EntriesScreen() {
   const data = useMemo(() => [...entries].reverse(), [entries]);
 
   return (
-    <SafeAreaView style={entriesStyles.screen}>
+    <SafeAreaView style={entriesStyles.screen} edges={['top', 'left', 'right']}>
       <FlatList
         data={data}
         keyExtractor={(item) => item.dateISO}

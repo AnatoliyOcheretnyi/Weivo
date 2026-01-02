@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
-import { SafeAreaView, ScrollView, Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { SkiaWeightChart, useWeightStore } from '@/features/weight';
 import { homeStyles } from '@/theme/styles/home';
@@ -29,7 +30,7 @@ export default function HomeScreen() {
   }, [entries]);
 
   return (
-    <SafeAreaView style={homeStyles.screen}>
+    <SafeAreaView style={homeStyles.screen} edges={['top', 'left', 'right']}>
       <View style={homeStyles.orbLarge} />
       <View style={homeStyles.orbSmall} />
       <ScrollView contentContainerStyle={homeStyles.content} showsVerticalScrollIndicator={false}>

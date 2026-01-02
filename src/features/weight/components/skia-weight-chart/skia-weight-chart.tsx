@@ -237,14 +237,44 @@ export function SkiaWeightChart({ data }: SkiaWeightChartProps) {
     const path = Skia.Path.Make();
     const height = dimensions.chart.height;
     const padding = dimensions.chart.linePadding;
-
-    for (let index = startIndex; index <= endIndex; index += 1) {
+    const getPoint = (index: number) => {
       const weight = weightsValue.value[index];
       const x = index * pointGap + translateX.value;
       const normalized = (weight - minValue.value) / rangeValue.value;
       const exaggerated = exaggerateNormalized(normalized, dimensions.chart.valueExaggeration);
       const y = padding + (1 - exaggerated) * (height - padding * 2);
+      return { x, y };
+    };
 
+    if (isIntro) {
+      const segmentCount = Math.max(introPoints - 1, 1);
+      const segmentProgress = introProgress.value * segmentCount;
+      const headIndex = Math.floor(segmentProgress);
+      const t = segmentProgress - headIndex;
+      const lastIndex = clamp(introStartIndex + headIndex, startIndex, endIndex);
+
+      for (let index = startIndex; index <= lastIndex; index += 1) {
+        const { x, y } = getPoint(index);
+        if (index === startIndex) {
+          path.moveTo(x, y);
+        } else {
+          path.lineTo(x, y);
+        }
+      }
+
+      if (t > 0 && lastIndex < endIndex) {
+        const current = getPoint(lastIndex);
+        const next = getPoint(lastIndex + 1);
+        const x = current.x + (next.x - current.x) * t;
+        const y = current.y + (next.y - current.y) * t;
+        path.lineTo(x, y);
+      }
+
+      return path;
+    }
+
+    for (let index = startIndex; index <= endIndex; index += 1) {
+      const { x, y } = getPoint(index);
       if (index === startIndex) {
         path.moveTo(x, y);
       } else {
@@ -254,10 +284,6 @@ export function SkiaWeightChart({ data }: SkiaWeightChartProps) {
 
     return path;
   });
-
-  const pathEnd = useDerivedValue(() => {
-    return introProgress.value < 1 ? introProgress.value : 1;
-  }, []);
 
   const latestX = useDerivedValue(() => {
     if (!frameWidth || weightsValue.value.length === 0) {
@@ -352,7 +378,6 @@ export function SkiaWeightChart({ data }: SkiaWeightChartProps) {
               style="stroke"
               strokeWidth={dimensions.chart.lineWidth}
               color={colors.accentOrange}
-              end={pathEnd}
             />
             <Circle
               cx={latestX}
