@@ -1,6 +1,12 @@
-# Welcome to your Expo app 👋
+# Weivo
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Weivo is a weight-tracking app focused on expressive animations, high performance, and native-quality interactions. The goal is to explore gesture-driven experiences, Reanimated, and Skia while keeping the UI clean and data-dense.
+
+## What this app is for
+
+- Track weight over time with a visual-first experience.
+- Prototype animation-heavy interactions without sacrificing performance.
+- Serve as a playground for native modules, gestures, Reanimated, and Skia.
 
 ## Get started
 
