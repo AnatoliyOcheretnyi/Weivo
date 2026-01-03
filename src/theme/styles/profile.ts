@@ -1,9 +1,9 @@
 import { StyleSheet } from 'react-native';
 
 import { colors } from '../colors';
-import { fontSizes, letterSpacings } from '../typography';
 import { radii } from '../radii';
 import { spacing } from '../spacing';
+import { fontSizes, letterSpacings } from '../typography';
 
 export const profileStyles = StyleSheet.create({
   screen: {
@@ -64,10 +64,22 @@ export const profileStyles = StyleSheet.create({
     justifyContent: 'space-between',
     gap: spacing.lg,
   },
+  subRow: {
+    paddingLeft: spacing.xl,
+  },
+  subLabel: {
+    fontSize: fontSizes.sm,
+    color: colors.inkMutedLight,
+    letterSpacing: letterSpacings.sm,
+  },
+  subValue: {
+    fontSize: fontSizes.sm,
+    color: colors.inkMuted,
+  },
   linkRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.lg,
+    gap: spacing.xxl,
   },
   linkIcon: {
     marginTop: 2,

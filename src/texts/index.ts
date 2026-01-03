@@ -25,6 +25,8 @@ export const texts = {
       currentWeight: 'Current weight',
       bmi: 'BMI',
       calories: 'Calories',
+      caloriesMaintenance: 'Maintenance',
+      caloriesTarget: 'Target',
       activity: 'Activity',
       goalType: 'Goal type',
       goalTarget: 'Target weight',

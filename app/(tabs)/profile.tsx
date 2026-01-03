@@ -1,14 +1,14 @@
+import { useRouter } from 'expo-router';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
 
-import { useWeightStore } from '@/features/weight';
-import { useProfileStore } from '@/features/profile';
 import { ExternalLink } from '@/components/external-link';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { useProfileStore } from '@/features/profile';
+import { useWeightStore } from '@/features/weight';
+import { texts } from '@/texts';
 import { colors } from '@/theme';
 import { profileStyles } from '@/theme/styles/profile';
-import { texts } from '@/texts';
 
 export default function ProfileScreen() {
   const { entries } = useWeightStore();
@@ -70,9 +70,9 @@ export default function ProfileScreen() {
     }
   })();
 
-  const caloriesLabel = (() => {
+  const calories = (() => {
     if (!latestWeight || !heightCm || !birthDateISO || !sex) {
-      return texts.profile.values.notSet;
+      return { maintenance: null, target: null };
     }
     const age = calculateAge(birthDateISO);
     const sexOffset = sex === 'male' ? 5 : -161;
@@ -81,9 +81,9 @@ export default function ProfileScreen() {
     if ((goalType === 'lose' || goalType === 'gain') && goalRateKgPerWeek) {
       const delta = (goalRateKgPerWeek * 7700) / 7;
       const target = goalType === 'lose' ? tdee - delta : tdee + delta;
-      return `${texts.profile.values.caloriesMaintenance} ${Math.round(tdee)} / ${texts.profile.values.caloriesTarget} ${Math.round(target)} kcal`;
+      return { maintenance: Math.round(tdee), target: Math.round(target) };
     }
-    return `${texts.profile.values.caloriesMaintenance} ${Math.round(tdee)} kcal`;
+    return { maintenance: Math.round(tdee), target: Math.round(tdee) };
   })();
   const goalTypeLabel =
     goalType === 'lose'
@@ -187,7 +187,20 @@ export default function ProfileScreen() {
             </View>
             <View style={profileStyles.row}>
               <Text style={profileStyles.label}>{texts.profile.fields.calories}</Text>
-              <Text style={profileStyles.value}>{caloriesLabel}</Text>
+            </View>
+            <View style={[profileStyles.row, profileStyles.subRow]}>
+              <Text style={profileStyles.subLabel}>{texts.profile.fields.caloriesMaintenance}</Text>
+              <Text style={profileStyles.subValue}>
+                {calories.maintenance != null
+                  ? `${calories.maintenance} kcal`
+                  : texts.profile.values.notSet}
+              </Text>
+            </View>
+            <View style={[profileStyles.row, profileStyles.subRow]}>
+              <Text style={profileStyles.subLabel}>{texts.profile.fields.caloriesTarget}</Text>
+              <Text style={profileStyles.subValue}>
+                {calories.target != null ? `${calories.target} kcal` : texts.profile.values.notSet}
+              </Text>
             </View>
           </View>
         </View>
