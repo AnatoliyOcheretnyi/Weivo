@@ -5,25 +5,24 @@ import { Swipeable } from 'react-native-gesture-handler';
 
 import { useWeightStore } from '@/features/weight';
 import { entriesStyles } from './explore.styles';
-import { texts } from '@/texts';
-
-const moodMap = {
-  happy: texts.moods.happy,
-  neutral: texts.moods.neutral,
-  sad: texts.moods.sad,
-  angry: texts.moods.angry,
-} as const;
-
-const formatFullDate = (dateISO: string) =>
-  new Date(dateISO).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  });
+import { useTexts } from '@/i18n';
 
 export default function EntriesScreen() {
   const { entries, clearEntries, removeEntry } = useWeightStore();
+  const { texts, locale } = useTexts();
   const data = useMemo(() => [...entries].reverse(), [entries]);
+  const moodMap = {
+    happy: texts.moods.happy,
+    neutral: texts.moods.neutral,
+    sad: texts.moods.sad,
+    angry: texts.moods.angry,
+  } as const;
+  const formatFullDate = (dateISO: string) =>
+    new Date(dateISO).toLocaleDateString(locale, {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
   const handleClearAll = () => {
     Alert.alert(
       texts.entries.clearAllTitle,

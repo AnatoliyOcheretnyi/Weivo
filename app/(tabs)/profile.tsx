@@ -6,7 +6,7 @@ import { ExternalLink } from '@/components/external-link';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useProfileStore } from '@/features/profile';
 import { useWeightStore } from '@/features/weight';
-import { texts } from '@/texts';
+import { localeLabels, useTexts } from '@/i18n';
 import { colors } from '@/theme';
 import { profileStyles } from './profile.styles';
 
@@ -14,6 +14,7 @@ export default function ProfileScreen() {
   const { entries } = useWeightStore();
   const { profile } = useProfileStore();
   const router = useRouter();
+  const { texts, locale } = useTexts();
   const latestWeight = entries.length > 0 ? entries[entries.length - 1].weightKg : null;
   const birthDateISO = profile.birthDateISO ?? null;
   const heightCm = profile.heightCm ?? null;
@@ -26,7 +27,7 @@ export default function ProfileScreen() {
   const activityLevel = profile.activityLevel ?? 'sedentary';
 
   const birthDateLabel = birthDateISO
-    ? new Date(birthDateISO).toLocaleDateString('en-US', {
+    ? new Date(birthDateISO).toLocaleDateString(locale, {
         month: 'short',
         day: 'numeric',
         year: 'numeric',
@@ -93,7 +94,7 @@ export default function ProfileScreen() {
         : texts.profile.values.goalMaintain;
   const goalRateLabel =
     goalRateKgPerWeek && (goalType === 'lose' || goalType === 'gain')
-      ? `${goalRateKgPerWeek.toFixed(1)} kg / week`
+      ? `${goalRateKgPerWeek.toFixed(1)} kg / ${texts.home.units.weeksShort}`
       : texts.profile.values.notSet;
   const goalRangeLabel =
     goalType === 'maintain' && goalRangeMinKg && goalRangeMaxKg
@@ -111,7 +112,7 @@ export default function ProfileScreen() {
         if (goalRateKgPerWeek) {
           const target = latestWeight < goalRangeMinKg ? goalRangeMinKg : goalRangeMaxKg;
           const weeks = Math.ceil(Math.abs(latestWeight - target) / goalRateKgPerWeek);
-          return `≈ ${weeks} weeks`;
+          return `≈ ${weeks} ${texts.home.units.weeksShort}`;
         }
       }
       return texts.profile.values.notSet;
@@ -120,14 +121,18 @@ export default function ProfileScreen() {
       return texts.profile.values.notSet;
     }
     const weeks = Math.ceil(Math.abs(latestWeight - goalTargetKg) / goalRateKgPerWeek);
-    return `≈ ${weeks} weeks`;
+    return `≈ ${weeks} ${texts.home.units.weeksShort}`;
   })();
+  const languageLabel =
+    profile.language && profile.language !== 'system'
+      ? localeLabels[profile.language]
+      : localeLabels[locale as keyof typeof localeLabels];
 
   return (
     <SafeAreaView style={profileStyles.screen} edges={['top', 'left', 'right']}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={profileStyles.headerRow}>
-          <View>
+          <View style={profileStyles.headerContent}>
             <Text style={profileStyles.title}>{texts.profile.title}</Text>
             <Text style={profileStyles.subtitle}>{texts.profile.subtitle}</Text>
           </View>
@@ -252,7 +257,7 @@ export default function ProfileScreen() {
             </View>
             <View style={profileStyles.row}>
               <Text style={profileStyles.label}>{texts.profile.fields.language}</Text>
-              <Text style={profileStyles.value}>{texts.profile.values.languageSoon}</Text>
+              <Text style={profileStyles.value}>{languageLabel}</Text>
             </View>
             <View style={profileStyles.row}>
               <Text style={profileStyles.label}>{texts.profile.fields.theme}</Text>

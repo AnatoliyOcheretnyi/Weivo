@@ -5,11 +5,12 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useProfileStore } from '@/features/profile';
 import { SkiaWeightChart, useWeightStore } from '@/features/weight';
 import { homeStyles } from './index.styles';
-import { texts } from '@/texts';
+import { useTexts } from '@/i18n';
 
 export default function HomeScreen() {
   const { entries } = useWeightStore();
   const { profile } = useProfileStore();
+  const { texts } = useTexts();
   const heightCm = profile.heightCm ?? null;
   const goalType = profile.goalType ?? null;
   const goalTargetKg = profile.goalTargetKg ?? null;
@@ -45,7 +46,7 @@ export default function HomeScreen() {
       trendLabel: delta <= 0 ? texts.home.trendingDown : texts.home.trendingUp,
       total: entries.length,
     };
-  }, [entries]);
+  }, [entries, texts]);
 
   const bmiValue =
     stats.current > 0 && heightCm
@@ -77,13 +78,13 @@ export default function HomeScreen() {
         const target =
           stats.current < goalRangeMinKg ? goalRangeMinKg : goalRangeMaxKg;
         const weeks = Math.ceil(Math.abs(stats.current - target) / goalRateKgPerWeek);
-        return `${weeks} wk`;
+        return `${weeks} ${texts.home.units.weeksShort}`;
       }
       return texts.profile.values.notSet;
     }
     if (goalTargetKg != null && goalType) {
       const weeks = Math.ceil(Math.abs(stats.current - goalTargetKg) / goalRateKgPerWeek);
-      return `${weeks} wk`;
+      return `${weeks} ${texts.home.units.weeksShort}`;
     }
     return texts.profile.values.notSet;
   })();

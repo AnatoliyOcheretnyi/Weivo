@@ -7,20 +7,20 @@ import { useWeightStore } from '@/features/weight';
 import type { Mood } from '@/features/weight';
 import { modalStyles } from './modal.styles';
 import { colors } from '@/theme';
-import { texts } from '@/texts';
-
-const moodOptions: { key: Mood; label: string }[] = [
-  { key: 'happy', label: texts.moods.happy },
-  { key: 'neutral', label: texts.moods.neutral },
-  { key: 'sad', label: texts.moods.sad },
-  { key: 'angry', label: texts.moods.angry },
-];
+import { useTexts } from '@/i18n';
 
 export default function AddEntryModal() {
   const router = useRouter();
   const { addEntry } = useWeightStore();
+  const { texts } = useTexts();
   const [weightText, setWeightText] = useState('');
   const [mood, setMood] = useState<Mood | undefined>();
+  const moodOptions: { key: Mood; label: string }[] = [
+    { key: 'happy', label: texts.moods.happy },
+    { key: 'neutral', label: texts.moods.neutral },
+    { key: 'sad', label: texts.moods.sad },
+    { key: 'angry', label: texts.moods.angry },
+  ];
 
   const weightValue = useMemo(() => {
     const normalized = weightText.replace(',', '.');

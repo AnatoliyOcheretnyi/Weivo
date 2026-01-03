@@ -2,9 +2,10 @@ import { Text, View } from 'react-native';
 
 import type { ChartHeaderProps } from './types';
 import { chartHeaderStyles } from './chart-header.styles';
-import { texts } from '@/texts';
+import { useTexts } from '@/i18n';
 
 export function ChartHeader({ min, max, totalDays }: ChartHeaderProps) {
+  const { texts } = useTexts();
   return (
     <View style={chartHeaderStyles.headerRow}>
       <View>

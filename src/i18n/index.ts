@@ -1,0 +1,533 @@
+import i18n from 'i18next';
+import { initReactI18next, useTranslation } from 'react-i18next';
+import { useEffect, useMemo } from 'react';
+import * as Localization from 'expo-localization';
+
+import type { Language } from '@/features/profile';
+
+export type Locale = 'en' | 'uk' | 'es';
+export type LanguageOption = Language | 'system';
+
+const DEFAULT_LOCALE: Locale = 'en';
+const SUPPORTED_LOCALES: Locale[] = ['en', 'uk', 'es'];
+
+const normalizeLocale = (rawLocale?: string | null): Locale => {
+  const normalized = rawLocale?.toLowerCase();
+  const base = normalized?.split(/[-_]/)[0] as Locale | undefined;
+  return base && SUPPORTED_LOCALES.includes(base) ? base : DEFAULT_LOCALE;
+};
+
+export const getSystemLocale = (): Locale => {
+  const locales = Localization.getLocales?.();
+  const languageTag = locales?.[0]?.languageTag ?? Localization.locale;
+  return normalizeLocale(languageTag);
+};
+
+const translations = {
+  en: {
+    appName: 'Weivo',
+    tabs: {
+      profile: 'Profile',
+      home: 'Home',
+      explore: 'Explore',
+      add: 'Add',
+    },
+    profile: {
+      title: 'Profile',
+      subtitle: 'Personal data, goals, and health metrics.',
+      edit: 'Edit',
+      sections: {
+        basics: 'Basics',
+        metrics: 'Health metrics',
+        goal: 'Goal',
+        preferences: 'Preferences',
+        support: 'Support',
+      },
+      fields: {
+        birthDate: 'Birth date',
+        sex: 'Sex',
+        age: 'Age',
+        height: 'Height',
+        currentWeight: 'Current weight',
+        bmi: 'BMI',
+        calories: 'Calories',
+        caloriesMaintenance: 'Maintenance',
+        caloriesTarget: 'Target',
+        activity: 'Activity',
+        goalType: 'Goal type',
+        goalTarget: 'Target weight',
+        goalRate: 'Weekly pace',
+        goalRange: 'Target range',
+        prediction: 'Prediction',
+        units: 'Units',
+        language: 'Language',
+        theme: 'Theme',
+        feedback: 'Feedback',
+      },
+      values: {
+        notSet: 'Not set',
+        unitsMetric: 'Metric (kg, cm)',
+        unitsImperial: 'Imperial (lb, ft)',
+        languageSoon: 'Soon',
+        languageSystem: 'System',
+        themeSoon: 'Soon',
+        goalLose: 'Lose weight',
+        goalGain: 'Gain weight',
+        goalMaintain: 'Maintain',
+        feedbackLink: 'Telegram',
+        sexMale: 'Male',
+        sexFemale: 'Female',
+        caloriesMaintenance: 'Maintenance',
+        caloriesTarget: 'Target',
+        inRange: 'In range',
+        activitySedentary: 'Sed',
+        activityLight: 'Light',
+        activityModerate: 'Mod',
+        activityActive: 'Active',
+        activityVeryActive: 'V-Act',
+        activitySedentaryDesc: 'Desk work, minimal movement.',
+        activityLightDesc: 'Light walks 1–2x per week.',
+        activityModerateDesc: 'Training 2–3x per week.',
+        activityActiveDesc: 'Training 4–5x per week.',
+        activityVeryActiveDesc: 'Hard training, physical job.',
+      },
+    },
+    profileEdit: {
+      title: 'Edit profile',
+      subtitle: 'Update your personal data and goals.',
+      tabs: {
+        profile: 'Profile',
+        account: 'Account',
+      },
+      birthDate: 'Birth date',
+      birthDatePlaceholder: 'Select date',
+      sex: 'Sex',
+      height: 'Height (cm)',
+      activity: 'Activity level',
+      goalType: 'Goal type',
+      goalTarget: 'Target weight (kg)',
+      goalRate: 'Weekly pace (kg)',
+      goalRange: 'Target range (kg)',
+      units: 'Units',
+      language: 'Language',
+      currentWeight: 'Current',
+      save: 'Save',
+      cancel: 'Cancel',
+    },
+    modal: {
+      title: 'New weigh-in',
+      subtitle: "Add today's value and optional mood.",
+      placeholderWeight: '0.0',
+      moodLabel: 'Mood (optional)',
+      cancel: 'Cancel',
+      save: 'Save',
+      addEntryTitle: 'Add entry',
+    },
+    home: {
+      tagline: 'Weight journey - steady, honest, real',
+      currentWeight: 'Current weight',
+      trendingDown: 'Trending down',
+      trendingUp: 'Trending up',
+      lowest: 'Lowest',
+      highest: 'Highest',
+      entries: 'Entries',
+      deltaSuffix: 'kg / 10 days',
+      goal: 'Goal',
+      eta: 'ETA',
+      bmi: 'BMI',
+      units: {
+        kg: 'kg',
+        days: 'days',
+        weeksShort: 'wk',
+      },
+    },
+    chart: {
+      title: 'Weight Flow',
+      subtitleSuffix: 'days - daily log',
+      start: 'Start',
+      latest: 'Latest',
+      unit: 'kg',
+    },
+    entries: {
+      title: 'All entries',
+      recordsSuffix: 'records',
+      dailyLog: 'Daily log',
+      deltaZero: '0.0',
+      unit: 'kg',
+      clearAll: 'Clear all',
+      clearAllTitle: 'Clear all entries?',
+      clearAllMessage: 'This will permanently remove every saved weigh-in.',
+      clearAllConfirm: 'Clear',
+      clearAllCancel: 'Cancel',
+      deleteTitle: 'Delete entry?',
+      deleteMessage: 'This entry will be removed permanently.',
+      deleteConfirm: 'Delete',
+      deleteCancel: 'Cancel',
+    },
+    symbols: {
+      plus: '+',
+    },
+    moods: {
+      happy: '🙂',
+      neutral: '😐',
+      sad: '😔',
+      angry: '😠',
+    },
+    greeting: {
+      wave: '👋',
+    },
+  },
+  uk: {
+    appName: 'Weivo',
+    tabs: {
+      profile: 'Профіль',
+      home: 'Головна',
+      explore: 'Записи',
+      add: 'Додати',
+    },
+    profile: {
+      title: 'Профіль',
+      subtitle: 'Особисті дані, цілі та метрики здоровʼя.',
+      edit: 'Редагувати',
+      sections: {
+        basics: 'Основне',
+        metrics: 'Метрики здоровʼя',
+        goal: 'Ціль',
+        preferences: 'Налаштування',
+        support: 'Підтримка',
+      },
+      fields: {
+        birthDate: 'Дата народження',
+        sex: 'Стать',
+        age: 'Вік',
+        height: 'Зріст',
+        currentWeight: 'Поточна вага',
+        bmi: 'ІМТ',
+        calories: 'Калорії',
+        caloriesMaintenance: 'Підтримка',
+        caloriesTarget: 'Ціль',
+        activity: 'Активність',
+        goalType: 'Тип цілі',
+        goalTarget: 'Цільова вага',
+        goalRate: 'Темп за тиждень',
+        goalRange: 'Цільовий діапазон',
+        prediction: 'Прогноз',
+        units: 'Одиниці',
+        language: 'Мова',
+        theme: 'Тема',
+        feedback: 'Зворотний звʼязок',
+      },
+      values: {
+        notSet: 'Не задано',
+        unitsMetric: 'Метричні (кг, см)',
+        unitsImperial: 'Імперські (lb, ft)',
+        languageSoon: 'Скоро',
+        languageSystem: 'Система',
+        themeSoon: 'Скоро',
+        goalLose: 'Схуднути',
+        goalGain: 'Набрати вагу',
+        goalMaintain: 'Підтримка',
+        feedbackLink: 'Telegram',
+        sexMale: 'Чоловіча',
+        sexFemale: 'Жіноча',
+        caloriesMaintenance: 'Підтримка',
+        caloriesTarget: 'Ціль',
+        inRange: 'В межах',
+        activitySedentary: 'Сид',
+        activityLight: 'Легк',
+        activityModerate: 'Помір',
+        activityActive: 'Актив',
+        activityVeryActive: 'Дуже',
+        activitySedentaryDesc: 'Офісна робота, мінімум руху.',
+        activityLightDesc: 'Легкі прогулянки 1–2 рази на тиждень.',
+        activityModerateDesc: 'Тренування 2–3 рази на тиждень.',
+        activityActiveDesc: 'Тренування 4–5 разів на тиждень.',
+        activityVeryActiveDesc: 'Інтенсивні тренування або фізична робота.',
+      },
+    },
+    profileEdit: {
+      title: 'Редагувати профіль',
+      subtitle: 'Оновіть особисті дані та цілі.',
+      tabs: {
+        profile: 'Профіль',
+        account: 'Акаунт',
+      },
+      birthDate: 'Дата народження',
+      birthDatePlaceholder: 'Оберіть дату',
+      sex: 'Стать',
+      height: 'Зріст (см)',
+      activity: 'Рівень активності',
+      goalType: 'Тип цілі',
+      goalTarget: 'Цільова вага (кг)',
+      goalRate: 'Темп за тиждень (кг)',
+      goalRange: 'Цільовий діапазон (кг)',
+      units: 'Одиниці',
+      language: 'Мова',
+      currentWeight: 'Поточна',
+      save: 'Зберегти',
+      cancel: 'Скасувати',
+    },
+    modal: {
+      title: 'Нове зважування',
+      subtitle: 'Додайте сьогоднішнє значення та настрій (опційно).',
+      placeholderWeight: '0.0',
+      moodLabel: 'Настрій (опційно)',
+      cancel: 'Скасувати',
+      save: 'Зберегти',
+      addEntryTitle: 'Додати запис',
+    },
+    home: {
+      tagline: 'Вага: стабільно, чесно, реально',
+      currentWeight: 'Поточна вага',
+      trendingDown: 'Спадає',
+      trendingUp: 'Зростає',
+      lowest: 'Мінімум',
+      highest: 'Максимум',
+      entries: 'Записів',
+      deltaSuffix: 'кг / 10 днів',
+      goal: 'Ціль',
+      eta: 'Час',
+      bmi: 'ІМТ',
+      units: {
+        kg: 'кг',
+        days: 'днів',
+        weeksShort: 'тиж',
+      },
+    },
+    chart: {
+      title: 'Динаміка ваги',
+      subtitleSuffix: 'днів - щоденний лог',
+      start: 'Початок',
+      latest: 'Останнє',
+      unit: 'кг',
+    },
+    entries: {
+      title: 'Всі записи',
+      recordsSuffix: 'записів',
+      dailyLog: 'Щоденний лог',
+      deltaZero: '0.0',
+      unit: 'кг',
+      clearAll: 'Очистити все',
+      clearAllTitle: 'Очистити всі записи?',
+      clearAllMessage: 'Це назавжди видалить усі зважування.',
+      clearAllConfirm: 'Очистити',
+      clearAllCancel: 'Скасувати',
+      deleteTitle: 'Видалити запис?',
+      deleteMessage: 'Запис буде видалено назавжди.',
+      deleteConfirm: 'Видалити',
+      deleteCancel: 'Скасувати',
+    },
+    symbols: {
+      plus: '+',
+    },
+    moods: {
+      happy: '🙂',
+      neutral: '😐',
+      sad: '😔',
+      angry: '😠',
+    },
+    greeting: {
+      wave: '👋',
+    },
+  },
+  es: {
+    appName: 'Weivo',
+    tabs: {
+      profile: 'Perfil',
+      home: 'Inicio',
+      explore: 'Registros',
+      add: 'Añadir',
+    },
+    profile: {
+      title: 'Perfil',
+      subtitle: 'Datos personales, objetivos y métricas de salud.',
+      edit: 'Editar',
+      sections: {
+        basics: 'Básico',
+        metrics: 'Métricas de salud',
+        goal: 'Objetivo',
+        preferences: 'Preferencias',
+        support: 'Soporte',
+      },
+      fields: {
+        birthDate: 'Fecha de nacimiento',
+        sex: 'Sexo',
+        age: 'Edad',
+        height: 'Altura',
+        currentWeight: 'Peso actual',
+        bmi: 'IMC',
+        calories: 'Calorías',
+        caloriesMaintenance: 'Mantenimiento',
+        caloriesTarget: 'Objetivo',
+        activity: 'Actividad',
+        goalType: 'Tipo de objetivo',
+        goalTarget: 'Peso objetivo',
+        goalRate: 'Ritmo semanal',
+        goalRange: 'Rango objetivo',
+        prediction: 'Predicción',
+        units: 'Unidades',
+        language: 'Idioma',
+        theme: 'Tema',
+        feedback: 'Comentarios',
+      },
+      values: {
+        notSet: 'Sin configurar',
+        unitsMetric: 'Métrico (kg, cm)',
+        unitsImperial: 'Imperial (lb, ft)',
+        languageSoon: 'Pronto',
+        languageSystem: 'Sistema',
+        themeSoon: 'Pronto',
+        goalLose: 'Perder peso',
+        goalGain: 'Ganar peso',
+        goalMaintain: 'Mantener',
+        feedbackLink: 'Telegram',
+        sexMale: 'Hombre',
+        sexFemale: 'Mujer',
+        caloriesMaintenance: 'Mantenimiento',
+        caloriesTarget: 'Objetivo',
+        inRange: 'En rango',
+        activitySedentary: 'Sed',
+        activityLight: 'Lig',
+        activityModerate: 'Mod',
+        activityActive: 'Act',
+        activityVeryActive: 'Muy',
+        activitySedentaryDesc: 'Trabajo de oficina, mínimo movimiento.',
+        activityLightDesc: 'Caminatas ligeras 1–2 veces por semana.',
+        activityModerateDesc: 'Entrenamiento 2–3 veces por semana.',
+        activityActiveDesc: 'Entrenamiento 4–5 veces por semana.',
+        activityVeryActiveDesc: 'Entrenamiento intenso o trabajo físico.',
+      },
+    },
+    profileEdit: {
+      title: 'Editar perfil',
+      subtitle: 'Actualiza tus datos y objetivos.',
+      tabs: {
+        profile: 'Perfil',
+        account: 'Cuenta',
+      },
+      birthDate: 'Fecha de nacimiento',
+      birthDatePlaceholder: 'Selecciona fecha',
+      sex: 'Sexo',
+      height: 'Altura (cm)',
+      activity: 'Nivel de actividad',
+      goalType: 'Tipo de objetivo',
+      goalTarget: 'Peso objetivo (kg)',
+      goalRate: 'Ritmo semanal (kg)',
+      goalRange: 'Rango objetivo (kg)',
+      units: 'Unidades',
+      language: 'Idioma',
+      currentWeight: 'Actual',
+      save: 'Guardar',
+      cancel: 'Cancelar',
+    },
+    modal: {
+      title: 'Nuevo registro',
+      subtitle: 'Agrega el valor de hoy y el ánimo opcional.',
+      placeholderWeight: '0.0',
+      moodLabel: 'Ánimo (opcional)',
+      cancel: 'Cancelar',
+      save: 'Guardar',
+      addEntryTitle: 'Añadir registro',
+    },
+    home: {
+      tagline: 'Tu peso: constante, honesto, real',
+      currentWeight: 'Peso actual',
+      trendingDown: 'Bajando',
+      trendingUp: 'Subiendo',
+      lowest: 'Mínimo',
+      highest: 'Máximo',
+      entries: 'Registros',
+      deltaSuffix: 'kg / 10 días',
+      goal: 'Objetivo',
+      eta: 'ETA',
+      bmi: 'IMC',
+      units: {
+        kg: 'kg',
+        days: 'días',
+        weeksShort: 'sem',
+      },
+    },
+    chart: {
+      title: 'Flujo de peso',
+      subtitleSuffix: 'días - registro diario',
+      start: 'Inicio',
+      latest: 'Último',
+      unit: 'kg',
+    },
+    entries: {
+      title: 'Todos los registros',
+      recordsSuffix: 'registros',
+      dailyLog: 'Registro diario',
+      deltaZero: '0.0',
+      unit: 'kg',
+      clearAll: 'Borrar todo',
+      clearAllTitle: '¿Borrar todos los registros?',
+      clearAllMessage: 'Esto eliminará todos los pesajes guardados.',
+      clearAllConfirm: 'Borrar',
+      clearAllCancel: 'Cancelar',
+      deleteTitle: '¿Eliminar registro?',
+      deleteMessage: 'Este registro se eliminará permanentemente.',
+      deleteConfirm: 'Eliminar',
+      deleteCancel: 'Cancelar',
+    },
+    symbols: {
+      plus: '+',
+    },
+    moods: {
+      happy: '🙂',
+      neutral: '😐',
+      sad: '😔',
+      angry: '😠',
+    },
+    greeting: {
+      wave: '👋',
+    },
+  },
+};
+
+export type Texts = typeof translations.en;
+
+export const localeLabels: Record<Locale, string> = {
+  en: 'English',
+  uk: 'Українська',
+  es: 'Español',
+};
+
+const initLocale = getSystemLocale();
+
+if (!i18n.isInitialized) {
+  i18n.use(initReactI18next).init({
+    compatibilityJSON: 'v4',
+    resources: {
+      en: { translation: translations.en },
+      uk: { translation: translations.uk },
+      es: { translation: translations.es },
+    },
+    lng: initLocale,
+    fallbackLng: DEFAULT_LOCALE,
+    interpolation: {
+      escapeValue: false,
+    },
+  });
+}
+
+export const useTexts = () => {
+  const { i18n: i18nInstance } = useTranslation();
+  const texts = useMemo(() => {
+    const bundle = i18nInstance.getResourceBundle(i18nInstance.language, 'translation');
+    return (bundle ?? translations.en) as Texts;
+  }, [i18nInstance.language]);
+  return { texts, locale: i18nInstance.language };
+};
+
+export const useI18nSync = (language?: LanguageOption) => {
+  useEffect(() => {
+    const nextLocale =
+      language && language !== 'system' ? normalizeLocale(language) : getSystemLocale();
+    if (i18n.language !== nextLocale) {
+      void i18n.changeLanguage(nextLocale);
+    }
+  }, [language]);
+};
+
+export default i18n;

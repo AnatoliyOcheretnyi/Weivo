@@ -6,10 +6,11 @@ import { HapticTab } from '@/components/haptic-tab';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { colors, dimensions } from '@/theme';
 import { tabLayoutStyles } from './_layout.styles';
-import { texts } from '@/texts';
+import { useTexts } from '@/i18n';
 
 export default function TabLayout() {
   const router = useRouter();
+  const { texts } = useTexts();
 
   return (
     <Tabs

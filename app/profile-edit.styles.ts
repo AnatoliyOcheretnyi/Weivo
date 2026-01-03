@@ -34,6 +34,36 @@ export const profileEditStyles = StyleSheet.create({
     textTransform: 'uppercase',
     letterSpacing: letterSpacings.lg,
   },
+  tabsRow: {
+    marginTop: spacing.xxl,
+    flexDirection: 'row',
+    gap: spacing.md,
+    padding: spacing.sm,
+    borderRadius: radii.full,
+    backgroundColor: colors.cream,
+  },
+  tabButton: {
+    flex: 1,
+    alignItems: 'center',
+    paddingVertical: spacing.xxl,
+    borderRadius: radii.full,
+    borderWidth: 1,
+    borderColor: colors.creamLine,
+    backgroundColor: colors.creamLight,
+  },
+  tabButtonActive: {
+    backgroundColor: colors.ink,
+    borderColor: colors.ink,
+  },
+  tabText: {
+    fontSize: fontSizes.sm,
+    color: colors.inkMuted,
+    textTransform: 'uppercase',
+    letterSpacing: letterSpacings.sm,
+  },
+  tabTextActive: {
+    color: colors.highlight,
+  },
   section: {
     marginTop: spacing.giant,
     gap: spacing.xl,

@@ -14,8 +14,12 @@ export const profileStyles = StyleSheet.create({
   headerRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     gap: spacing.lg,
+  },
+  headerContent: {
+    flex: 1,
+    paddingRight: spacing.lg,
   },
   title: {
     fontSize: fontSizes.displaySm,
@@ -35,6 +39,7 @@ export const profileStyles = StyleSheet.create({
     backgroundColor: colors.creamLight,
     paddingHorizontal: spacing.xxl,
     paddingVertical: spacing.lg,
+    alignSelf: 'flex-start',
   },
   editText: {
     fontSize: fontSizes.sm,

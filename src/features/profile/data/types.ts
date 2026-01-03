@@ -2,6 +2,7 @@ export type GoalType = 'lose' | 'gain' | 'maintain';
 export type Units = 'metric' | 'imperial';
 export type Sex = 'male' | 'female';
 export type ActivityLevel = 'sedentary' | 'light' | 'moderate' | 'active' | 'veryActive';
+export type Language = 'system' | 'en' | 'uk' | 'es';
 
 export type ProfileData = {
   birthDateISO?: string;
@@ -14,4 +15,5 @@ export type ProfileData = {
   goalRangeMinKg?: number;
   goalRangeMaxKg?: number;
   units?: Units;
+  language?: Language;
 };

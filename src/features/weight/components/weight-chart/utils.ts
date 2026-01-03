@@ -8,8 +8,8 @@ type WeightStats = {
   last: WeightEntry;
 };
 
-export const formatShortDate = (dateISO: string) =>
-  new Date(dateISO).toLocaleDateString('en-US', {
+export const formatShortDate = (dateISO: string, locale: string) =>
+  new Date(dateISO).toLocaleDateString(locale, {
     month: 'short',
     day: 'numeric',
   });

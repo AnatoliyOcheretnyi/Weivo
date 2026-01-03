@@ -7,11 +7,44 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider as JotaiProvider } from 'jotai';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { texts } from '@/texts';
+import { useProfileStore } from '@/features/profile';
+import { useI18nSync, useTexts } from '@/i18n';
 
 export const unstable_settings = {
   anchor: '(tabs)',
 };
+
+function I18nSync() {
+  const { profile } = useProfileStore();
+  useI18nSync(profile.language);
+  return null;
+}
+
+function RootStack() {
+  const { texts } = useTexts();
+
+  return (
+    <Stack>
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen
+        name="profile-edit"
+        options={{
+          presentation: 'modal',
+          title: texts.profileEdit.title,
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="modal"
+        options={{
+          presentation: 'modal',
+          title: texts.modal.addEntryTitle,
+          headerShown: false,
+        }}
+      />
+    </Stack>
+  );
+}
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -21,25 +54,8 @@ export default function RootLayout() {
       <SafeAreaProvider>
         <GestureHandlerRootView style={{ flex: 1 }}>
           <JotaiProvider>
-            <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen
-              name="profile-edit"
-              options={{
-                presentation: 'modal',
-                title: texts.profileEdit.title,
-                headerShown: false,
-              }}
-            />
-            <Stack.Screen
-              name="modal"
-              options={{
-                  presentation: 'modal',
-                  title: texts.modal.addEntryTitle,
-                  headerShown: false,
-                }}
-              />
-            </Stack>
+            <I18nSync />
+            <RootStack />
             <StatusBar style="auto" />
           </JotaiProvider>
         </GestureHandlerRootView>
