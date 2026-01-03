@@ -59,6 +59,36 @@ export const entriesStyles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+  rowContent: {
+    backgroundColor: colors.creamLight,
+    borderRadius: radii.xl,
+    padding: dimensions.explore.rowPadding,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginRight: spacing.lg,
+  },
+  swipeContainer: {
+    backgroundColor: colors.creamLine,
+    borderRadius: radii.xl,
+    overflow: 'hidden',
+  },
+  swipeContainerActive: {
+    backgroundColor: colors.accentOrangeDark,
+  },
+  deleteAction: {
+    width: 88,
+    backgroundColor: colors.accentOrangeDark,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: radii.xl,
+  },
+  deleteText: {
+    color: colors.highlight,
+    fontSize: fontSizes.sm,
+    textTransform: 'uppercase',
+    letterSpacing: letterSpacings.sm,
+  },
   date: {
     fontSize: fontSizes.xl,
     color: colors.ink,
