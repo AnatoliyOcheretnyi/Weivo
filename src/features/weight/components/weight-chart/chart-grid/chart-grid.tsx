@@ -1,9 +1,13 @@
 import { Text, View } from 'react-native';
 
 import type { ChartGridProps } from './types';
-import { chartGridStyles } from './chart-grid.styles';
+import { useMemo } from 'react';
+import { useAppTheme } from '@/theme';
+import { createChartGridStyles } from './chart-grid.styles';
 
 export function ChartGrid({ height, labels }: ChartGridProps) {
+  const { colors } = useAppTheme();
+  const chartGridStyles = useMemo(() => createChartGridStyles(colors), [colors]);
   const labelHeight = 12;
   const labelInset = 2;
 

@@ -1,12 +1,16 @@
+import { useMemo } from 'react';
 import { Text, View } from 'react-native';
 
 import type { ChartFooterProps } from './types';
-import { chartFooterStyles } from './chart-footer.styles';
+import { useAppTheme } from '@/theme';
+import { createChartFooterStyles } from './chart-footer.styles';
 import { useTexts } from '@/i18n';
 import { formatShortDate } from '../utils';
 
 export function ChartFooter({ first, last }: ChartFooterProps) {
   const { texts, locale } = useTexts();
+  const { colors } = useAppTheme();
+  const chartFooterStyles = useMemo(() => createChartFooterStyles(colors), [colors]);
   return (
     <View style={chartFooterStyles.footerRow}>
       <View>

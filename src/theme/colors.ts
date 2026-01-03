@@ -35,21 +35,65 @@ export const colors = {
   glow: 'rgba(16,16,16,0.12)',
 };
 
+export const darkColors = {
+  ink: '#F5EFE6',
+  inkStrong: '#0F0D0B',
+  inkSoft: '#C9B8A7',
+  inkMuted: '#B2A08F',
+  inkMutedAlt: '#B9A695',
+  inkMutedLight: '#C7B5A5',
+  inkWarm: '#9FB3B4',
+  inkAccent: '#8C7B6C',
+  cream: '#171412',
+  creamLight: '#1F1B18',
+  creamLighter: '#24201D',
+  creamWarm: '#211C18',
+  creamCard: '#26211E',
+  creamLine: '#2C2622',
+  creamHint: '#C9B8A7',
+  creamMuted: '#D4C4B4',
+  creamHandle: '#3A332E',
+  highlight: '#F7EFE6',
+  highlightAlt: '#EADFD4',
+  accentGold: '#D8B18A',
+  accentOrange: '#E08C52',
+  accentOrangeDark: '#CC7B40',
+  accentOrangeSoft: '#F2B98B',
+  accentTeal: '#3E7E77',
+  white: '#FFFFFF',
+  link: '#7EC1D6',
+  lightText: '#11181C',
+  lightBackground: '#fff',
+  lightIcon: '#687076',
+  darkText: '#ECEDEE',
+  darkBackground: '#151718',
+  darkIcon: '#9BA1A6',
+  overlay: 'rgba(8, 6, 4, 0.6)',
+  glow: 'rgba(0,0,0,0.35)',
+};
+
+export type ThemeColors = typeof colors;
+
+export const themes = {
+  light: colors,
+  dark: darkColors,
+};
+
 export const themeColors = {
   light: {
-    text: colors.lightText,
-    background: colors.lightBackground,
+    text: colors.ink,
+    background: colors.cream,
     tint: colors.link,
-    icon: colors.lightIcon,
-    tabIconDefault: colors.lightIcon,
-    tabIconSelected: colors.link,
+    icon: colors.inkMuted,
+    tabIconDefault: colors.inkAccent,
+    tabIconSelected: colors.ink,
   },
   dark: {
-    text: colors.darkText,
-    background: colors.darkBackground,
-    tint: colors.white,
-    icon: colors.darkIcon,
-    tabIconDefault: colors.darkIcon,
-    tabIconSelected: colors.white,
+    text: darkColors.ink,
+    background: darkColors.cream,
+    tint: darkColors.link,
+    icon: darkColors.inkMuted,
+    tabIconDefault: darkColors.inkMuted,
+    tabIconSelected: darkColors.ink,
   },
 };

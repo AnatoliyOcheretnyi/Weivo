@@ -6,9 +6,9 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider as JotaiProvider } from 'jotai';
 
-import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useProfileStore } from '@/features/profile';
 import { useI18nSync, useTexts } from '@/i18n';
+import { useAppTheme } from '@/theme';
 
 export const unstable_settings = {
   anchor: '(tabs)',
@@ -46,20 +46,26 @@ function RootStack() {
   );
 }
 
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
+function RootLayoutContent() {
+  const { scheme } = useAppTheme();
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <ThemeProvider value={scheme === 'dark' ? DarkTheme : DefaultTheme}>
       <SafeAreaProvider>
         <GestureHandlerRootView style={{ flex: 1 }}>
-          <JotaiProvider>
-            <I18nSync />
-            <RootStack />
-            <StatusBar style="auto" />
-          </JotaiProvider>
+          <I18nSync />
+          <RootStack />
+          <StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
         </GestureHandlerRootView>
       </SafeAreaProvider>
     </ThemeProvider>
+  );
+}
+
+export default function RootLayout() {
+  return (
+    <JotaiProvider>
+      <RootLayoutContent />
+    </JotaiProvider>
   );
 }

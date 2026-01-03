@@ -1,16 +1,18 @@
 import { Tabs, useRouter } from 'expo-router';
-import React from 'react';
+import { useMemo } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
 import { HapticTab } from '@/components/haptic-tab';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { colors, dimensions } from '@/theme';
-import { tabLayoutStyles } from './_layout.styles';
+import { dimensions, useAppTheme } from '@/theme';
+import { createTabLayoutStyles } from './_layout.styles';
 import { useTexts } from '@/i18n';
 
 export default function TabLayout() {
   const router = useRouter();
   const { texts } = useTexts();
+  const { colors } = useAppTheme();
+  const tabLayoutStyles = useMemo(() => createTabLayoutStyles(colors), [colors]);
 
   return (
     <Tabs

@@ -1,4 +1,5 @@
 import { useRouter } from 'expo-router';
+import { useMemo } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -7,14 +8,16 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useProfileStore } from '@/features/profile';
 import { useWeightStore } from '@/features/weight';
 import { localeLabels, useTexts } from '@/i18n';
-import { colors } from '@/theme';
-import { profileStyles } from './profile.styles';
+import { useAppTheme } from '@/theme';
+import { createProfileStyles } from './profile.styles';
 
 export default function ProfileScreen() {
   const { entries } = useWeightStore();
   const { profile } = useProfileStore();
   const router = useRouter();
   const { texts, locale } = useTexts();
+  const { colors, scheme } = useAppTheme();
+  const profileStyles = useMemo(() => createProfileStyles(colors), [colors]);
   const latestWeight = entries.length > 0 ? entries[entries.length - 1].weightKg : null;
   const birthDateISO = profile.birthDateISO ?? null;
   const heightCm = profile.heightCm ?? null;
@@ -123,10 +126,13 @@ export default function ProfileScreen() {
     const weeks = Math.ceil(Math.abs(latestWeight - goalTargetKg) / goalRateKgPerWeek);
     return `≈ ${weeks} ${texts.home.units.weeksShort}`;
   })();
-  const languageLabel =
-    profile.language && profile.language !== 'system'
-      ? localeLabels[profile.language]
-      : localeLabels[locale as keyof typeof localeLabels];
+  const storedLanguage =
+    profile.language && profile.language !== 'system' ? profile.language : undefined;
+  const languageLabel = storedLanguage
+    ? localeLabels[storedLanguage]
+    : localeLabels[locale as keyof typeof localeLabels];
+  const themeLabel =
+    scheme === 'dark' ? texts.profile.values.themeDark : texts.profile.values.themeLight;
 
   return (
     <SafeAreaView style={profileStyles.screen} edges={['top', 'left', 'right']}>
@@ -261,7 +267,7 @@ export default function ProfileScreen() {
             </View>
             <View style={profileStyles.row}>
               <Text style={profileStyles.label}>{texts.profile.fields.theme}</Text>
-              <Text style={profileStyles.value}>{texts.profile.values.themeSoon}</Text>
+              <Text style={profileStyles.value}>{themeLabel}</Text>
             </View>
           </View>
         </View>

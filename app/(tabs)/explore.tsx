@@ -4,12 +4,15 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Swipeable } from 'react-native-gesture-handler';
 
 import { useWeightStore } from '@/features/weight';
-import { entriesStyles } from './explore.styles';
+import { useAppTheme } from '@/theme';
+import { createEntriesStyles } from './explore.styles';
 import { useTexts } from '@/i18n';
 
 export default function EntriesScreen() {
   const { entries, clearEntries, removeEntry } = useWeightStore();
   const { texts, locale } = useTexts();
+  const { colors } = useAppTheme();
+  const entriesStyles = useMemo(() => createEntriesStyles(colors), [colors]);
   const data = useMemo(() => [...entries].reverse(), [entries]);
   const moodMap = {
     happy: texts.moods.happy,

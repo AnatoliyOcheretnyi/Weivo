@@ -7,8 +7,9 @@ import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { useProfileStore } from '@/features/profile';
 import { useWeightStore } from '@/features/weight';
-import type { ActivityLevel, GoalType, Sex, Units, Language } from '@/features/profile';
-import { profileEditStyles } from './profile-edit.styles';
+import type { ActivityLevel, GoalType, Sex, Units, Language, ThemeMode } from '@/features/profile';
+import { useAppTheme } from '@/theme';
+import { createProfileEditStyles } from './profile-edit.styles';
 import { localeLabels, useTexts } from '@/i18n';
 
 export default function ProfileEditScreen() {
@@ -16,6 +17,8 @@ export default function ProfileEditScreen() {
   const { profile, updateProfile } = useProfileStore();
   const { entries } = useWeightStore();
   const { texts, locale } = useTexts();
+  const { colors, scheme } = useAppTheme();
+  const profileEditStyles = useMemo(() => createProfileEditStyles(colors), [colors]);
   const latestWeight = entries.length > 0 ? entries[entries.length - 1].weightKg : null;
   const [editTab, setEditTab] = useState<'profile' | 'account'>('profile');
   const [birthDate, setBirthDate] = useState<Date | null>(
@@ -45,6 +48,7 @@ export default function ProfileEditScreen() {
   const [language, setLanguage] = useState<Language>(
     profile.language && profile.language !== 'system' ? profile.language : (locale as Language)
   );
+  const [theme, setTheme] = useState<ThemeMode>(profile.theme ?? scheme);
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   const canSave = useMemo(() => {
@@ -92,6 +96,7 @@ export default function ProfileEditScreen() {
       activityLevel,
       units,
       language,
+      theme,
       goalTargetKg: goalTarget ? Number(goalTarget) : undefined,
       goalRateKgPerWeek: goalRate ? Number(goalRate) : undefined,
       goalRangeMinKg: goalRangeMin ? Number(goalRangeMin) : undefined,
@@ -209,7 +214,7 @@ export default function ProfileEditScreen() {
                     onChangeText={setHeightCm}
                     keyboardType="numeric"
                     placeholder="175"
-                    placeholderTextColor="#B8A594"
+                    placeholderTextColor={colors.inkAccent}
                     style={profileEditStyles.input}
                   />
                   <Text style={profileEditStyles.unit}>cm</Text>
@@ -296,7 +301,7 @@ export default function ProfileEditScreen() {
                       onChangeText={setGoalTarget}
                       keyboardType="numeric"
                       placeholder="110.0"
-                      placeholderTextColor="#B8A594"
+                      placeholderTextColor={colors.inkAccent}
                       style={profileEditStyles.input}
                     />
                     <Text style={profileEditStyles.unit}>kg</Text>
@@ -313,7 +318,7 @@ export default function ProfileEditScreen() {
                       onChangeText={setGoalRate}
                       keyboardType="numeric"
                       placeholder="0.5"
-                      placeholderTextColor="#B8A594"
+                      placeholderTextColor={colors.inkAccent}
                       style={profileEditStyles.input}
                     />
                     <Text style={profileEditStyles.unit}>kg/{texts.home.units.weeksShort}</Text>
@@ -331,7 +336,7 @@ export default function ProfileEditScreen() {
                         onChangeText={setGoalRangeMin}
                         keyboardType="numeric"
                         placeholder="78.0"
-                        placeholderTextColor="#B8A594"
+                        placeholderTextColor={colors.inkAccent}
                         style={profileEditStyles.input}
                       />
                       <Text style={profileEditStyles.unit}>kg</Text>
@@ -348,7 +353,7 @@ export default function ProfileEditScreen() {
                         onChangeText={setGoalRangeMax}
                         keyboardType="numeric"
                         placeholder="81.0"
-                        placeholderTextColor="#B8A594"
+                        placeholderTextColor={colors.inkAccent}
                         style={profileEditStyles.input}
                       />
                       <Text style={profileEditStyles.unit}>kg</Text>
@@ -376,6 +381,31 @@ export default function ProfileEditScreen() {
                           language === option && profileEditStyles.segmentTextActive,
                         ]}>
                         {localeLabels[option]}
+                      </Text>
+                    </Pressable>
+                  ))}
+                </View>
+              </View>
+
+              <View style={profileEditStyles.section}>
+                <Text style={profileEditStyles.label}>{texts.profileEdit.theme}</Text>
+                <View style={profileEditStyles.segmentedRow}>
+                  {(['light', 'dark'] as ThemeMode[]).map((option) => (
+                    <Pressable
+                      key={option}
+                      style={[
+                        profileEditStyles.segment,
+                        theme === option && profileEditStyles.segmentActive,
+                      ]}
+                      onPress={() => setTheme(option)}>
+                      <Text
+                        style={[
+                          profileEditStyles.segmentText,
+                          theme === option && profileEditStyles.segmentTextActive,
+                        ]}>
+                        {option === 'light'
+                          ? texts.profile.values.themeLight
+                          : texts.profile.values.themeDark}
                       </Text>
                     </Pressable>
                   ))}

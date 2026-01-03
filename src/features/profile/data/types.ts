@@ -3,6 +3,7 @@ export type Units = 'metric' | 'imperial';
 export type Sex = 'male' | 'female';
 export type ActivityLevel = 'sedentary' | 'light' | 'moderate' | 'active' | 'veryActive';
 export type Language = 'system' | 'en' | 'uk' | 'es';
+export type ThemeMode = 'light' | 'dark';
 
 export type ProfileData = {
   birthDateISO?: string;
@@ -16,4 +17,5 @@ export type ProfileData = {
   goalRangeMaxKg?: number;
   units?: Units;
   language?: Language;
+  theme?: ThemeMode;
 };

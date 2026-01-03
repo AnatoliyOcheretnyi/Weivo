@@ -22,9 +22,9 @@ import { ChartFooter } from '../weight-chart/chart-footer';
 import { ChartGrid } from '../weight-chart/chart-grid';
 import { ChartHeader } from '../weight-chart/chart-header';
 import { getDaysSpan, getWeightStats } from '../weight-chart/utils';
-import { colors, dimensions } from '@/theme';
+import { dimensions, useAppTheme } from '@/theme';
 import { skiaWeightChartStyles } from './skia-weight-chart.styles';
-import { weightChartStyles } from '../weight-chart/weight-chart.styles';
+import { createWeightChartStyles } from '../weight-chart/weight-chart.styles';
 import type { SkiaWeightChartProps } from './types';
 import { clamp, exaggerateNormalized } from './utils';
 
@@ -32,6 +32,8 @@ export function SkiaWeightChart({ data }: SkiaWeightChartProps) {
   if (data.length === 0) {
     return null;
   }
+  const { colors } = useAppTheme();
+  const weightChartStyles = useMemo(() => createWeightChartStyles(colors), [colors]);
   const [frameWidth, setFrameWidth] = useState(0);
   const translateX = useSharedValue(0);
   const startTranslateX = useSharedValue(0);

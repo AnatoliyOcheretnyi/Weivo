@@ -4,13 +4,16 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useProfileStore } from '@/features/profile';
 import { SkiaWeightChart, useWeightStore } from '@/features/weight';
-import { homeStyles } from './index.styles';
+import { useAppTheme } from '@/theme';
+import { createHomeStyles } from './index.styles';
 import { useTexts } from '@/i18n';
 
 export default function HomeScreen() {
   const { entries } = useWeightStore();
   const { profile } = useProfileStore();
   const { texts } = useTexts();
+  const { colors } = useAppTheme();
+  const homeStyles = useMemo(() => createHomeStyles(colors), [colors]);
   const heightCm = profile.heightCm ?? null;
   const goalType = profile.goalType ?? null;
   const goalTargetKg = profile.goalTargetKg ?? null;

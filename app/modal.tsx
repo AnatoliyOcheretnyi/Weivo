@@ -5,14 +5,16 @@ import { useRouter } from 'expo-router';
 
 import { useWeightStore } from '@/features/weight';
 import type { Mood } from '@/features/weight';
-import { modalStyles } from './modal.styles';
-import { colors } from '@/theme';
+import { useAppTheme } from '@/theme';
+import { createModalStyles } from './modal.styles';
 import { useTexts } from '@/i18n';
 
 export default function AddEntryModal() {
   const router = useRouter();
   const { addEntry } = useWeightStore();
   const { texts } = useTexts();
+  const { colors } = useAppTheme();
+  const modalStyles = useMemo(() => createModalStyles(colors), [colors]);
   const [weightText, setWeightText] = useState('');
   const [mood, setMood] = useState<Mood | undefined>();
   const moodOptions: { key: Mood; label: string }[] = [
