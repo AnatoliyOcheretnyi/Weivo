@@ -98,6 +98,9 @@ export const texts = {
     highest: 'Highest',
     entries: 'Entries',
     deltaSuffix: 'kg / 10 days',
+    goal: 'Goal',
+    eta: 'ETA',
+    bmi: 'BMI',
     units: {
       kg: 'kg',
       days: 'days',

@@ -2,12 +2,20 @@ import { useMemo } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { useProfileStore } from '@/features/profile';
 import { SkiaWeightChart, useWeightStore } from '@/features/weight';
 import { homeStyles } from '@/theme/styles/home';
 import { texts } from '@/texts';
 
 export default function HomeScreen() {
   const { entries } = useWeightStore();
+  const { profile } = useProfileStore();
+  const heightCm = profile.heightCm ?? null;
+  const goalType = profile.goalType ?? null;
+  const goalTargetKg = profile.goalTargetKg ?? null;
+  const goalRateKgPerWeek = profile.goalRateKgPerWeek ?? null;
+  const goalRangeMinKg = profile.goalRangeMinKg ?? null;
+  const goalRangeMaxKg = profile.goalRangeMaxKg ?? null;
   const stats = useMemo(() => {
     if (entries.length === 0) {
       return {
@@ -39,6 +47,47 @@ export default function HomeScreen() {
     };
   }, [entries]);
 
+  const bmiValue =
+    stats.current > 0 && heightCm
+      ? (stats.current / Math.pow(heightCm / 100, 2)).toFixed(1)
+      : null;
+
+  const goalLabel = (() => {
+    if (goalType === 'maintain') {
+      if (goalRangeMinKg != null && goalRangeMaxKg != null) {
+        return `${goalRangeMinKg.toFixed(1)}–${goalRangeMaxKg.toFixed(1)} kg`;
+      }
+      return texts.profile.values.notSet;
+    }
+    if (goalTargetKg != null) {
+      return `${goalTargetKg.toFixed(1)} kg`;
+    }
+    return texts.profile.values.notSet;
+  })();
+
+  const etaLabel = (() => {
+    if (!goalRateKgPerWeek || goalRateKgPerWeek <= 0) {
+      return texts.profile.values.notSet;
+    }
+    if (goalType === 'maintain') {
+      if (goalRangeMinKg != null && goalRangeMaxKg != null) {
+        if (stats.current >= goalRangeMinKg && stats.current <= goalRangeMaxKg) {
+          return texts.profile.values.inRange;
+        }
+        const target =
+          stats.current < goalRangeMinKg ? goalRangeMinKg : goalRangeMaxKg;
+        const weeks = Math.ceil(Math.abs(stats.current - target) / goalRateKgPerWeek);
+        return `${weeks} wk`;
+      }
+      return texts.profile.values.notSet;
+    }
+    if (goalTargetKg != null && goalType) {
+      const weeks = Math.ceil(Math.abs(stats.current - goalTargetKg) / goalRateKgPerWeek);
+      return `${weeks} wk`;
+    }
+    return texts.profile.values.notSet;
+  })();
+
   return (
     <SafeAreaView style={homeStyles.screen} edges={['top', 'left', 'right']}>
       <View style={homeStyles.orbLarge} />
@@ -51,9 +100,19 @@ export default function HomeScreen() {
 
         <View style={homeStyles.heroCard}>
           <Text style={homeStyles.heroLabel}>{texts.home.currentWeight}</Text>
-          <View style={homeStyles.heroRow}>
-            <Text style={homeStyles.heroValue}>{stats.current.toFixed(1)}</Text>
-            <Text style={homeStyles.heroUnit}>{texts.home.units.kg}</Text>
+          <View style={homeStyles.heroTopRow}>
+            <View style={homeStyles.heroRow}>
+              <Text style={homeStyles.heroValue}>{stats.current.toFixed(1)}</Text>
+              <Text style={homeStyles.heroUnit}>{texts.home.units.kg}</Text>
+            </View>
+            <View style={homeStyles.heroMetaStack}>
+              <Text style={homeStyles.heroMetaLabel}>{texts.home.goal}</Text>
+              <Text style={homeStyles.heroMetaValue}>{goalLabel}</Text>
+              <Text style={homeStyles.heroMetaLabel}>{texts.home.eta}</Text>
+              <Text style={homeStyles.heroMetaValue}>{etaLabel}</Text>
+              <Text style={homeStyles.heroMetaLabel}>{texts.home.bmi}</Text>
+              <Text style={homeStyles.heroMetaValue}>{bmiValue ?? texts.profile.values.notSet}</Text>
+            </View>
           </View>
           <View style={homeStyles.heroMetaRow}>
             <Text style={homeStyles.heroMeta}>{stats.trendLabel}</Text>

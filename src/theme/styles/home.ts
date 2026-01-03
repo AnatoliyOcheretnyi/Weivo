@@ -68,6 +68,26 @@ export const homeStyles = StyleSheet.create({
     gap: spacing.lg,
     marginTop: spacing.xl,
   },
+  heroTopRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
+  },
+  heroMetaStack: {
+    alignItems: 'flex-end',
+    gap: spacing.sm,
+  },
+  heroMetaLabel: {
+    fontSize: fontSizes.xs,
+    color: colors.creamHint,
+    textTransform: 'uppercase',
+    letterSpacing: letterSpacings.md,
+  },
+  heroMetaValue: {
+    fontSize: fontSizes.lg,
+    color: colors.highlight,
+    fontFamily: fontFamilies.mono,
+  },
   heroValue: {
     fontSize: fontSizes.displayXl,
     color: colors.highlight,

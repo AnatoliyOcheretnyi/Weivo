@@ -78,18 +78,28 @@ export default function ProfileEditScreen() {
     if (!canSave) {
       return;
     }
-    updateProfile({
+    const nextProfile = {
       birthDateISO: birthDate ? birthDate.toISOString() : undefined,
       heightCm: heightCm ? Number(heightCm) : undefined,
-      goalTargetKg: goalTarget ? Number(goalTarget) : undefined,
-      goalRateKgPerWeek: goalRate ? Number(goalRate) : undefined,
-      goalRangeMinKg: goalRangeMin ? Number(goalRangeMin) : undefined,
-      goalRangeMaxKg: goalRangeMax ? Number(goalRangeMax) : undefined,
       goalType,
       sex,
       activityLevel,
       units,
-    });
+      goalTargetKg: goalTarget ? Number(goalTarget) : undefined,
+      goalRateKgPerWeek: goalRate ? Number(goalRate) : undefined,
+      goalRangeMinKg: goalRangeMin ? Number(goalRangeMin) : undefined,
+      goalRangeMaxKg: goalRangeMax ? Number(goalRangeMax) : undefined,
+    };
+
+    if (goalType === 'maintain') {
+      nextProfile.goalTargetKg = undefined;
+      nextProfile.goalRateKgPerWeek = undefined;
+    } else {
+      nextProfile.goalRangeMinKg = undefined;
+      nextProfile.goalRangeMaxKg = undefined;
+    }
+
+    updateProfile(nextProfile);
     router.back();
   };
 
