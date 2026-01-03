@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 
-import { dimensions } from '../dimensions';
-import { spacing } from '../spacing';
+import { dimensions } from '@/theme/dimensions';
+import { spacing } from '@/theme/spacing';
 
 export const parallaxScrollViewStyles = StyleSheet.create({
   container: {

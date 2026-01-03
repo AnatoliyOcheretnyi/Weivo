@@ -6,7 +6,7 @@ import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { themeColors } from '@/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { collapsibleStyles } from '@/theme/styles/collapsible';
+import { collapsibleStyles } from './collapsible.styles';
 
 export function Collapsible({ children, title }: PropsWithChildren & { title: string }) {
   const [isOpen, setIsOpen] = useState(false);

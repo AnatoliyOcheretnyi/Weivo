@@ -5,7 +5,7 @@ import { useRouter } from 'expo-router';
 
 import { useWeightStore } from '@/features/weight';
 import type { Mood } from '@/features/weight';
-import { modalStyles } from '@/theme/styles/modal';
+import { modalStyles } from './modal.styles';
 import { colors } from '@/theme';
 import { texts } from '@/texts';
 

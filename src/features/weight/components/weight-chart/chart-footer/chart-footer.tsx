@@ -1,7 +1,7 @@
 import { Text, View } from 'react-native';
 
 import type { ChartFooterProps } from './types';
-import { chartFooterStyles } from '@/theme/styles/weight-chart/chart-footer';
+import { chartFooterStyles } from './chart-footer.styles';
 import { texts } from '@/texts';
 import { formatShortDate } from '../utils';
 

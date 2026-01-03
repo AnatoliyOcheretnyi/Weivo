@@ -1,13 +1,13 @@
 import { StyleSheet } from 'react-native';
 
-import { colors } from '../colors';
-import { dimensions } from '../dimensions';
-import { fontSizes, letterSpacings } from '../typography';
-import { radii } from '../radii';
-import { shadows } from '../shadows';
-import { spacing } from '../spacing';
+import { colors } from '@/theme/colors';
+import { dimensions } from '@/theme/dimensions';
+import { fontSizes, letterSpacings } from '@/theme/typography';
+import { radii } from '@/theme/radii';
+import { shadows } from '@/theme/shadows';
+import { spacing } from '@/theme/spacing';
 
-export const profileEditStyles = StyleSheet.create({
+export const modalStyles = StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: colors.cream,
@@ -34,19 +34,10 @@ export const profileEditStyles = StyleSheet.create({
     textTransform: 'uppercase',
     letterSpacing: letterSpacings.lg,
   },
-  section: {
-    marginTop: spacing.giant,
-    gap: spacing.xl,
-  },
-  label: {
-    fontSize: fontSizes.sm,
-    textTransform: 'uppercase',
-    letterSpacing: letterSpacings.md,
-    color: colors.inkSoft,
-  },
   inputRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginTop: spacing.giant,
     paddingVertical: spacing.xxl,
     paddingHorizontal: spacing.xxxl,
     backgroundColor: colors.white,
@@ -54,59 +45,38 @@ export const profileEditStyles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    fontSize: fontSizes.lg,
+    fontSize: fontSizes.input,
     color: colors.ink,
   },
   unit: {
-    fontSize: fontSizes.md,
+    fontSize: fontSizes.xl,
     color: colors.inkSoft,
   },
-  segmentedRow: {
-    flexDirection: 'row',
-    gap: spacing.md,
-  },
-  segment: {
-    flex: 1,
-    alignItems: 'center',
-    paddingVertical: spacing.xxl,
-    borderRadius: radii.md,
-    backgroundColor: colors.cream,
-  },
-  segmentActive: {
-    backgroundColor: colors.ink,
-  },
-  segmentText: {
+  sectionLabel: {
+    marginTop: spacing.giant,
     fontSize: fontSizes.sm,
-    color: colors.inkMuted,
     textTransform: 'uppercase',
-    letterSpacing: letterSpacings.sm,
+    letterSpacing: letterSpacings.md,
+    color: colors.inkSoft,
   },
-  segmentTextActive: {
-    color: colors.highlight,
-  },
-  chipsRow: {
+  moodRow: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: spacing.md,
+    gap: spacing.xxl,
+    marginTop: spacing.xxl,
   },
-  helper: {
-    marginTop: spacing.sm,
-    fontSize: fontSizes.sm,
-    color: colors.inkMuted,
-    letterSpacing: letterSpacings.sm,
-  },
-  rangeCurrent: {
+  moodButton: {
+    width: dimensions.modal.moodButton,
+    height: dimensions.modal.moodButton,
+    borderRadius: dimensions.modal.moodButtonRadius,
+    backgroundColor: colors.cream,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: spacing.lg,
-    borderRadius: radii.full,
-    backgroundColor: colors.cream,
   },
-  rangeCurrentText: {
-    fontSize: fontSizes.sm,
-    color: colors.inkMuted,
-    textTransform: 'uppercase',
-    letterSpacing: letterSpacings.sm,
+  moodButtonActive: {
+    backgroundColor: colors.ink,
+  },
+  moodLabel: {
+    fontSize: fontSizes.xxl,
   },
   actionRow: {
     flexDirection: 'row',
@@ -126,6 +96,9 @@ export const profileEditStyles = StyleSheet.create({
     paddingHorizontal: spacing.xxlLarge,
     borderRadius: radii.md,
     backgroundColor: colors.ink,
+  },
+  saveButtonDisabled: {
+    backgroundColor: colors.inkAccent,
   },
   saveText: {
     color: colors.highlight,

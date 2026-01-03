@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Swipeable } from 'react-native-gesture-handler';
 
 import { useWeightStore } from '@/features/weight';
-import { entriesStyles } from '@/theme/styles/entries';
+import { entriesStyles } from './explore.styles';
 import { texts } from '@/texts';
 
 const moodMap = {

@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-import { spacing } from '../spacing';
+import { spacing } from '@/theme/spacing';
 
 export const collapsibleStyles = StyleSheet.create({
   heading: {

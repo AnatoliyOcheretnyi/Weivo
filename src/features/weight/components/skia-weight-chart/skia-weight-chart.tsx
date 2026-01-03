@@ -23,8 +23,8 @@ import { ChartGrid } from '../weight-chart/chart-grid';
 import { ChartHeader } from '../weight-chart/chart-header';
 import { getDaysSpan, getWeightStats } from '../weight-chart/utils';
 import { colors, dimensions } from '@/theme';
-import { skiaWeightChartStyles } from '@/theme/styles/weight-chart/skia-weight-chart';
-import { weightChartStyles } from '@/theme/styles/weight-chart/weight-chart';
+import { skiaWeightChartStyles } from './skia-weight-chart.styles';
+import { weightChartStyles } from '../weight-chart/weight-chart.styles';
 import type { SkiaWeightChartProps } from './types';
 import { clamp, exaggerateNormalized } from './utils';
 

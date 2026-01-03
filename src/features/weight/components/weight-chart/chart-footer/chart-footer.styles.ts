@@ -1,8 +1,8 @@
 import { StyleSheet } from 'react-native';
 
-import { colors } from '../../colors';
-import { fontSizes, letterSpacings } from '../../typography';
-import { spacing } from '../../spacing';
+import { colors } from '@/theme/colors';
+import { fontSizes, letterSpacings } from '@/theme/typography';
+import { spacing } from '@/theme/spacing';
 
 export const chartFooterStyles = StyleSheet.create({
   footerRow: {

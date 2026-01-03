@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 
-import { fontSizes, lineHeights } from '../typography';
-import { spacing } from '../spacing';
+import { fontSizes, lineHeights } from '@/theme/typography';
+import { spacing } from '@/theme/spacing';
 
 export const helloWaveStyles = StyleSheet.create({
   wave: {

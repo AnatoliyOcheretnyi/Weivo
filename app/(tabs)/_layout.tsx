@@ -5,7 +5,7 @@ import { Pressable, Text, View } from 'react-native';
 import { HapticTab } from '@/components/haptic-tab';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { colors, dimensions } from '@/theme';
-import { tabLayoutStyles } from '@/theme/styles/tab-layout';
+import { tabLayoutStyles } from './_layout.styles';
 import { texts } from '@/texts';
 
 export default function TabLayout() {

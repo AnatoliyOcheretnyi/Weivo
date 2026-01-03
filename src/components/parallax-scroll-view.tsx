@@ -10,7 +10,7 @@ import { ThemedView } from '@/components/themed-view';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { dimensions } from '@/theme';
-import { parallaxScrollViewStyles } from '@/theme/styles/parallax-scroll-view';
+import { parallaxScrollViewStyles } from './parallax-scroll-view.styles';
 
 type Props = PropsWithChildren<{
   headerImage: ReactElement;

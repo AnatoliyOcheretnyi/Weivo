@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useProfileStore } from '@/features/profile';
 import { SkiaWeightChart, useWeightStore } from '@/features/weight';
-import { homeStyles } from '@/theme/styles/home';
+import { homeStyles } from './index.styles';
 import { texts } from '@/texts';
 
 export default function HomeScreen() {

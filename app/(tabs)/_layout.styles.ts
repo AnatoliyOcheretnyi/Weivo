@@ -1,8 +1,8 @@
 import { StyleSheet } from 'react-native';
 
-import { colors } from '../colors';
-import { dimensions } from '../dimensions';
-import { shadows } from '../shadows';
+import { colors } from '@/theme/colors';
+import { dimensions } from '@/theme/dimensions';
+import { shadows } from '@/theme/shadows';
 
 export const tabLayoutStyles = StyleSheet.create({
   tabBar: {

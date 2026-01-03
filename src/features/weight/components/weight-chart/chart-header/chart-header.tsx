@@ -1,7 +1,7 @@
 import { Text, View } from 'react-native';
 
 import type { ChartHeaderProps } from './types';
-import { chartHeaderStyles } from '@/theme/styles/weight-chart/chart-header';
+import { chartHeaderStyles } from './chart-header.styles';
 import { texts } from '@/texts';
 
 export function ChartHeader({ min, max, totalDays }: ChartHeaderProps) {

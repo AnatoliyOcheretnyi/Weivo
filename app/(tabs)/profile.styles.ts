@@ -1,9 +1,9 @@
 import { StyleSheet } from 'react-native';
 
-import { colors } from '../colors';
-import { radii } from '../radii';
-import { spacing } from '../spacing';
-import { fontSizes, letterSpacings } from '../typography';
+import { colors } from '@/theme/colors';
+import { radii } from '@/theme/radii';
+import { spacing } from '@/theme/spacing';
+import { fontSizes, letterSpacings } from '@/theme/typography';
 
 export const profileStyles = StyleSheet.create({
   screen: {

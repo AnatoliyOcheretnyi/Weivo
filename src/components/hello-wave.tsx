@@ -1,6 +1,6 @@
 import Animated from 'react-native-reanimated';
 
-import { helloWaveStyles } from '@/theme/styles/hello-wave';
+import { helloWaveStyles } from './hello-wave.styles';
 import { texts } from '@/texts';
 
 export function HelloWave() {

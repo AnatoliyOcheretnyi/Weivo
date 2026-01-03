@@ -1,9 +1,9 @@
 import { StyleSheet } from 'react-native';
 
-import { colors } from '../../colors';
-import { dimensions } from '../../dimensions';
-import { fontSizes } from '../../typography';
-import { spacing } from '../../spacing';
+import { colors } from '@/theme/colors';
+import { dimensions } from '@/theme/dimensions';
+import { fontSizes } from '@/theme/typography';
+import { spacing } from '@/theme/spacing';
 
 export const chartGridStyles = StyleSheet.create({
   grid: {

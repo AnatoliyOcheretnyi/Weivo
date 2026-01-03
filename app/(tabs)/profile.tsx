@@ -8,7 +8,7 @@ import { useProfileStore } from '@/features/profile';
 import { useWeightStore } from '@/features/weight';
 import { texts } from '@/texts';
 import { colors } from '@/theme';
-import { profileStyles } from '@/theme/styles/profile';
+import { profileStyles } from './profile.styles';
 
 export default function ProfileScreen() {
   const { entries } = useWeightStore();

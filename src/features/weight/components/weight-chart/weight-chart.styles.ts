@@ -1,10 +1,10 @@
 import { StyleSheet } from 'react-native';
 
-import { colors } from '../../colors';
-import { dimensions } from '../../dimensions';
-import { radii } from '../../radii';
-import { shadows } from '../../shadows';
-import { spacing } from '../../spacing';
+import { colors } from '@/theme/colors';
+import { dimensions } from '@/theme/dimensions';
+import { radii } from '@/theme/radii';
+import { shadows } from '@/theme/shadows';
+import { spacing } from '@/theme/spacing';
 
 export const weightChartStyles = StyleSheet.create({
   card: {

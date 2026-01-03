@@ -7,7 +7,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { useProfileStore } from '@/features/profile';
 import { useWeightStore } from '@/features/weight';
 import type { ActivityLevel, GoalType, Sex, Units } from '@/features/profile';
-import { profileEditStyles } from '@/theme/styles/profile-edit';
+import { profileEditStyles } from './profile-edit.styles';
 import { texts } from '@/texts';
 
 export default function ProfileEditScreen() {

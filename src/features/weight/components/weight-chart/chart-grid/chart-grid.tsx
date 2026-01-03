@@ -1,7 +1,7 @@
 import { Text, View } from 'react-native';
 
 import type { ChartGridProps } from './types';
-import { chartGridStyles } from '@/theme/styles/weight-chart/chart-grid';
+import { chartGridStyles } from './chart-grid.styles';
 
 export function ChartGrid({ height, labels }: ChartGridProps) {
   const labelHeight = 12;

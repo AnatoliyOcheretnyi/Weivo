@@ -1,10 +1,10 @@
 import { StyleSheet } from 'react-native';
 
-import { colors } from '../colors';
-import { dimensions } from '../dimensions';
-import { radii } from '../radii';
-import { spacing } from '../spacing';
-import { fontFamilies, fontSizes, letterSpacings } from '../typography';
+import { colors } from '@/theme/colors';
+import { dimensions } from '@/theme/dimensions';
+import { radii } from '@/theme/radii';
+import { spacing } from '@/theme/spacing';
+import { fontFamilies, fontSizes, letterSpacings } from '@/theme/typography';
 
 export const homeStyles = StyleSheet.create({
   screen: {

@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 
-import { colors } from '../colors';
-import { fontSizes, lineHeights } from '../typography';
+import { colors } from '@/theme/colors';
+import { fontSizes, lineHeights } from '@/theme/typography';
 
 export const themedTextStyles = StyleSheet.create({
   default: {
