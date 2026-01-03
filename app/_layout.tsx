@@ -4,9 +4,9 @@ import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { Provider as JotaiProvider } from 'jotai';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { WeightProvider } from '@/features/weight';
 import { texts } from '@/texts';
 
 export const unstable_settings = {
@@ -20,7 +20,7 @@ export default function RootLayout() {
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <SafeAreaProvider>
         <GestureHandlerRootView style={{ flex: 1 }}>
-          <WeightProvider>
+          <JotaiProvider>
             <Stack>
               <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
               <Stack.Screen
@@ -33,7 +33,7 @@ export default function RootLayout() {
               />
             </Stack>
             <StatusBar style="auto" />
-          </WeightProvider>
+          </JotaiProvider>
         </GestureHandlerRootView>
       </SafeAreaProvider>
     </ThemeProvider>

@@ -1,5 +1,5 @@
-import { createContext, useCallback, useContext, useMemo, useState } from 'react';
-import type { ReactNode } from 'react';
+import { atom, useAtomValue, useSetAtom } from 'jotai';
+import { useMemo } from 'react';
 
 import { weightEntries } from './weight-mock';
 import type { Mood, WeightEntry } from './weight-mock';
@@ -12,44 +12,41 @@ type WeightStore = {
   clearEntries: () => void;
 };
 
-const WeightContext = createContext<WeightStore | null>(null);
+const entriesAtom = atom<WeightEntry[]>(weightStorage.loadEntries() ?? weightEntries);
 
-export function WeightProvider({ children }: { children: ReactNode }) {
-  const [entries, setEntries] = useState<WeightEntry[]>(
-    () => weightStorage.loadEntries() ?? weightEntries
-  );
+const addEntryAtom = atom(null, (get, set, payload: { weightKg: number; mood?: Mood }) => {
+  const entry: WeightEntry = {
+    dateISO: new Date().toISOString(),
+    weightKg: payload.weightKg,
+    mood: payload.mood,
+  };
+  const next = weightStorage.addEntry(entry, get(entriesAtom));
+  set(entriesAtom, next);
+});
 
-  const addEntry = useCallback((weightKg: number, mood?: Mood) => {
-    setEntries((prev) => {
-      const entry = {
-        dateISO: new Date().toISOString(),
-        weightKg,
-        mood,
-      };
-      return weightStorage.addEntry(entry, prev);
-    });
-  }, []);
+const removeEntryAtom = atom(null, (get, set, dateISO: string) => {
+  const next = weightStorage.removeEntry(dateISO, get(entriesAtom));
+  set(entriesAtom, next);
+});
 
-  const removeEntry = useCallback((dateISO: string) => {
-    setEntries((prev) => weightStorage.removeEntry(dateISO, prev));
-  }, []);
-
-  const clearEntries = useCallback(() => {
-    setEntries(() => weightStorage.clearEntries());
-  }, []);
-
-  const value = useMemo(
-    () => ({ entries, addEntry, removeEntry, clearEntries }),
-    [entries, addEntry, removeEntry, clearEntries]
-  );
-
-  return <WeightContext.Provider value={value}>{children}</WeightContext.Provider>;
-}
+const clearEntriesAtom = atom(null, (_get, set) => {
+  const next = weightStorage.clearEntries();
+  set(entriesAtom, next);
+});
 
 export function useWeightStore() {
-  const context = useContext(WeightContext);
-  if (!context) {
-    throw new Error('useWeightStore must be used inside WeightProvider');
-  }
-  return context;
+  const entries = useAtomValue(entriesAtom);
+  const addEntry = useSetAtom(addEntryAtom);
+  const removeEntry = useSetAtom(removeEntryAtom);
+  const clearEntries = useSetAtom(clearEntriesAtom);
+
+  return useMemo<WeightStore>(
+    () => ({
+      entries,
+      addEntry: (weightKg, mood) => addEntry({ weightKg, mood }),
+      removeEntry,
+      clearEntries,
+    }),
+    [entries, addEntry, removeEntry, clearEntries]
+  );
 }
