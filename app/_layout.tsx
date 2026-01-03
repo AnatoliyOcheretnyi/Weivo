@@ -22,10 +22,18 @@ export default function RootLayout() {
         <GestureHandlerRootView style={{ flex: 1 }}>
           <JotaiProvider>
             <Stack>
-              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              <Stack.Screen
-                name="modal"
-                options={{
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="profile-edit"
+              options={{
+                presentation: 'modal',
+                title: texts.profileEdit.title,
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="modal"
+              options={{
                   presentation: 'modal',
                   title: texts.modal.addEntryTitle,
                   headerShown: false,

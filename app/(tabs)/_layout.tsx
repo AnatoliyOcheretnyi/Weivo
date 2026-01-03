@@ -48,7 +48,16 @@ export default function TabLayout() {
         options={{
           title: texts.tabs.explore,
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={dimensions.tabBar.iconSize} name="paperplane.fill" color={color} />
+            <IconSymbol size={dimensions.tabBar.iconSize} name="clock" color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: texts.tabs.profile,
+          tabBarIcon: ({ color }) => (
+            <IconSymbol size={dimensions.tabBar.iconSize} name="person.fill" color={color} />
           ),
         }}
       />
