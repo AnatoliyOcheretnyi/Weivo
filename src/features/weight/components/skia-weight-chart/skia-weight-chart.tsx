@@ -21,7 +21,7 @@ import {
 import { ChartFooter } from '../weight-chart/chart-footer';
 import { ChartGrid } from '../weight-chart/chart-grid';
 import { ChartHeader } from '../weight-chart/chart-header';
-import { getWeightStats } from '../weight-chart/utils';
+import { getDaysSpan, getWeightStats } from '../weight-chart/utils';
 import { colors, dimensions } from '@/theme';
 import { skiaWeightChartStyles } from '@/theme/styles/weight-chart/skia-weight-chart';
 import { weightChartStyles } from '@/theme/styles/weight-chart/weight-chart';
@@ -29,6 +29,9 @@ import type { SkiaWeightChartProps } from './types';
 import { clamp, exaggerateNormalized } from './utils';
 
 export function SkiaWeightChart({ data }: SkiaWeightChartProps) {
+  if (data.length === 0) {
+    return null;
+  }
   const [frameWidth, setFrameWidth] = useState(0);
   const translateX = useSharedValue(0);
   const startTranslateX = useSharedValue(0);
@@ -40,6 +43,7 @@ export function SkiaWeightChart({ data }: SkiaWeightChartProps) {
   const hasAnimatedIntro = useRef(false);
 
   const { min, max, first, last } = useMemo(() => getWeightStats(data), [data]);
+  const totalDays = useMemo(() => getDaysSpan(data), [data]);
   const pointGap = dimensions.chart.barWidth + dimensions.chart.barGap;
   const totalWidth = Math.max(1, (data.length - 1) * pointGap);
   const weights = useMemo(() => data.map((entry) => entry.weightKg), [data]);
@@ -365,7 +369,7 @@ export function SkiaWeightChart({ data }: SkiaWeightChartProps) {
 
   return (
     <View style={weightChartStyles.card}>
-      <ChartHeader min={min} max={max} total={data.length} />
+      <ChartHeader min={min} max={max} totalDays={totalDays} />
 
       <View
         style={weightChartStyles.chartFrame}

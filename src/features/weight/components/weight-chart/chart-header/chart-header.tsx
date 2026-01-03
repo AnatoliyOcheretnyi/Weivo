@@ -4,12 +4,14 @@ import type { ChartHeaderProps } from './types';
 import { chartHeaderStyles } from '@/theme/styles/weight-chart/chart-header';
 import { texts } from '@/texts';
 
-export function ChartHeader({ min, max, total }: ChartHeaderProps) {
+export function ChartHeader({ min, max, totalDays }: ChartHeaderProps) {
   return (
     <View style={chartHeaderStyles.headerRow}>
       <View>
         <Text style={chartHeaderStyles.title}>{texts.chart.title}</Text>
-        <Text style={chartHeaderStyles.subtitle}>{total} {texts.chart.subtitleSuffix}</Text>
+        <Text style={chartHeaderStyles.subtitle}>
+          {totalDays} {texts.chart.subtitleSuffix}
+        </Text>
       </View>
       <View style={chartHeaderStyles.rangePill}>
         <Text style={chartHeaderStyles.rangeText}>

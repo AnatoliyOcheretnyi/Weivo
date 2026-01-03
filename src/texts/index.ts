@@ -30,7 +30,7 @@ export const texts = {
   },
   chart: {
     title: 'Weight Flow',
-    subtitleSuffix: 'entries - daily log',
+    subtitleSuffix: 'days - daily log',
     start: 'Start',
     latest: 'Latest',
     unit: 'kg',
@@ -41,6 +41,11 @@ export const texts = {
     dailyLog: 'Daily log',
     deltaZero: '0.0',
     unit: 'kg',
+    clearAll: 'Clear all',
+    clearAllTitle: 'Clear all entries?',
+    clearAllMessage: 'This will remove every saved weigh-in.',
+    clearAllConfirm: 'Clear',
+    clearAllCancel: 'Cancel',
   },
   symbols: {
     plus: '+',

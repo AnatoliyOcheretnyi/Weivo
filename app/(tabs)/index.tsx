@@ -9,6 +9,16 @@ import { texts } from '@/texts';
 export default function HomeScreen() {
   const { entries } = useWeightStore();
   const stats = useMemo(() => {
+    if (entries.length === 0) {
+      return {
+        min: 0,
+        max: 0,
+        current: 0,
+        delta: 0,
+        trendLabel: texts.home.trendingDown,
+        total: 0,
+      };
+    }
     let minValue = Number.POSITIVE_INFINITY;
     let maxValue = Number.NEGATIVE_INFINITY;
     for (const entry of entries) {

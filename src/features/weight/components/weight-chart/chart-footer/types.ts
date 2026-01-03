@@ -1,4 +1,4 @@
-import type { WeightEntry } from '../../../data/weight-mock';
+import type { WeightEntry } from '../../../data/types';
 
 export type ChartFooterProps = {
   first: WeightEntry;

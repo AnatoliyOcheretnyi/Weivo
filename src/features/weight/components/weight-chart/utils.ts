@@ -1,4 +1,4 @@
-import type { WeightEntry } from '../../data/weight-mock';
+import type { WeightEntry } from '../../data/types';
 import { dimensions } from '@/theme';
 
 type WeightStats = {
@@ -28,6 +28,26 @@ export const getWeightStats = (data: WeightEntry[]): WeightStats => {
     first: data[0],
     last: data[data.length - 1],
   };
+};
+
+const getUtcDayIndex = (dateISO: string) => {
+  const date = new Date(dateISO);
+  return Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+};
+
+export const getDaysSpan = (data: WeightEntry[]) => {
+  if (data.length === 0) {
+    return 0;
+  }
+  let minDay = getUtcDayIndex(data[0].dateISO);
+  let maxDay = minDay;
+  for (const entry of data) {
+    const dayIndex = getUtcDayIndex(entry.dateISO);
+    minDay = Math.min(minDay, dayIndex);
+    maxDay = Math.max(maxDay, dayIndex);
+  }
+  const days = Math.floor((maxDay - minDay) / (24 * 60 * 60 * 1000)) + 1;
+  return Math.max(days, 1);
 };
 
 export const getBarHeight = (weightKg: number, min: number, range: number, maxHeight: number) => {

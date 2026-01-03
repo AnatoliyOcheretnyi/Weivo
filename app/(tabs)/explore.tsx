@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { FlatList, Text, View } from 'react-native';
+import { Alert, FlatList, Pressable, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useWeightStore } from '@/features/weight';
@@ -21,8 +21,18 @@ const formatFullDate = (dateISO: string) =>
   });
 
 export default function EntriesScreen() {
-  const { entries } = useWeightStore();
+  const { entries, clearEntries } = useWeightStore();
   const data = useMemo(() => [...entries].reverse(), [entries]);
+  const handleClearAll = () => {
+    Alert.alert(
+      texts.entries.clearAllTitle,
+      texts.entries.clearAllMessage,
+      [
+        { text: texts.entries.clearAllCancel, style: 'cancel' },
+        { text: texts.entries.clearAllConfirm, style: 'destructive', onPress: clearEntries },
+      ]
+    );
+  };
 
   return (
     <SafeAreaView style={entriesStyles.screen} edges={['top', 'left', 'right']}>
@@ -33,8 +43,17 @@ export default function EntriesScreen() {
         showsVerticalScrollIndicator={false}
         ListHeaderComponent={
           <View style={entriesStyles.header}>
-            <Text style={entriesStyles.title}>{texts.entries.title}</Text>
-            <Text style={entriesStyles.subtitle}>{data.length} {texts.entries.recordsSuffix}</Text>
+            <View style={entriesStyles.headerRow}>
+              <View>
+                <Text style={entriesStyles.title}>{texts.entries.title}</Text>
+                <Text style={entriesStyles.subtitle}>
+                  {data.length} {texts.entries.recordsSuffix}
+                </Text>
+              </View>
+              <Pressable style={entriesStyles.clearButton} onPress={handleClearAll}>
+                <Text style={entriesStyles.clearText}>{texts.entries.clearAll}</Text>
+              </Pressable>
+            </View>
           </View>
         }
         renderItem={({ item, index }) => {

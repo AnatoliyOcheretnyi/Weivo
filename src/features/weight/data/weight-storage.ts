@@ -1,6 +1,6 @@
 import { createMMKV } from 'react-native-mmkv';
 
-import type { WeightEntry } from './weight-mock';
+import type { WeightEntry } from './types';
 
 const createStorage = () => {
   try {
@@ -35,6 +35,14 @@ export const weightStorage = {
     } catch {
       return null;
     }
+  },
+  initEntries(defaultEntries: WeightEntry[]) {
+    const existing = weightStorage.loadEntries();
+    if (existing && existing.length > 0) {
+      return existing;
+    }
+    weightStorage.saveEntries(defaultEntries);
+    return defaultEntries;
   },
   saveEntries(entries: WeightEntry[]) {
     if (!storage) {

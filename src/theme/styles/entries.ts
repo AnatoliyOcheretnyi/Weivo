@@ -19,6 +19,26 @@ export const entriesStyles = StyleSheet.create({
   header: {
     marginBottom: dimensions.explore.headerBottom,
   },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    gap: spacing.lg,
+  },
+  clearButton: {
+    borderRadius: radii.full,
+    borderWidth: 1,
+    borderColor: colors.creamLine,
+    backgroundColor: colors.creamLight,
+    paddingHorizontal: spacing.xxl,
+    paddingVertical: spacing.lg,
+  },
+  clearText: {
+    fontSize: fontSizes.sm,
+    color: colors.inkMuted,
+    textTransform: 'uppercase',
+    letterSpacing: letterSpacings.sm,
+  },
   title: {
     fontSize: fontSizes.displaySm,
     color: colors.ink,
