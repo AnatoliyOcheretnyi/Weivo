@@ -18,4 +18,5 @@ export type ProfileData = {
   units?: Units;
   language?: Language;
   theme?: ThemeMode;
+  onboardingComplete?: boolean;
 };
