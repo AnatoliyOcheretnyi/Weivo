@@ -1,16 +1,22 @@
-import { useMemo } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { useEffect, useMemo, useState } from 'react';
+import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useProfileStore } from '@/features/profile';
-import { GoalProgress, SkiaWeightChart, useGoalSegments, useWeightStore } from '@/features/weight';
+import {
+  GoalProgress,
+  SkiaWeightChart,
+  useGoalSegments,
+  useWeightStore,
+  type GoalSegment,
+} from '@/features/weight';
 import { useAppTheme } from '@/theme';
 import { createHomeStyles } from './index.styles';
 import { useTexts } from '@/i18n';
 
 export default function HomeScreen() {
   const { entries } = useWeightStore();
-  const { segments } = useGoalSegments();
+  const { segments, updateSegment, reconcileCompletion } = useGoalSegments();
   const { profile } = useProfileStore();
   const { texts } = useTexts();
   const { colors } = useAppTheme();
@@ -57,20 +63,80 @@ export default function HomeScreen() {
       ? (stats.current / Math.pow(heightCm / 100, 2)).toFixed(1)
       : null;
 
+  const [pendingSegmentId, setPendingSegmentId] = useState<string | null>(null);
+  const formatKg = (value: number) => {
+    const fixed = value.toFixed(1);
+    return fixed.endsWith('.0') ? fixed.slice(0, -2) : fixed;
+  };
+
+  const orderedSegments = useMemo(
+    () => [...segments].sort((a, b) => a.createdAtISO.localeCompare(b.createdAtISO)),
+    [segments]
+  );
+
   const activeSegment = useMemo(() => {
-    if (segments.length === 0 || stats.current <= 0) {
+    if (orderedSegments.length === 0 || stats.current <= 0) {
       return null;
     }
-    const ordered = [...segments].sort((a, b) => a.createdAtISO.localeCompare(b.createdAtISO));
-    const reachedTarget = (segment: { direction: string; targetKg: number }) =>
-      segment.direction === 'gain'
-        ? stats.current >= segment.targetKg
-        : stats.current <= segment.targetKg;
-    const next = ordered.find(
-      (segment) => !segment.completedAtISO && !reachedTarget(segment)
+    if (pendingSegmentId) {
+      return orderedSegments.find((segment) => segment.id === pendingSegmentId) ?? orderedSegments[0];
+    }
+    const nextIndex = orderedSegments.findIndex((segment) => !segment.completedAtISO);
+    const fallbackIndex = nextIndex === -1 ? orderedSegments.length - 1 : nextIndex;
+    const next = orderedSegments[fallbackIndex];
+    const weightIndex = orderedSegments.findIndex((segment) => {
+      const min = Math.min(segment.startKg, segment.targetKg);
+      const max = Math.max(segment.startKg, segment.targetKg);
+      return stats.current >= min && stats.current <= max;
+    });
+    const overshoot =
+      next.direction === 'gain'
+        ? stats.current < next.startKg - 1
+        : stats.current > next.startKg + 1;
+    if (overshoot && weightIndex !== -1) {
+      return orderedSegments[weightIndex];
+    }
+    return next;
+  }, [orderedSegments, pendingSegmentId, stats.current]);
+
+  useEffect(() => {
+    if (stats.current > 0) {
+      reconcileCompletion(stats.current);
+    }
+  }, [reconcileCompletion, stats.current]);
+
+  useEffect(() => {
+    if (orderedSegments.length === 0 || stats.current <= 0) {
+      return;
+    }
+    const reachedSegment = orderedSegments.find(
+      (segment) =>
+        !segment.completedAtISO &&
+        (segment.direction === 'gain'
+          ? stats.current >= segment.targetKg
+          : stats.current <= segment.targetKg)
     );
-    return next ?? ordered[ordered.length - 1];
-  }, [segments, stats.current]);
+    if (reachedSegment) {
+      setPendingSegmentId(reachedSegment.id);
+      return;
+    }
+    if (pendingSegmentId) {
+      setPendingSegmentId(null);
+    }
+  }, [orderedSegments, pendingSegmentId, stats.current]);
+
+  const handleSegmentComplete = () => {
+    if (!activeSegment || activeSegment.completedAtISO) {
+      setPendingSegmentId(null);
+      return;
+    }
+    const updated: GoalSegment = {
+      ...activeSegment,
+      completedAtISO: new Date().toISOString(),
+    };
+    updateSegment(updated);
+    setPendingSegmentId(null);
+  };
 
   const goalLabel = (() => {
     if (goalType === 'maintain') {
@@ -84,6 +150,18 @@ export default function HomeScreen() {
     }
     return texts.profile.values.notSet;
   })();
+
+  const handleProgressPress = () => {
+    if (!activeSegment) {
+      return;
+    }
+    const message = `${formatKg(activeSegment.startKg)} ${texts.home.units.kg} → ${formatKg(activeSegment.targetKg)} ${texts.home.units.kg}`;
+    const note = activeSegment.note?.trim();
+    Alert.alert(
+      texts.segments.detailTitle,
+      note ? `${message}\n\n${note}` : message
+    );
+  };
 
   const etaLabel = (() => {
     if (!goalRateKgPerWeek || goalRateKgPerWeek <= 0) {
@@ -149,17 +227,23 @@ export default function HomeScreen() {
             <Text style={homeStyles.statValue}>{stats.min.toFixed(1)}</Text>
             <Text style={homeStyles.statUnit}>{texts.home.units.kg}</Text>
           </View>
-          <View style={homeStyles.statCard}>
+          <Pressable
+            style={homeStyles.statCard}
+            onPress={handleProgressPress}
+            disabled={!activeSegment}
+          >
             {activeSegment ? (
               <GoalProgress
                 currentKg={stats.current}
                 startKg={activeSegment.startKg}
                 targetKg={activeSegment.targetKg}
+                showSuccess={pendingSegmentId === activeSegment.id}
+                onSuccessComplete={handleSegmentComplete}
               />
             ) : (
               <GoalProgress currentKg={0} startKg={0} targetKg={0} />
             )}
-          </View>
+          </Pressable>
           <View style={homeStyles.statCard}>
             <Text style={homeStyles.statLabel}>{texts.home.entries}</Text>
             <Text style={homeStyles.statValue}>{stats.total}</Text>

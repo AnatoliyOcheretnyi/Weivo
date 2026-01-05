@@ -3,13 +3,14 @@ import { Alert, FlatList, Pressable, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Swipeable } from 'react-native-gesture-handler';
 
-import { useWeightStore } from '@/features/weight';
+import { useGoalSegments, useWeightStore } from '@/features/weight';
 import { useAppTheme } from '@/theme';
 import { createEntriesStyles } from './explore.styles';
 import { useTexts } from '@/i18n';
 
 export default function EntriesScreen() {
   const { entries, clearEntries, removeEntry } = useWeightStore();
+  const { reconcileCompletion } = useGoalSegments();
   const { texts, locale } = useTexts();
   const { colors } = useAppTheme();
   const entriesStyles = useMemo(() => createEntriesStyles(colors), [colors]);
@@ -60,7 +61,15 @@ export default function EntriesScreen() {
           {
             text: texts.entries.deleteConfirm,
             style: 'destructive',
-            onPress: () => removeEntry(item.dateISO),
+            onPress: () => {
+              const nextEntries = entries.filter((entry) => entry.dateISO !== item.dateISO);
+              const nextCurrentKg =
+                nextEntries.length > 0
+                  ? nextEntries[nextEntries.length - 1].weightKg
+                  : null;
+              removeEntry(item.dateISO);
+              reconcileCompletion(nextCurrentKg);
+            },
           },
         ]
       );
