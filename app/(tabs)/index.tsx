@@ -3,7 +3,7 @@ import { ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useProfileStore } from '@/features/profile';
-import { SkiaWeightChart, useWeightStore } from '@/features/weight';
+import { GoalProgress, SkiaWeightChart, useWeightStore } from '@/features/weight';
 import { useAppTheme } from '@/theme';
 import { createHomeStyles } from './index.styles';
 import { useTexts } from '@/i18n';
@@ -134,9 +134,7 @@ export default function HomeScreen() {
             <Text style={homeStyles.statUnit}>{texts.home.units.kg}</Text>
           </View>
           <View style={homeStyles.statCard}>
-            <Text style={homeStyles.statLabel}>{texts.home.highest}</Text>
-            <Text style={homeStyles.statValue}>{stats.max.toFixed(1)}</Text>
-            <Text style={homeStyles.statUnit}>{texts.home.units.kg}</Text>
+            <GoalProgress currentKg={1.8} targetKg={5} />
           </View>
           <View style={homeStyles.statCard}>
             <Text style={homeStyles.statLabel}>{texts.home.entries}</Text>

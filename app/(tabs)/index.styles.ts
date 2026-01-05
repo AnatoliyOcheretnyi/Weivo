@@ -115,13 +115,15 @@ export const createHomeStyles = (colors: ThemeColors) =>
     },
     statsRow: {
       flexDirection: 'row',
-      gap: spacing.xxl,
+      gap: spacing.md,
     },
     statCard: {
       flex: 1,
       backgroundColor: colors.creamWarm,
-      borderRadius: radii.xl,
-      padding: spacing.xxxl,
+      borderRadius: radii.lg,
+      padding: spacing.xxl,
+      minHeight: 88,
+      justifyContent: 'center',
     },
     statLabel: {
       fontSize: fontSizes.xs,
