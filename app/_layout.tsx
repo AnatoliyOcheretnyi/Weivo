@@ -60,12 +60,22 @@ function RootLayoutContent() {
       return;
     }
     const isOnboardingRoute = segments[0] === 'onboarding';
-    if (!profile.onboardingComplete && !isOnboardingRoute) {
+    const hasProfileData = Boolean(
+      profile.birthDateISO ||
+        profile.heightCm ||
+        profile.sex ||
+        profile.goalType ||
+        profile.goalTargetKg ||
+        profile.goalRangeMinKg ||
+        profile.goalRangeMaxKg ||
+        profile.activityLevel
+    );
+    if (!profile.onboardingComplete && !hasProfileData && !isOnboardingRoute) {
       requestAnimationFrame(() => router.replace('/onboarding'));
       return;
     }
     if (profile.onboardingComplete && isOnboardingRoute) {
-      requestAnimationFrame(() => router.replace('/(tabs)'));
+      requestAnimationFrame(() => router.replace('/'));
     }
   }, [profile.onboardingComplete, rootState?.key, router, segments]);
 
