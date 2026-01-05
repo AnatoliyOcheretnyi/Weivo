@@ -137,7 +137,10 @@ export default function ProfileScreen() {
 
   return (
     <SafeAreaView style={profileStyles.screen} edges={['top', 'left', 'right']}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={profileStyles.content}
+      >
         <View style={profileStyles.headerRow}>
           <View style={profileStyles.headerContent}>
             <Text style={profileStyles.title}>{texts.profile.title}</Text>

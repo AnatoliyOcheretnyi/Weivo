@@ -10,7 +10,10 @@ export const createProfileStyles = (colors: ThemeColors) =>
     screen: {
       flex: 1,
       backgroundColor: colors.cream,
-      padding: spacing.mega,
+    },
+    content: {
+      paddingHorizontal: spacing.mega,
+      paddingTop: spacing.mega,
     },
     headerRow: {
       flexDirection: 'row',
