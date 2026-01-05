@@ -6,13 +6,14 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ExternalLink } from '@/components/external-link';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useProfileStore } from '@/features/profile';
-import { useWeightStore } from '@/features/weight';
+import { GoalSegmentTrack, useGoalSegments, useWeightStore } from '@/features/weight';
 import { localeLabels, useTexts } from '@/i18n';
 import { useAppTheme } from '@/theme';
 import { createProfileStyles } from './profile.styles';
 
 export default function ProfileScreen() {
   const { entries } = useWeightStore();
+  const { segments } = useGoalSegments();
   const { profile } = useProfileStore();
   const router = useRouter();
   const { texts, locale } = useTexts();
@@ -247,6 +248,20 @@ export default function ProfileScreen() {
               <Text style={profileStyles.label}>{texts.profile.fields.prediction}</Text>
               <Text style={profileStyles.value}>{predictionLabel}</Text>
             </View>
+          </View>
+        </View>
+
+        <View style={profileStyles.section}>
+          <View style={profileStyles.sectionHeader}>
+            <Text style={profileStyles.sectionTitle}>{texts.profile.sections.segments}</Text>
+            <Pressable
+              style={profileStyles.sectionAction}
+              onPress={() => router.push('/segment-create')}>
+              <Text style={profileStyles.sectionActionText}>{texts.profile.actions.addSegment}</Text>
+            </Pressable>
+          </View>
+          <View style={profileStyles.card}>
+            <GoalSegmentTrack segments={segments} currentKg={latestWeight ?? undefined} />
           </View>
         </View>
 

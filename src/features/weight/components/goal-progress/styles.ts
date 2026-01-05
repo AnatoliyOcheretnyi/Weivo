@@ -17,20 +17,10 @@ export const createGoalProgressStyles = (colors: ThemeColors) =>
       alignItems: 'center',
       justifyContent: 'center',
     },
-    centerRow: {
-      flexDirection: 'row',
-      alignItems: 'baseline',
-      gap: spacing.xs,
-    },
     centerText: {
       fontSize: fontSizes.lg,
       color: colors.ink,
       fontFamily: fontFamilies.display,
       letterSpacing: letterSpacings.sm,
-    },
-    centerUnit: {
-      fontSize: fontSizes.xs,
-      color: colors.inkMuted,
-      letterSpacing: letterSpacings.xs,
     },
   });

@@ -10,10 +10,12 @@ import { createGoalProgressStyles } from './styles';
 const clamp = (value: number, min: number, max: number) =>
   Math.min(max, Math.max(min, value));
 
-export function GoalProgress({ currentKg, targetKg }: GoalProgressProps) {
+export function GoalProgress({ currentKg, startKg, targetKg }: GoalProgressProps) {
   const { colors } = useAppTheme();
   const styles = useMemo(() => createGoalProgressStyles(colors), [colors]);
-  const progress = targetKg > 0 ? clamp(currentKg / targetKg, 0, 1) : 0;
+  const totalDelta = Math.abs(startKg - targetKg);
+  const progressKg = clamp(Math.abs(currentKg - startKg), 0, totalDelta);
+  const progress = totalDelta > 0 ? clamp(progressKg / totalDelta, 0, 1) : 0;
   const size = 84;
   const stroke = 8;
   const inset = stroke / 2;
@@ -37,6 +39,12 @@ export function GoalProgress({ currentKg, targetKg }: GoalProgressProps) {
     return path;
   }, [inset, size, stroke, progressValue]);
 
+  const formatKg = (value: number) => {
+    const fixed = value.toFixed(1);
+    return fixed.endsWith('.0') ? fixed.slice(0, -2) : fixed;
+  };
+  const progressLabel = totalDelta > 0 ? `${formatKg(progressKg)}/${formatKg(totalDelta)}kg` : '--';
+
   return (
     <View style={styles.container}>
       <View style={styles.canvasWrap}>
@@ -58,10 +66,7 @@ export function GoalProgress({ currentKg, targetKg }: GoalProgressProps) {
           />
         </Canvas>
         <View style={{ position: 'absolute', alignItems: 'center' }}>
-          <View style={styles.centerRow}>
-            <Text style={styles.centerText}>{currentKg.toFixed(1)}</Text>
-            <Text style={styles.centerUnit}>/ {targetKg.toFixed(0)}kg</Text>
-          </View>
+          <Text style={styles.centerText}>{progressLabel}</Text>
         </View>
       </View>
     </View>

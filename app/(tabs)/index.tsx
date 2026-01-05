@@ -3,13 +3,14 @@ import { ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useProfileStore } from '@/features/profile';
-import { GoalProgress, SkiaWeightChart, useWeightStore } from '@/features/weight';
+import { GoalProgress, SkiaWeightChart, useGoalSegments, useWeightStore } from '@/features/weight';
 import { useAppTheme } from '@/theme';
 import { createHomeStyles } from './index.styles';
 import { useTexts } from '@/i18n';
 
 export default function HomeScreen() {
   const { entries } = useWeightStore();
+  const { segments } = useGoalSegments();
   const { profile } = useProfileStore();
   const { texts } = useTexts();
   const { colors } = useAppTheme();
@@ -55,6 +56,21 @@ export default function HomeScreen() {
     stats.current > 0 && heightCm
       ? (stats.current / Math.pow(heightCm / 100, 2)).toFixed(1)
       : null;
+
+  const activeSegment = useMemo(() => {
+    if (segments.length === 0 || stats.current <= 0) {
+      return null;
+    }
+    const ordered = [...segments].sort((a, b) => a.createdAtISO.localeCompare(b.createdAtISO));
+    const reachedTarget = (segment: { direction: string; targetKg: number }) =>
+      segment.direction === 'gain'
+        ? stats.current >= segment.targetKg
+        : stats.current <= segment.targetKg;
+    const next = ordered.find(
+      (segment) => !segment.completedAtISO && !reachedTarget(segment)
+    );
+    return next ?? ordered[ordered.length - 1];
+  }, [segments, stats.current]);
 
   const goalLabel = (() => {
     if (goalType === 'maintain') {
@@ -134,7 +150,15 @@ export default function HomeScreen() {
             <Text style={homeStyles.statUnit}>{texts.home.units.kg}</Text>
           </View>
           <View style={homeStyles.statCard}>
-            <GoalProgress currentKg={1.8} targetKg={5} />
+            {activeSegment ? (
+              <GoalProgress
+                currentKg={stats.current}
+                startKg={activeSegment.startKg}
+                targetKg={activeSegment.targetKg}
+              />
+            ) : (
+              <GoalProgress currentKg={0} startKg={0} targetKg={0} />
+            )}
           </View>
           <View style={homeStyles.statCard}>
             <Text style={homeStyles.statLabel}>{texts.home.entries}</Text>

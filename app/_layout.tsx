@@ -29,6 +29,22 @@ function RootStack() {
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen name="onboarding/index" options={{ headerShown: false }} />
       <Stack.Screen
+        name="segment-create/index"
+        options={{
+          presentation: 'modal',
+          title: texts.segments.createTitle,
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="segment-detail/index"
+        options={{
+          presentation: 'modal',
+          title: texts.segments.detailTitle,
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
         name="profile-edit/index"
         options={{
           presentation: 'modal',

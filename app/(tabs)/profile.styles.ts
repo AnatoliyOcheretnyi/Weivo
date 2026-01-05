@@ -52,6 +52,22 @@ export const createProfileStyles = (colors: ThemeColors) =>
       marginTop: spacing.xMassive,
       gap: spacing.xl,
     },
+    sectionHeader: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    sectionAction: {
+      paddingHorizontal: spacing.xl,
+      paddingVertical: spacing.md,
+      borderRadius: radii.pill,
+      backgroundColor: colors.creamLight,
+    },
+    sectionActionText: {
+      fontSize: fontSizes.sm,
+      color: colors.inkMuted,
+      letterSpacing: letterSpacings.sm,
+    },
     sectionTitle: {
       fontSize: fontSizes.md,
       color: colors.inkMutedLight,
