@@ -3,6 +3,7 @@ import { Pressable, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 
+import { Button } from '@/components/Button';
 import { useWeightStore } from '@/features/weight';
 import type { Mood } from '@/features/weight';
 import { useAppTheme } from '@/theme';
@@ -74,14 +75,18 @@ export default function AddEntryModal() {
         </View>
 
         <View style={modalStyles.actionRow}>
-          <Pressable style={modalStyles.cancelButton} onPress={() => router.back()}>
-            <Text style={modalStyles.cancelText}>{texts.modal.cancel}</Text>
-          </Pressable>
-          <Pressable
-            style={[modalStyles.saveButton, !canSave && modalStyles.saveButtonDisabled]}
-            onPress={handleSave}>
-            <Text style={modalStyles.saveText}>{texts.modal.save}</Text>
-          </Pressable>
+          <Button
+            title={texts.modal.cancel}
+            variant="inverse"
+            style={modalStyles.actionButton}
+            onPress={() => router.back()}
+          />
+          <Button
+            title={texts.modal.save}
+            style={modalStyles.actionButton}
+            onPress={handleSave}
+            disabled={!canSave}
+          />
         </View>
       </View>
     </SafeAreaView>

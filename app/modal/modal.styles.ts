@@ -83,26 +83,10 @@ export const createModalStyles = (colors: ThemeColors) =>
       flexDirection: 'row',
       justifyContent: 'space-between',
       marginTop: spacing.xxlLarge,
+      gap: spacing.lg,
     },
-    cancelButton: {
-      paddingVertical: spacing.xxl,
-      paddingHorizontal: spacing.giant,
-    },
-    cancelText: {
-      color: colors.inkMutedLight,
-      fontSize: fontSizes.lg,
-    },
-    saveButton: {
-      paddingVertical: spacing.xxl,
-      paddingHorizontal: spacing.xxlLarge,
+    actionButton: {
+      flex: 1,
       borderRadius: radii.md,
-      backgroundColor: colors.inkStrong,
-    },
-    saveButtonDisabled: {
-      backgroundColor: colors.inkAccent,
-    },
-    saveText: {
-      color: colors.highlight,
-      fontSize: fontSizes.lg,
     },
   });

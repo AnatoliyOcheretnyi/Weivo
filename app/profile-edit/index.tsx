@@ -5,6 +5,7 @@ import { useRouter } from 'expo-router';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
+import { Button } from '@/components/Button';
 import { useProfileStore } from '@/features/profile';
 import { useWeightStore } from '@/features/weight';
 import type { ActivityLevel, GoalType, Sex, Units, Language, ThemeMode } from '@/features/profile';
@@ -467,12 +468,18 @@ export default function ProfileEditScreen() {
           </Animated.View>
 
           <View style={profileEditStyles.actionRow}>
-            <Pressable style={profileEditStyles.cancelButton} onPress={() => router.back()}>
-              <Text style={profileEditStyles.cancelText}>{texts.profileEdit.cancel}</Text>
-            </Pressable>
-            <Pressable style={profileEditStyles.saveButton} onPress={handleSave} disabled={!canSave}>
-              <Text style={profileEditStyles.saveText}>{texts.profileEdit.save}</Text>
-            </Pressable>
+            <Button
+              title={texts.profileEdit.cancel}
+              variant="inverse"
+              onPress={() => router.back()}
+              style={profileEditStyles.actionButton}
+            />
+            <Button
+              title={texts.profileEdit.save}
+              onPress={handleSave}
+              disabled={!canSave}
+              style={profileEditStyles.actionButton}
+            />
           </View>
         </View>
       </ScrollView>

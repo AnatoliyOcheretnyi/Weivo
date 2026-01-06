@@ -13,6 +13,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
+import { Button } from '@/components/Button';
 import { useProfileStore } from '@/features/profile';
 import {
   GoalProgress,
@@ -342,13 +343,21 @@ export default function HomeScreen() {
             <Text style={homeStyles.hintTitle}>{texts.home.segmentsHintTitle}</Text>
             <Text style={homeStyles.hintBody}>{texts.home.segmentsHintBody}</Text>
             <View style={homeStyles.hintActions}>
-              <Pressable style={homeStyles.hintSecondary} onPress={handleDismissSegmentsHint}>
-                <Text style={homeStyles.hintSecondaryText}>{texts.home.segmentsHintDismiss}</Text>
-              </Pressable>
+              <Button
+                title={texts.home.segmentsHintDismiss}
+                onPress={handleDismissSegmentsHint}
+                variant="inverseSmall"
+                style={homeStyles.hintSecondary}
+                textStyle={homeStyles.hintSecondaryText}
+              />
               <Animated.View style={[homeStyles.hintPrimaryWrap, ctaPulseStyle]}>
-                <Pressable style={homeStyles.hintPrimary} onPress={handleCreateSegment}>
-                  <Text style={homeStyles.hintPrimaryText}>{texts.home.segmentsHintCta}</Text>
-                </Pressable>
+                <Button
+                  title={texts.home.segmentsHintCta}
+                  onPress={handleCreateSegment}
+                  variant="primarySmall"
+                  style={homeStyles.hintPrimary}
+                  textStyle={homeStyles.hintPrimaryText}
+                />
               </Animated.View>
             </View>
           </Animated.View>

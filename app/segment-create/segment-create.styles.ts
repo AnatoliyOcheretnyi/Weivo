@@ -107,29 +107,9 @@ export const createSegmentCreateStyles = (colors: ThemeColors) =>
       justifyContent: 'space-between',
       gap: spacing.lg,
     },
-    cancelButton: {
+    actionButton: {
       flex: 1,
-      paddingVertical: spacing.huge,
       borderRadius: radii.pill,
-      backgroundColor: colors.cream,
-      alignItems: 'center',
-    },
-    cancelText: {
-      fontSize: fontSizes.md,
-      color: colors.inkMuted,
-      letterSpacing: letterSpacings.sm,
-    },
-    saveButton: {
-      flex: 1,
-      paddingVertical: spacing.huge,
-      borderRadius: radii.pill,
-      backgroundColor: colors.inkStrong,
-      alignItems: 'center',
-    },
-    saveText: {
-      fontSize: fontSizes.md,
-      color: colors.highlight,
-      letterSpacing: letterSpacings.sm,
     },
     previewSection: {
       marginHorizontal: dimensions.modal.margin,
@@ -159,14 +139,6 @@ export const createSegmentCreateStyles = (colors: ThemeColors) =>
       marginBottom: spacing.huge,
     },
     doneButton: {
-      paddingVertical: spacing.huge,
       borderRadius: radii.pill,
-      backgroundColor: colors.inkStrong,
-      alignItems: 'center',
-    },
-    doneText: {
-      fontSize: fontSizes.md,
-      color: colors.highlight,
-      letterSpacing: letterSpacings.sm,
     },
   });

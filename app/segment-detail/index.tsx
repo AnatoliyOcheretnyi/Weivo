@@ -3,6 +3,7 @@ import { Alert, Pressable, ScrollView, Text, TextInput, View } from 'react-nativ
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
+import { Button } from '@/components/Button';
 import { useAppTheme } from '@/theme';
 import { useTexts } from '@/i18n';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -175,12 +176,17 @@ export default function SegmentDetailScreen() {
 
           {isEditing && (
             <View style={styles.actionRow}>
-              <Pressable style={styles.cancelButton} onPress={() => setIsEditing(false)}>
-                <Text style={styles.cancelText}>{texts.segments.cancel}</Text>
-              </Pressable>
-              <Pressable style={styles.saveButton} onPress={handleSave}>
-                <Text style={styles.saveText}>{texts.segments.save}</Text>
-              </Pressable>
+              <Button
+                title={texts.segments.cancel}
+                variant="inverse"
+                onPress={() => setIsEditing(false)}
+                style={styles.actionButton}
+              />
+              <Button
+                title={texts.segments.save}
+                onPress={handleSave}
+                style={styles.actionButton}
+              />
             </View>
           )}
         </View>

@@ -3,6 +3,7 @@ import { Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 
+import { Button } from '@/components/Button';
 import { useAppTheme } from '@/theme';
 import { useTexts } from '@/i18n';
 import { useProfileStore } from '@/features/profile';
@@ -123,12 +124,18 @@ export default function SegmentCreateScreen() {
           </View>
 
           <View style={styles.actionRow}>
-            <Pressable style={styles.cancelButton} onPress={() => router.back()}>
-              <Text style={styles.cancelText}>{texts.segments.cancel}</Text>
-            </Pressable>
-            <Pressable style={styles.saveButton} onPress={handleSave} disabled={!canSave}>
-              <Text style={styles.saveText}>{texts.segments.save}</Text>
-            </Pressable>
+            <Button
+              title={texts.segments.cancel}
+              variant="inverse"
+              onPress={() => router.back()}
+              style={styles.actionButton}
+            />
+            <Button
+              title={texts.segments.save}
+              onPress={handleSave}
+              disabled={!canSave}
+              style={styles.actionButton}
+            />
           </View>
         </View>
 
@@ -151,9 +158,11 @@ export default function SegmentCreateScreen() {
         </View>
 
         <View style={styles.doneRow}>
-          <Pressable style={styles.doneButton} onPress={() => router.back()}>
-            <Text style={styles.doneText}>{texts.segments.done}</Text>
-          </Pressable>
+          <Button
+            title={texts.segments.done}
+            onPress={() => router.back()}
+            style={styles.doneButton}
+          />
         </View>
       </ScrollView>
     </SafeAreaView>
