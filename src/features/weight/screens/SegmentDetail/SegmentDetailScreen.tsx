@@ -8,6 +8,7 @@ import { useAppTheme } from '@/theme'
 import { useTexts } from '@/i18n'
 import { IconSymbol } from '@/shared/components/Icon'
 import { useGoalSegments } from '@/features/weight'
+import { GOAL_NOTE_MAX_LENGTH } from '@/shared/utils'
 import { createSegmentDetailStyles } from './SegmentDetailScreen.styles'
 import { useSegmentDetailScreen } from './UseSegmentDetailScreen'
 export default function SegmentDetailScreen() {
@@ -90,7 +91,7 @@ export default function SegmentDetailScreen() {
               keyboardType="decimal-pad"
               placeholder="115.0"
               inputStyle={styles.input}
-              unit="kg"
+              unit={texts.home.units.kg}
               unitStyle={styles.unit}
               editable={isEditing}
               containerStyle={[styles.inputRow, !isEditing && styles.readOnly]}
@@ -104,7 +105,7 @@ export default function SegmentDetailScreen() {
               keyboardType="decimal-pad"
               placeholder="110.0"
               inputStyle={styles.input}
-              unit="kg"
+              unit={texts.home.units.kg}
               unitStyle={styles.unit}
               editable={isEditing}
               containerStyle={[styles.inputRow, !isEditing && styles.readOnly]}
@@ -119,6 +120,7 @@ export default function SegmentDetailScreen() {
               inputStyle={styles.input}
               editable={isEditing}
               containerStyle={[styles.inputRow, !isEditing && styles.readOnly]}
+              maxLength={GOAL_NOTE_MAX_LENGTH}
             />
           </View>
           {isEditing && (

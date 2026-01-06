@@ -157,10 +157,10 @@ export default function ProfileEditScreen() {
                   variant="compact"
                   value={heightCm}
                   onChangeText={setHeightCm}
-                  keyboardType="numeric"
+                  keyboardType="decimal-pad"
                   placeholder="175"
                   inputStyle={profileEditStyles.input}
-                  unit="cm"
+                  unit={texts.home.units.cm}
                   unitStyle={profileEditStyles.unit}
                 />
               </View>
@@ -240,10 +240,10 @@ export default function ProfileEditScreen() {
                         variant="compact"
                         value={goalTarget}
                         onChangeText={setGoalTarget}
-                        keyboardType="numeric"
+                        keyboardType="decimal-pad"
                         placeholder="110.0"
                         inputStyle={profileEditStyles.input}
-                        unit="kg"
+                        unit={texts.home.units.kg}
                         unitStyle={profileEditStyles.unit}
                       />
                     </View>
@@ -253,10 +253,10 @@ export default function ProfileEditScreen() {
                         variant="compact"
                         value={goalRate}
                         onChangeText={setGoalRate}
-                        keyboardType="numeric"
+                        keyboardType="decimal-pad"
                         placeholder="0.5"
                         inputStyle={profileEditStyles.input}
-                        unit={`kg/${texts.home.units.weeksShort}`}
+                        unit={`${texts.home.units.kg}/${texts.home.units.weeksShort}`}
                         unitStyle={profileEditStyles.unit}
                       />
                     </View>
@@ -272,10 +272,10 @@ export default function ProfileEditScreen() {
                         variant="compact"
                         value={goalRangeMin}
                         onChangeText={setGoalRangeMin}
-                        keyboardType="numeric"
+                        keyboardType="decimal-pad"
                         placeholder="78.0"
                         inputStyle={profileEditStyles.input}
-                        unit="kg"
+                        unit={texts.home.units.kg}
                         unitStyle={profileEditStyles.unit}
                       />
                     </View>
@@ -284,7 +284,9 @@ export default function ProfileEditScreen() {
                         {texts.profileEdit.currentWeight}
                       </Text>
                       <Text style={profileEditStyles.rangeCurrentValue}>
-                        {latestWeight ? `${latestWeight.toFixed(1)} kg` : texts.profile.values.notSet}
+                        {latestWeight
+                          ? `${latestWeight.toFixed(1)} ${texts.home.units.kg}`
+                          : texts.profile.values.notSet}
                       </Text>
                     </View>
                     <View style={profileEditStyles.rangeCol}>
@@ -292,10 +294,10 @@ export default function ProfileEditScreen() {
                         variant="compact"
                         value={goalRangeMax}
                         onChangeText={setGoalRangeMax}
-                        keyboardType="numeric"
+                        keyboardType="decimal-pad"
                         placeholder="81.0"
                         inputStyle={profileEditStyles.input}
-                        unit="kg"
+                        unit={texts.home.units.kg}
                         unitStyle={profileEditStyles.unit}
                       />
                     </View>

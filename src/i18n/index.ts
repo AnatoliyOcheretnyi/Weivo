@@ -153,6 +153,8 @@ const translations = {
       segmentsHintDismiss: 'Later',
       units: {
         kg: 'kg',
+        cm: 'cm',
+        m: 'm',
         days: 'days',
         weeksShort: 'wk',
       },
@@ -208,6 +210,11 @@ const translations = {
       deleteCancel: 'Cancel',
       editBlockedTitle: 'Segment order',
       editBlockedMessage: 'Update the latest segment first to avoid breaking the chain.',
+    },
+    validation: {
+      goalRangeTitle: 'Check your goal',
+      goalRangeMessage:
+        'This target looks extreme. A healthier range is {min}–{max} {unit}.',
     },
     symbols: {
       plus: '+',
@@ -393,6 +400,8 @@ const translations = {
       segmentsHintDismiss: 'Пізніше',
       units: {
         kg: 'кг',
+        cm: 'см',
+        m: 'м',
         days: 'днів',
         weeksShort: 'тиж',
       },
@@ -448,6 +457,11 @@ const translations = {
       deleteCancel: 'Скасувати',
       editBlockedTitle: 'Порядок відрізків',
       editBlockedMessage: 'Спочатку змінюй останній відрізок, щоб не ламати ланцюжок.',
+    },
+    validation: {
+      goalRangeTitle: 'Перевір ціль',
+      goalRangeMessage:
+        'Ціль виглядає занадто екстремально. Здоровий діапазон: {min}–{max} {unit}.',
     },
     symbols: {
       plus: '+',
@@ -633,6 +647,8 @@ const translations = {
       segmentsHintDismiss: 'Más tarde',
       units: {
         kg: 'kg',
+        cm: 'cm',
+        m: 'm',
         days: 'días',
         weeksShort: 'sem',
       },
@@ -688,6 +704,11 @@ const translations = {
       deleteCancel: 'Cancelar',
       editBlockedTitle: 'Orden de tramos',
       editBlockedMessage: 'Primero actualiza el último tramo para no romper la cadena.',
+    },
+    validation: {
+      goalRangeTitle: 'Revisa tu objetivo',
+      goalRangeMessage:
+        'Este objetivo parece extremo. Un rango más saludable es {min}–{max} {unit}.',
     },
     symbols: {
       plus: '+',

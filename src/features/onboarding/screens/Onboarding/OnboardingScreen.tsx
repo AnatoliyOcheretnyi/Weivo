@@ -61,6 +61,7 @@ export default function OnboardingScreen() {
     profile,
     updateProfile,
     addEntry,
+    texts,
     onDone: () => router.replace('/(tabs)' as Href),
   })
   return (
@@ -129,7 +130,7 @@ export default function OnboardingScreen() {
             setActivityLevel={setActivityLevel}
             goalTypeOptions={options.goalTypes}
             activityOptions={options.activity}
-            weeklyPaceUnit={`kg/${texts.home.units.weeksShort}`}
+            weeklyPaceUnit={`${texts.home.units.kg}/${texts.home.units.weeksShort}`}
             onGoalTypeChange={onGoalTypeChange}
           />
         </View>

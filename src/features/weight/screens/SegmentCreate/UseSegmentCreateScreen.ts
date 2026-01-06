@@ -1,12 +1,25 @@
 import { useCallback, useMemo, useState } from 'react'
+import { Alert } from 'react-native'
 import type { ProfileData } from '@/features/profile'
 import type { GoalSegment, GoalSegmentDirection, WeightEntry } from '@/features/weight'
+import type { Texts } from '@/i18n'
 import { WEIGHT_STEP_KG } from './SegmentCreateScreenConstants'
-import { parseWeightText } from '@/shared/utils'
+import {
+  GOAL_NOTE_MAX_LENGTH,
+  WEIGHT_MAX_KG,
+  WEIGHT_MIN_KG,
+  formatKg,
+  getHealthyTargetRangeKg,
+  isWithinRange,
+  parseWeightText,
+  sanitizeDecimalInput,
+  sanitizeNoteInput,
+} from '@/shared/utils'
 type UseSegmentCreateScreenParams = {
   entries: WeightEntry[]
   segments: GoalSegment[]
   profile: ProfileData
+  texts: Texts
   addSegment: (_segment: GoalSegment) => void
   onAfterSave: () => void
 }
@@ -14,6 +27,7 @@ export const useSegmentCreateScreen = ({
   entries,
   segments,
   profile,
+  texts,
   addSegment,
   onAfterSave,
 }: UseSegmentCreateScreenParams) => {
@@ -35,10 +49,44 @@ export const useSegmentCreateScreen = ({
   const canSave =
     Number.isFinite(startValue) &&
     Number.isFinite(targetValue) &&
-    startValue > 0 &&
-    targetValue > 0
+    isWithinRange(startValue, WEIGHT_MIN_KG, WEIGHT_MAX_KG) &&
+    isWithinRange(targetValue, WEIGHT_MIN_KG, WEIGHT_MAX_KG)
+  const handleStartChange = useCallback((value: string) => {
+    setStartWeight((prev) => {
+      const next = sanitizeDecimalInput(value, { maxDecimals: 1 })
+      const parsed = parseWeightText(next)
+      if (Number.isFinite(parsed) && parsed > WEIGHT_MAX_KG) {
+        return prev
+      }
+      return next
+    })
+  }, [])
+  const handleTargetChange = useCallback((value: string) => {
+    setTarget((prev) => {
+      const next = sanitizeDecimalInput(value, { maxDecimals: 1 })
+      const parsed = parseWeightText(next)
+      if (Number.isFinite(parsed) && parsed > WEIGHT_MAX_KG) {
+        return prev
+      }
+      return next
+    })
+  }, [])
+  const handleNoteChange = useCallback((value: string) => {
+    setNote(sanitizeNoteInput(value, GOAL_NOTE_MAX_LENGTH))
+  }, [])
   const handleSave = useCallback(() => {
     if (!canSave) {
+      return
+    }
+    const healthyRange = getHealthyTargetRangeKg(startValue)
+    if (!isWithinRange(targetValue, healthyRange.min, healthyRange.max)) {
+      Alert.alert(
+        texts.validation.goalRangeTitle,
+        texts.validation.goalRangeMessage
+          .replace('{min}', formatKg(healthyRange.min))
+          .replace('{max}', formatKg(healthyRange.max))
+          .replace('{unit}', texts.home.units.kg)
+      )
       return
     }
     const segment: GoalSegment = {
@@ -56,15 +104,15 @@ export const useSegmentCreateScreen = ({
     setTarget('')
     setNote('')
     onAfterSave()
-  }, [addSegment, canSave, inferredDirection, note, onAfterSave, startValue, targetValue])
+  }, [addSegment, canSave, inferredDirection, note, onAfterSave, startValue, targetValue, texts])
   return {
     latestWeight,
     startWeight,
-    setStartWeight,
+    setStartWeight: handleStartChange,
     target,
-    setTarget,
+    setTarget: handleTargetChange,
     note,
-    setNote,
+    setNote: handleNoteChange,
     canSave,
     handleSave,
   }

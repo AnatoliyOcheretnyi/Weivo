@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react'
-import { Platform } from 'react-native'
+import { Alert, Platform } from 'react-native'
 import type {
   ActivityLevel,
   GoalType,
@@ -23,7 +23,17 @@ import {
   THEME_OPTIONS,
   UNIT_OPTIONS,
 } from './ProfileEditScreenConstants'
-import { parseNumberInput } from '@/shared/utils'
+import {
+  HEIGHT_MAX_CM,
+  HEIGHT_MIN_CM,
+  WEIGHT_MAX_KG,
+  WEIGHT_MIN_KG,
+  formatKg,
+  getHealthyTargetRangeKg,
+  isWithinRange,
+  parseNumberInput,
+  sanitizeDecimalInput,
+} from '@/shared/utils'
 type UseProfileEditScreenParams = {
   profile: ProfileData
   entries: WeightEntry[]
@@ -87,6 +97,12 @@ export const useProfileEditScreen = ({
     if (goalRangeMax && Number.isNaN(parseNumberInput(goalRangeMax))) {
       return false
     }
+    if (heightCm) {
+      const heightValue = parseNumberInput(heightCm)
+      if (!isWithinRange(heightValue, HEIGHT_MIN_CM, HEIGHT_MAX_CM)) {
+        return false
+      }
+    }
     if (goalType === 'lose' || goalType === 'gain') {
       if (goalRate) {
         const rate = parseNumberInput(goalRate)
@@ -95,14 +111,82 @@ export const useProfileEditScreen = ({
           return false
         }
       }
+      if (goalTarget) {
+        const targetValue = parseNumberInput(goalTarget)
+        if (!isWithinRange(targetValue, WEIGHT_MIN_KG, WEIGHT_MAX_KG)) {
+          return false
+        }
+      }
     }
     if (goalType === 'maintain' && goalRangeMin && goalRangeMax) {
-      if (parseNumberInput(goalRangeMin) >= parseNumberInput(goalRangeMax)) {
+      const minValue = parseNumberInput(goalRangeMin)
+      const maxValue = parseNumberInput(goalRangeMax)
+      if (minValue >= maxValue) {
+        return false
+      }
+      if (
+        !isWithinRange(minValue, WEIGHT_MIN_KG, WEIGHT_MAX_KG) ||
+        !isWithinRange(maxValue, WEIGHT_MIN_KG, WEIGHT_MAX_KG)
+      ) {
         return false
       }
     }
     return true
   }, [heightCm, goalRangeMax, goalRangeMin, goalRate, goalTarget, goalType])
+  const handleHeightChange = useCallback((value: string) => {
+    setHeightCm((prev) => {
+      const next = sanitizeDecimalInput(value, { maxDecimals: 1 })
+      const parsed = parseNumberInput(next)
+      if (Number.isFinite(parsed) && parsed > HEIGHT_MAX_CM) {
+        return prev
+      }
+      return next
+    })
+  }, [])
+  const handleGoalTargetChange = useCallback((value: string) => {
+    setGoalTarget((prev) => {
+      const next = sanitizeDecimalInput(value, { maxDecimals: 1 })
+      const parsed = parseNumberInput(next)
+      if (Number.isFinite(parsed) && parsed > WEIGHT_MAX_KG) {
+        return prev
+      }
+      return next
+    })
+  }, [])
+  const handleGoalRateChange = useCallback(
+    (value: string) => {
+      setGoalRate((prev) => {
+        const next = sanitizeDecimalInput(value, { maxDecimals: 1 })
+        const parsed = parseNumberInput(next)
+        const maxRate = goalType === 'gain' ? GOAL_RATE_MAX_GAIN : GOAL_RATE_MAX_LOSE
+        if (Number.isFinite(parsed) && parsed > maxRate) {
+          return prev
+        }
+        return next
+      })
+    },
+    [goalType]
+  )
+  const handleGoalRangeMinChange = useCallback((value: string) => {
+    setGoalRangeMin((prev) => {
+      const next = sanitizeDecimalInput(value, { maxDecimals: 1 })
+      const parsed = parseNumberInput(next)
+      if (Number.isFinite(parsed) && parsed > WEIGHT_MAX_KG) {
+        return prev
+      }
+      return next
+    })
+  }, [])
+  const handleGoalRangeMaxChange = useCallback((value: string) => {
+    setGoalRangeMax((prev) => {
+      const next = sanitizeDecimalInput(value, { maxDecimals: 1 })
+      const parsed = parseNumberInput(next)
+      if (Number.isFinite(parsed) && parsed > WEIGHT_MAX_KG) {
+        return prev
+      }
+      return next
+    })
+  }, [])
   const themeLabel = useCallback(
     (option: ThemeMode) => {
       switch (option) {
@@ -136,6 +220,42 @@ export const useProfileEditScreen = ({
   const handleSave = useCallback(() => {
     if (!canSave) {
       return
+    }
+    if (latestWeight != null && (goalType === 'lose' || goalType === 'gain')) {
+      const targetValue = parseNumberInput(goalTarget)
+      if (Number.isFinite(targetValue)) {
+        const healthyRange = getHealthyTargetRangeKg(latestWeight)
+        if (!isWithinRange(targetValue, healthyRange.min, healthyRange.max)) {
+          Alert.alert(
+            texts.validation.goalRangeTitle,
+            texts.validation.goalRangeMessage
+              .replace('{min}', formatKg(healthyRange.min))
+              .replace('{max}', formatKg(healthyRange.max))
+              .replace('{unit}', texts.home.units.kg)
+          )
+          return
+        }
+      }
+    }
+    if (latestWeight != null && goalType === 'maintain') {
+      const minValue = parseNumberInput(goalRangeMin)
+      const maxValue = parseNumberInput(goalRangeMax)
+      if (Number.isFinite(minValue) && Number.isFinite(maxValue)) {
+        const healthyRange = getHealthyTargetRangeKg(latestWeight)
+        if (
+          !isWithinRange(minValue, healthyRange.min, healthyRange.max) ||
+          !isWithinRange(maxValue, healthyRange.min, healthyRange.max)
+        ) {
+          Alert.alert(
+            texts.validation.goalRangeTitle,
+            texts.validation.goalRangeMessage
+              .replace('{min}', formatKg(healthyRange.min))
+              .replace('{max}', formatKg(healthyRange.max))
+              .replace('{unit}', texts.home.units.kg)
+          )
+          return
+        }
+      }
     }
     const nextProfile: Partial<ProfileData> = {
       birthDateISO: birthDate ? birthDate.toISOString() : undefined,
@@ -176,6 +296,8 @@ export const useProfileEditScreen = ({
     theme,
     units,
     updateProfile,
+    latestWeight,
+    texts,
   ])
   return {
     latestWeight,
@@ -187,19 +309,19 @@ export const useProfileEditScreen = ({
     setShowDatePicker,
     onDateChange,
     heightCm,
-    setHeightCm,
+    setHeightCm: handleHeightChange,
     sex,
     setSex,
     activityLevel,
     setActivityLevel,
     goalTarget,
-    setGoalTarget,
+    setGoalTarget: handleGoalTargetChange,
     goalRate,
-    setGoalRate,
+    setGoalRate: handleGoalRateChange,
     goalRangeMin,
-    setGoalRangeMin,
+    setGoalRangeMin: handleGoalRangeMinChange,
     goalRangeMax,
-    setGoalRangeMax,
+    setGoalRangeMax: handleGoalRangeMaxChange,
     goalType,
     setGoalType,
     units,

@@ -176,12 +176,12 @@ export default function HomeScreen() {
   const goalLabel = (() => {
     if (goalType === 'maintain') {
       if (goalRangeMinKg != null && goalRangeMaxKg != null) {
-        return `${goalRangeMinKg.toFixed(1)}–${goalRangeMaxKg.toFixed(1)} kg`
+        return `${goalRangeMinKg.toFixed(1)}–${goalRangeMaxKg.toFixed(1)} ${texts.home.units.kg}`
       }
       return texts.profile.values.notSet
     }
     if (goalTargetKg != null) {
-      return `${goalTargetKg.toFixed(1)} kg`
+      return `${goalTargetKg.toFixed(1)} ${texts.home.units.kg}`
     }
     return texts.profile.values.notSet
   })()

@@ -1,8 +1,9 @@
 import { Canvas, Circle, Path, Skia } from '@shopify/react-native-skia'
 import { useMemo } from 'react'
 import { Text, View } from 'react-native'
-import { formatKg , clamp } from '@/shared/utils'
+import { clamp, formatKg } from '@/shared/utils'
 import { useAppTheme } from '@/theme'
+import { useTexts } from '@/i18n'
 import {
   GOAL_PROGRESS_CHECK_STROKE,
   GOAL_PROGRESS_SIZE,
@@ -19,6 +20,7 @@ export function GoalProgress({
   onSuccessComplete,
 }: GoalProgressProps) {
   const { colors } = useAppTheme()
+  const { texts } = useTexts()
   const styles = useMemo(() => createGoalProgressStyles(colors), [colors])
   const totalDelta = Math.abs(startKg - targetKg)
   const isGain = targetKg > startKg
@@ -44,7 +46,10 @@ export function GoalProgress({
     path.lineTo(size * 0.72, size * 0.38)
     return path
   }, [size])
-  const progressLabel = totalDelta > 0 ? `${formatKg(progressKg)}/${formatKg(totalDelta)}kg` : '--'
+  const progressLabel =
+    totalDelta > 0
+      ? `${formatKg(progressKg)}/${formatKg(totalDelta)}${texts.home.units.kg}`
+      : '--'
   return (
     <View style={styles.container}>
       <View style={styles.canvasWrap}>

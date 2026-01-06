@@ -12,6 +12,7 @@ import {
   useGoalSegments,
   useWeightStore,
 } from '@/features/weight'
+import { GOAL_NOTE_MAX_LENGTH } from '@/shared/utils'
 import { createSegmentCreateStyles } from './SegmentCreateScreen.styles'
 import { useSegmentCreateScreen } from './UseSegmentCreateScreen'
 export default function SegmentCreateScreen() {
@@ -38,6 +39,7 @@ export default function SegmentCreateScreen() {
     entries,
     segments,
     profile,
+    texts,
     addSegment,
     onAfterSave: () => {
       targetInputRef.current?.focus()
@@ -59,7 +61,7 @@ export default function SegmentCreateScreen() {
               keyboardType="decimal-pad"
               placeholder="115.0"
               inputStyle={styles.input}
-              unit="kg"
+              unit={texts.home.units.kg}
               unitStyle={styles.unit}
               containerStyle={styles.inputRow}
             />
@@ -72,7 +74,7 @@ export default function SegmentCreateScreen() {
               keyboardType="decimal-pad"
               placeholder="110.0"
               inputStyle={styles.input}
-              unit="kg"
+              unit={texts.home.units.kg}
               unitStyle={styles.unit}
               ref={targetInputRef}
               containerStyle={styles.inputRow}
@@ -86,6 +88,7 @@ export default function SegmentCreateScreen() {
               placeholder={texts.segments.notePlaceholder}
               inputStyle={styles.input}
               containerStyle={styles.inputRow}
+              maxLength={GOAL_NOTE_MAX_LENGTH}
             />
           </View>
           <View style={styles.actionRow}>

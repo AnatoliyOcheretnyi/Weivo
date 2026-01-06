@@ -48,7 +48,9 @@ export const useProfileScreen = ({
     }
     return calculateAge(birthDateISO).toString()
   }, [birthDateISO, texts])
-  const heightLabel = formatHeightCm(heightCm) ?? texts.profile.values.notSet
+  const heightLabel =
+    formatHeightCm(heightCm, { m: texts.home.units.m, cm: texts.home.units.cm }) ??
+    texts.profile.values.notSet
   const sexLabel = useMemo(() => {
     if (!sex) {
       return texts.profile.values.notSet
@@ -93,11 +95,11 @@ export const useProfileScreen = ({
         : texts.profile.values.goalMaintain
   const goalRateLabel =
     goalRateKgPerWeek && (goalType === 'lose' || goalType === 'gain')
-      ? `${goalRateKgPerWeek.toFixed(1)} kg / ${texts.home.units.weeksShort}`
+      ? `${goalRateKgPerWeek.toFixed(1)} ${texts.home.units.kg} / ${texts.home.units.weeksShort}`
       : texts.profile.values.notSet
   const goalRangeLabel =
     goalType === 'maintain' && goalRangeMinKg && goalRangeMaxKg
-      ? `${goalRangeMinKg.toFixed(1)}–${goalRangeMaxKg.toFixed(1)} kg`
+      ? `${goalRangeMinKg.toFixed(1)}–${goalRangeMaxKg.toFixed(1)} ${texts.home.units.kg}`
       : texts.profile.values.notSet
   const predictionLabel = useMemo(() => {
     if (!latestWeight) {

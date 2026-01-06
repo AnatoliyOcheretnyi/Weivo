@@ -34,10 +34,10 @@ export function BodyStep({
           <Input
             value={heightCm}
             onChangeText={setHeightCm}
-            keyboardType="numeric"
+            keyboardType="decimal-pad"
             placeholder="175"
             inputStyle={styles.input}
-            unit="cm"
+            unit={texts.home.units.cm}
             unitStyle={styles.unit}
           />
         </View>
@@ -46,10 +46,10 @@ export function BodyStep({
           <Input
             value={weightKg}
             onChangeText={setWeightKg}
-            keyboardType="numeric"
+            keyboardType="decimal-pad"
             placeholder="85.0"
             inputStyle={styles.input}
-            unit="kg"
+            unit={texts.home.units.kg}
             unitStyle={styles.unit}
           />
           <Text style={styles.helper}>{texts.onboarding.bodyHelper}</Text>

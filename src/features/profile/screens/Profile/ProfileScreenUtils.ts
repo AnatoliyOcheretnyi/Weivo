@@ -8,9 +8,12 @@ export const calculateAge = (dateISO: string) => {
   }
   return Math.max(0, age)
 }
-export const formatHeightCm = (heightCm: number | null) => {
+export const formatHeightCm = (
+  heightCm: number | null,
+  units: { m: string; cm: string }
+) => {
   if (!heightCm) {
     return null
   }
-  return `${Math.floor(heightCm / 100)}m ${heightCm % 100}cm`
+  return `${Math.floor(heightCm / 100)}${units.m} ${heightCm % 100}${units.cm}`
 }

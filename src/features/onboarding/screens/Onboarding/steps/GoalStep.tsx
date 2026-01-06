@@ -82,10 +82,10 @@ export function GoalStep({
                   variant="compact"
                   value={goalTarget}
                   onChangeText={setGoalTarget}
-                  keyboardType="numeric"
+                  keyboardType="decimal-pad"
                   placeholder="80.0"
                   inputStyle={styles.input}
-                  unit="kg"
+                  unit={texts.home.units.kg}
                   unitStyle={styles.unit}
                 />
               </View>
@@ -95,7 +95,7 @@ export function GoalStep({
                   variant="compact"
                   value={goalRate}
                   onChangeText={setGoalRate}
-                  keyboardType="numeric"
+                  keyboardType="decimal-pad"
                   placeholder="0.5"
                   inputStyle={styles.input}
                   unit={weeklyPaceUnit}
@@ -118,10 +118,10 @@ export function GoalStep({
                 variant="compact"
                 value={goalRangeMin}
                 onChangeText={setGoalRangeMin}
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 placeholder="78.0"
                 inputStyle={styles.input}
-                unit="kg"
+                unit={texts.home.units.kg}
                 unitStyle={styles.unit}
                 containerStyle={{ flex: 1 }}
               />
@@ -129,10 +129,10 @@ export function GoalStep({
                 variant="compact"
                 value={goalRangeMax}
                 onChangeText={setGoalRangeMax}
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 placeholder="81.0"
                 inputStyle={styles.input}
-                unit="kg"
+                unit={texts.home.units.kg}
                 unitStyle={styles.unit}
                 containerStyle={{ flex: 1 }}
               />

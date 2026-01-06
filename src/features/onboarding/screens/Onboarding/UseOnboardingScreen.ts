@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
+  Alert,
   Animated,
   Dimensions,
   LayoutAnimation,
@@ -8,6 +9,7 @@ import {
   type ScrollView,
 } from 'react-native'
 import type { ActivityLevel, GoalType, ProfileData, Sex } from '@/features/profile'
+import type { Texts } from '@/i18n'
 import {
   ACTIVITY_OPTIONS,
   DEFAULT_BIRTH_DATE,
@@ -17,17 +19,29 @@ import {
   SEX_OPTIONS,
   STEP_COUNT,
 } from './OnboardingScreenConstants'
-import { parseNumberInput } from '@/shared/utils'
+import {
+  HEIGHT_MAX_CM,
+  HEIGHT_MIN_CM,
+  WEIGHT_MAX_KG,
+  WEIGHT_MIN_KG,
+  formatKg,
+  getHealthyTargetRangeKg,
+  isWithinRange,
+  parseNumberInput,
+  sanitizeDecimalInput,
+} from '@/shared/utils'
 type UseOnboardingScreenParams = {
   profile: ProfileData
   updateProfile: (_next: Partial<ProfileData>) => void
   addEntry: (_weightKg: number) => void
+  texts: Texts
   onDone: () => void
 }
 export const useOnboardingScreen = ({
   profile,
   updateProfile,
   addEntry,
+  texts,
   onDone,
 }: UseOnboardingScreenParams) => {
   const scrollRef = useRef<ScrollView>(null)
@@ -69,21 +83,96 @@ export const useOnboardingScreen = ({
     extrapolate: 'clamp',
   })
   const canContinueAge = Boolean(birthDate)
+  const heightValue = parseNumberInput(heightCm)
+  const weightValue = parseNumberInput(weightKg)
   const canContinueBody = Boolean(
-    parseNumberInput(heightCm) > 0 && parseNumberInput(weightKg) > 0 && sex
+    isWithinRange(heightValue, HEIGHT_MIN_CM, HEIGHT_MAX_CM) &&
+      isWithinRange(weightValue, WEIGHT_MIN_KG, WEIGHT_MAX_KG) &&
+      sex
   )
   const canContinueGoal = useMemo(() => {
     if (goalType === 'maintain') {
+      const minValue = parseNumberInput(goalRangeMin)
+      const maxValue = parseNumberInput(goalRangeMax)
       return (
-        parseNumberInput(goalRangeMin) > 0 &&
-        parseNumberInput(goalRangeMax) > 0 &&
-        parseNumberInput(goalRangeMin) < parseNumberInput(goalRangeMax)
+        isWithinRange(minValue, WEIGHT_MIN_KG, WEIGHT_MAX_KG) &&
+        isWithinRange(maxValue, WEIGHT_MIN_KG, WEIGHT_MAX_KG) &&
+        minValue < maxValue
       )
     }
     const maxRate = goalType === 'gain' ? GOAL_RATE_MAX_GAIN : GOAL_RATE_MAX_LOSE
     const rate = parseNumberInput(goalRate)
-    return parseNumberInput(goalTarget) > 0 && rate > 0 && rate <= maxRate
+    const targetValue = parseNumberInput(goalTarget)
+    return (
+      isWithinRange(targetValue, WEIGHT_MIN_KG, WEIGHT_MAX_KG) &&
+      rate > 0 &&
+      rate <= maxRate
+    )
   }, [goalRangeMax, goalRangeMin, goalRate, goalTarget, goalType])
+  const handleHeightChange = useCallback((value: string) => {
+    setHeightCm((prev) => {
+      const next = sanitizeDecimalInput(value, { maxDecimals: 1 })
+      const parsed = parseNumberInput(next)
+      if (Number.isFinite(parsed) && parsed > HEIGHT_MAX_CM) {
+        return prev
+      }
+      return next
+    })
+  }, [])
+  const handleWeightChange = useCallback((value: string) => {
+    setWeightKg((prev) => {
+      const next = sanitizeDecimalInput(value, { maxDecimals: 1 })
+      const parsed = parseNumberInput(next)
+      if (Number.isFinite(parsed) && parsed > WEIGHT_MAX_KG) {
+        return prev
+      }
+      return next
+    })
+  }, [])
+  const handleGoalTargetChange = useCallback((value: string) => {
+    setGoalTarget((prev) => {
+      const next = sanitizeDecimalInput(value, { maxDecimals: 1 })
+      const parsed = parseNumberInput(next)
+      if (Number.isFinite(parsed) && parsed > WEIGHT_MAX_KG) {
+        return prev
+      }
+      return next
+    })
+  }, [])
+  const handleGoalRateChange = useCallback(
+    (value: string) => {
+      setGoalRate((prev) => {
+        const next = sanitizeDecimalInput(value, { maxDecimals: 1 })
+        const parsed = parseNumberInput(next)
+        const maxRate = goalType === 'gain' ? GOAL_RATE_MAX_GAIN : GOAL_RATE_MAX_LOSE
+        if (Number.isFinite(parsed) && parsed > maxRate) {
+          return prev
+        }
+        return next
+      })
+    },
+    [goalType]
+  )
+  const handleGoalRangeMinChange = useCallback((value: string) => {
+    setGoalRangeMin((prev) => {
+      const next = sanitizeDecimalInput(value, { maxDecimals: 1 })
+      const parsed = parseNumberInput(next)
+      if (Number.isFinite(parsed) && parsed > WEIGHT_MAX_KG) {
+        return prev
+      }
+      return next
+    })
+  }, [])
+  const handleGoalRangeMaxChange = useCallback((value: string) => {
+    setGoalRangeMax((prev) => {
+      const next = sanitizeDecimalInput(value, { maxDecimals: 1 })
+      const parsed = parseNumberInput(next)
+      if (Number.isFinite(parsed) && parsed > WEIGHT_MAX_KG) {
+        return prev
+      }
+      return next
+    })
+  }, [])
   const goToStep = useCallback(
     (nextStep: number) => {
       scrollRef.current?.scrollTo({ x: nextStep * screenWidth, animated: true })
@@ -101,6 +190,42 @@ export const useOnboardingScreen = ({
     }
   }, [currentStep, goToStep])
   const handleFinish = useCallback(() => {
+    if (weightValue > 0 && (goalType === 'lose' || goalType === 'gain')) {
+      const targetValue = parseNumberInput(goalTarget)
+      if (Number.isFinite(targetValue)) {
+        const healthyRange = getHealthyTargetRangeKg(weightValue)
+        if (!isWithinRange(targetValue, healthyRange.min, healthyRange.max)) {
+          Alert.alert(
+            texts.validation.goalRangeTitle,
+            texts.validation.goalRangeMessage
+              .replace('{min}', formatKg(healthyRange.min))
+              .replace('{max}', formatKg(healthyRange.max))
+              .replace('{unit}', texts.home.units.kg)
+          )
+          return
+        }
+      }
+    }
+    if (weightValue > 0 && goalType === 'maintain') {
+      const minValue = parseNumberInput(goalRangeMin)
+      const maxValue = parseNumberInput(goalRangeMax)
+      if (Number.isFinite(minValue) && Number.isFinite(maxValue)) {
+        const healthyRange = getHealthyTargetRangeKg(weightValue)
+        if (
+          !isWithinRange(minValue, healthyRange.min, healthyRange.max) ||
+          !isWithinRange(maxValue, healthyRange.min, healthyRange.max)
+        ) {
+          Alert.alert(
+            texts.validation.goalRangeTitle,
+            texts.validation.goalRangeMessage
+              .replace('{min}', formatKg(healthyRange.min))
+              .replace('{max}', formatKg(healthyRange.max))
+              .replace('{unit}', texts.home.units.kg)
+          )
+          return
+        }
+      }
+    }
     const birthDateISO = birthDate ? birthDate.toISOString() : undefined
     const nextProfile: Partial<ProfileData> = {
       birthDateISO,
@@ -140,6 +265,8 @@ export const useOnboardingScreen = ({
     sex,
     updateProfile,
     weightKg,
+    weightValue,
+    texts,
   ])
   const onDateChange = useCallback((_event: unknown, selectedDate?: Date) => {
     if (selectedDate) {
@@ -168,18 +295,18 @@ export const useOnboardingScreen = ({
     sex,
     setSex,
     heightCm,
-    setHeightCm,
+    setHeightCm: handleHeightChange,
     weightKg,
-    setWeightKg,
+    setWeightKg: handleWeightChange,
     goalType,
     goalTarget,
-    setGoalTarget,
+    setGoalTarget: handleGoalTargetChange,
     goalRate,
-    setGoalRate,
+    setGoalRate: handleGoalRateChange,
     goalRangeMin,
-    setGoalRangeMin,
+    setGoalRangeMin: handleGoalRangeMinChange,
     goalRangeMax,
-    setGoalRangeMax,
+    setGoalRangeMax: handleGoalRangeMaxChange,
     activityLevel,
     setActivityLevel,
     canContinueAge,

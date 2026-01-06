@@ -1,8 +1,13 @@
 import { useCallback, useMemo, useState } from 'react'
 import type { Mood } from '@/features/weight'
 import type { Texts } from '@/i18n'
-import { WEIGHT_MAX_KG, WEIGHT_MIN_KG } from './AddEntryModalConstants'
-import { parseWeightText } from '@/shared/utils'
+import {
+  WEIGHT_MAX_KG,
+  WEIGHT_MIN_KG,
+  isWithinRange,
+  parseWeightText,
+  sanitizeDecimalInput,
+} from '@/shared/utils'
 type UseAddEntryModalParams = {
   addEntry: (_weightKg: number, _mood?: Mood) => void
   texts: Texts
@@ -29,8 +34,17 @@ export const useAddEntryModal = ({
     [texts]
   )
   const weightValue = useMemo(() => parseWeightText(weightText), [weightText])
-  const canSave =
-    Number.isFinite(weightValue) && weightValue > WEIGHT_MIN_KG && weightValue < WEIGHT_MAX_KG
+  const canSave = Number.isFinite(weightValue) && isWithinRange(weightValue, WEIGHT_MIN_KG, WEIGHT_MAX_KG)
+  const handleWeightChange = useCallback((value: string) => {
+    setWeightText((prev) => {
+      const next = sanitizeDecimalInput(value, { maxDecimals: 1 })
+      const parsed = parseWeightText(next)
+      if (Number.isFinite(parsed) && parsed > WEIGHT_MAX_KG) {
+        return prev
+      }
+      return next
+    })
+  }, [])
   const handleSave = useCallback(() => {
     if (!canSave) {
       return
@@ -40,7 +54,7 @@ export const useAddEntryModal = ({
   }, [addEntry, canSave, mood, onDone, weightValue])
   return {
     weightText,
-    setWeightText,
+    setWeightText: handleWeightChange,
     mood,
     setMood,
     moodOptions,

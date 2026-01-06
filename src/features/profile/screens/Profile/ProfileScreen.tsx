@@ -84,7 +84,9 @@ export default function ProfileScreen() {
           <View style={profileStyles.row}>
             <Text style={profileStyles.label}>{texts.profile.fields.currentWeight}</Text>
             <Text style={profileStyles.value}>
-              {latestWeight ? `${latestWeight.toFixed(1)} kg` : texts.profile.values.notSet}
+              {latestWeight
+                ? `${latestWeight.toFixed(1)} ${texts.home.units.kg}`
+                : texts.profile.values.notSet}
             </Text>
           </View>
         </View>
@@ -141,7 +143,9 @@ export default function ProfileScreen() {
                 <View style={profileStyles.row}>
                   <Text style={profileStyles.label}>{texts.profile.fields.goalTarget}</Text>
                   <Text style={profileStyles.value}>
-                    {goalTargetKg ? `${goalTargetKg.toFixed(1)} kg` : texts.profile.values.notSet}
+                    {goalTargetKg
+                      ? `${goalTargetKg.toFixed(1)} ${texts.home.units.kg}`
+                      : texts.profile.values.notSet}
                   </Text>
                 </View>
                 <View style={profileStyles.row}>
