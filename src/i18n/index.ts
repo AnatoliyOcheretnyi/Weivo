@@ -19,7 +19,7 @@ const normalizeLocale = (rawLocale?: string | null): Locale => {
 
 export const getSystemLocale = (): Locale => {
   const locales = Localization.getLocales?.();
-  const languageTag = locales?.[0]?.languageTag ?? Localization.locale;
+  const languageTag = locales?.[0]?.languageTag ?? DEFAULT_LOCALE;
   return normalizeLocale(languageTag);
 };
 
