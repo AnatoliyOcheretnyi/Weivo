@@ -166,14 +166,21 @@ export const createProfileEditStyles = (colors: ThemeColors) =>
     rangeCurrent: {
       alignItems: 'center',
       justifyContent: 'center',
-      paddingHorizontal: spacing.lg,
+      paddingHorizontal: spacing.xl,
+      paddingVertical: spacing.lg,
       borderRadius: radii.full,
       backgroundColor: colors.cream,
     },
-    rangeCurrentText: {
-      fontSize: fontSizes.sm,
+    rangeCurrentLabel: {
+      fontSize: fontSizes.xs,
       color: colors.inkMuted,
       textTransform: 'uppercase',
+      letterSpacing: letterSpacings.sm,
+    },
+    rangeCurrentValue: {
+      marginTop: spacing.xs,
+      fontSize: fontSizes.md,
+      color: colors.ink,
       letterSpacing: letterSpacings.sm,
     },
     actionRow: {

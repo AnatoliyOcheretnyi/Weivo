@@ -280,8 +280,10 @@ export default function ProfileEditScreen() {
                       />
                     </View>
                     <View style={profileEditStyles.rangeCurrent} pointerEvents="none">
-                      <Text style={profileEditStyles.rangeCurrentText}>
-                        {texts.profileEdit.currentWeight}{' '}
+                      <Text style={profileEditStyles.rangeCurrentLabel}>
+                        {texts.profileEdit.currentWeight}
+                      </Text>
+                      <Text style={profileEditStyles.rangeCurrentValue}>
                         {latestWeight ? `${latestWeight.toFixed(1)} kg` : texts.profile.values.notSet}
                       </Text>
                     </View>
