@@ -1,20 +1,17 @@
 import { Canvas, Circle, Path, Skia } from '@shopify/react-native-skia';
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useMemo } from 'react';
 import { Text, View } from 'react-native';
-import {
-  Easing,
-  runOnJS,
-  useDerivedValue,
-  useSharedValue,
-  withTiming,
-} from 'react-native-reanimated';
 
 import { useAppTheme } from '@/theme';
-import { createGoalProgressStyles } from './styles';
-import type { GoalProgressProps } from './types';
-
-const clamp = (value: number, min: number, max: number) =>
-  Math.min(max, Math.max(min, value));
+import {
+  GOAL_PROGRESS_CHECK_STROKE,
+  GOAL_PROGRESS_SIZE,
+  GOAL_PROGRESS_STROKE,
+} from './GoalProgressConstants';
+import { createGoalProgressStyles } from './GoalProgressStyles';
+import type { GoalProgressProps } from './GoalProgressTypes';
+import { clamp, formatKg } from './GoalProgressUtils';
+import { useGoalProgressAnimation } from './UseGoalProgressAnimation';
 
 export function GoalProgress({
   currentKg,
@@ -32,65 +29,16 @@ export function GoalProgress({
   const progress = totalDelta > 0 ? clamp(progressKg / totalDelta, 0, 1) : 0;
   const isAtStart = Math.abs(currentKg - startKg) < 0.05;
   const displayProgress = progress === 0 && totalDelta > 0 && isAtStart ? 0.01 : progress;
-  const size = 84;
-  const stroke = 8;
-  const inset = stroke / 2;
+  const size = GOAL_PROGRESS_SIZE;
+  const stroke = GOAL_PROGRESS_STROKE;
   const radius = (size - stroke) / 2;
-  const progressValue = useSharedValue(0);
-  const successTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const scheduleSuccessComplete = useCallback(() => {
-    if (!onSuccessComplete) {
-      return;
-    }
-    if (successTimeoutRef.current) {
-      clearTimeout(successTimeoutRef.current);
-    }
-    successTimeoutRef.current = setTimeout(() => {
-      onSuccessComplete();
-    }, 450);
-  }, [onSuccessComplete]);
-
-  useEffect(() => {
-    if (showSuccess) {
-      progressValue.value = 0;
-      progressValue.value = withTiming(
-        1,
-        {
-          duration: 650,
-          easing: Easing.out(Easing.cubic),
-        },
-        (finished) => {
-          if (finished) {
-            runOnJS(scheduleSuccessComplete)();
-          }
-        }
-      );
-      return;
-    }
-    progressValue.value = withTiming(displayProgress, {
-      duration: 1200,
-      easing: Easing.out(Easing.cubic),
-    });
-  }, [displayProgress, progressValue, scheduleSuccessComplete, showSuccess]);
-
-  useEffect(() => {
-    return () => {
-      if (successTimeoutRef.current) {
-        clearTimeout(successTimeoutRef.current);
-      }
-    };
-  }, []);
-
-  const arcPath = useDerivedValue(() => {
-    const path = Skia.Path.Make();
-    path.addArc(
-      { x: inset, y: inset, width: size - stroke, height: size - stroke },
-      -90,
-      progressValue.value * 360
-    );
-    return path;
-  }, [inset, size, stroke, progressValue]);
+  const { arcPath } = useGoalProgressAnimation({
+    displayProgress,
+    showSuccess,
+    onSuccessComplete,
+    size,
+    stroke,
+  });
 
   const checkPath = useMemo(() => {
     const path = Skia.Path.Make();
@@ -100,16 +48,12 @@ export function GoalProgress({
     return path;
   }, [size]);
 
-  const formatKg = (value: number) => {
-    const fixed = value.toFixed(1);
-    return fixed.endsWith('.0') ? fixed.slice(0, -2) : fixed;
-  };
   const progressLabel = totalDelta > 0 ? `${formatKg(progressKg)}/${formatKg(totalDelta)}kg` : '--';
 
   return (
     <View style={styles.container}>
       <View style={styles.canvasWrap}>
-        <Canvas style={{ width: size, height: size }}>
+        <Canvas style={styles.canvas}>
           {showSuccess && (
             <Circle
               cx={size / 2}
@@ -138,13 +82,13 @@ export function GoalProgress({
               path={checkPath}
               color={colors.highlight}
               style="stroke"
-              strokeWidth={4}
+              strokeWidth={GOAL_PROGRESS_CHECK_STROKE}
               strokeCap="round"
               strokeJoin="round"
             />
           )}
         </Canvas>
-        <View style={{ position: 'absolute', alignItems: 'center' }}>
+        <View style={styles.overlay}>
           {!showSuccess && <Text style={styles.centerText}>{progressLabel}</Text>}
         </View>
       </View>
