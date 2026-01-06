@@ -2,6 +2,7 @@ import { Canvas, Circle, Path, Skia } from '@shopify/react-native-skia';
 import { useMemo } from 'react';
 import { Text, View } from 'react-native';
 
+import { formatKg } from '@/shared/utils';
 import { useAppTheme } from '@/theme';
 import {
   GOAL_PROGRESS_CHECK_STROKE,
@@ -10,7 +11,7 @@ import {
 } from './GoalProgressConstants';
 import { createGoalProgressStyles } from './GoalProgressStyles';
 import type { GoalProgressProps } from './GoalProgressTypes';
-import { clamp, formatKg } from './GoalProgressUtils';
+import { clamp } from '@/shared/utils';
 import { useGoalProgressAnimation } from './UseGoalProgressAnimation';
 
 export function GoalProgress({

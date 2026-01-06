@@ -1,6 +1,6 @@
 export { SkiaWeightChart } from './components/skia-weight-chart';
 export { GoalProgress } from './components/GoalProgress';
-export { GoalSegmentTrack } from './components/goal-segment-track';
+export { GoalSegmentTrack } from './components/GoalSegmentTrack';
 export { useGoalSegments } from './data/goal-segments/store';
 export type { GoalSegment, GoalSegmentDirection } from './data/goal-segments/types';
 export { useWeightStore } from './data/weight-store';

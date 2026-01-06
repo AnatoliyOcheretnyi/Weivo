@@ -34,6 +34,18 @@ export default function SegmentDetailScreen() {
     segment ? segment.targetKg.toFixed(1) : ''
   );
   const [note, setNote] = useState(segment?.note ?? '');
+  const parseWeight = (value: string) => {
+    const normalized = value.replace(',', '.');
+    const parsed = Number(normalized);
+    return Number.isFinite(parsed) ? parsed : NaN;
+  };
+  const startValue = useMemo(() => parseWeight(startWeight), [startWeight]);
+  const targetValue = useMemo(() => parseWeight(targetWeight), [targetWeight]);
+  const canSave =
+    Number.isFinite(startValue) &&
+    Number.isFinite(targetValue) &&
+    startValue > 0 &&
+    targetValue > 0;
 
   if (!segment) {
     return (
@@ -59,10 +71,13 @@ export default function SegmentDetailScreen() {
   };
 
   const handleSave = () => {
+    if (!canSave) {
+      return;
+    }
     const updated: GoalSegment = {
       ...segment,
-      startKg: Number(startWeight),
-      targetKg: Number(targetWeight),
+      startKg: startValue,
+      targetKg: targetValue,
       note: note.trim() || undefined,
     };
     updateSegment(updated);
@@ -134,7 +149,7 @@ export default function SegmentDetailScreen() {
             <Input
               value={startWeight}
               onChangeText={setStartWeight}
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               placeholder="115.0"
               inputStyle={styles.input}
               unit="kg"
@@ -149,7 +164,7 @@ export default function SegmentDetailScreen() {
             <Input
               value={targetWeight}
               onChangeText={setTargetWeight}
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               placeholder="110.0"
               inputStyle={styles.input}
               unit="kg"
@@ -182,6 +197,7 @@ export default function SegmentDetailScreen() {
               <Button
                 title={texts.segments.save}
                 onPress={handleSave}
+                disabled={!canSave}
                 style={styles.actionButton}
               />
             </View>

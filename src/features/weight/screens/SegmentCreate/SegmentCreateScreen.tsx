@@ -43,13 +43,20 @@ export default function SegmentCreateScreen() {
   const scrollRef = useRef<ScrollView>(null);
   const targetInputRef = useRef<TextInput>(null);
 
-  const start = Number(startWeight);
-  const computedTarget = Number(target);
+  const parseWeight = (value: string) => {
+    const normalized = value.replace(',', '.');
+    const parsed = Number(normalized);
+    return Number.isFinite(parsed) ? parsed : NaN;
+  };
+
+  const startValue = useMemo(() => parseWeight(startWeight), [startWeight]);
+  const targetValue = useMemo(() => parseWeight(target), [target]);
 
   const canSave =
-    start > 0 &&
-    Number(target) > 0 &&
-    !Number.isNaN(computedTarget);
+    Number.isFinite(startValue) &&
+    Number.isFinite(targetValue) &&
+    startValue > 0 &&
+    targetValue > 0;
 
   const handleSave = () => {
     if (!canSave) {
@@ -57,15 +64,15 @@ export default function SegmentCreateScreen() {
     }
     const segment: GoalSegment = {
       id: String(Date.now()),
-      startKg: start,
-      targetKg: computedTarget,
+      startKg: startValue,
+      targetKg: targetValue,
       direction: inferredDirection,
       note: note.trim() || undefined,
       createdAtISO: new Date().toISOString(),
     };
     addSegment(segment);
     const nextStart =
-      inferredDirection === 'gain' ? computedTarget + 0.1 : computedTarget - 0.1;
+      inferredDirection === 'gain' ? targetValue + 0.1 : targetValue - 0.1;
     setStartWeight(nextStart.toFixed(1));
     setTarget('');
     setNote('');
@@ -86,7 +93,7 @@ export default function SegmentCreateScreen() {
             <Input
               value={startWeight}
               onChangeText={setStartWeight}
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               placeholder="115.0"
               inputStyle={styles.input}
               unit="kg"
@@ -100,7 +107,7 @@ export default function SegmentCreateScreen() {
             <Input
               value={target}
               onChangeText={setTarget}
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
               placeholder="110.0"
               inputStyle={styles.input}
               unit="kg"

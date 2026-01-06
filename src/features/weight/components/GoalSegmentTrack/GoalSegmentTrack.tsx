@@ -1,16 +1,17 @@
 import { useMemo, useState } from 'react';
-import { Dimensions, Pressable, Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Canvas, Path, Skia } from '@shopify/react-native-skia';
 
 import { useAppTheme } from '@/theme';
 import { useTexts } from '@/i18n';
-import type { GoalSegmentTrackProps } from './types';
 import type { GoalSegment } from '../../data/goal-segments/types';
-import { createGoalSegmentTrackStyles } from './styles';
-
-const clamp = (value: number, min: number, max: number) =>
-  Math.min(max, Math.max(min, value));
+import type { GoalSegmentTrackProps } from './GoalSegmentTrackTypes';
+import { createGoalSegmentTrackStyles } from './GoalSegmentTrackStyles';
+import { GOAL_SEGMENT_STROKE_WIDTH } from './GoalSegmentTrackConstants';
+import { clamp } from '@/shared/utils';
+import { formatKg } from '@/shared/utils';
+import { useGoalSegmentLayout } from './UseGoalSegmentLayout';
 
 export function GoalSegmentTrack({
   segments,
@@ -20,87 +21,27 @@ export function GoalSegmentTrack({
   allowSegmentPress = true,
 }: GoalSegmentTrackProps) {
   const { colors } = useAppTheme();
-  const styles = useMemo(() => createGoalSegmentTrackStyles(colors), [colors]);
   const { texts } = useTexts();
   const router = useRouter();
   const [containerWidth, setContainerWidth] = useState(0);
-  const ordered = useMemo(
-    () => [...segments].sort((a, b) => a.createdAtISO.localeCompare(b.createdAtISO)),
-    [segments]
+  const { ordered, nodes, points, height, availableWidth } = useGoalSegmentLayout({
+    segments,
+    currentKg,
+    showAddNode,
+    containerWidth,
+  });
+  const styles = useMemo(
+    () => createGoalSegmentTrackStyles(colors, { width: availableWidth, height }),
+    [availableWidth, colors, height]
   );
-
-  const dotSize = 36;
-  const lineWidth = 40;
-  const gap = 6;
-  const rowGap = 18;
-  const availableWidth = containerWidth || Dimensions.get('window').width - 48;
-  const itemWidth = dotSize + lineWidth + gap;
-  const itemsPerRow = Math.max(2, Math.floor((availableWidth + gap) / itemWidth));
-  const nodes = useMemo(() => {
-    if (ordered.length === 0 && !showAddNode) {
-      return [];
-    }
-    const startValue =
-      ordered.length > 0
-        ? ordered[0].startKg
-        : currentKg != null
-          ? currentKg
-          : 0;
-    const baseNodes = [
-      {
-        id: ordered.length > 0 ? `start-${ordered[0].id}` : 'start',
-        value: startValue,
-        segmentIndex: null as number | null,
-        type: 'start' as const,
-      },
-      ...ordered.map((segment, index) => ({
-        id: segment.id,
-        value: segment.targetKg,
-        segmentIndex: index,
-        segment,
-        type: 'segment' as const,
+  const pointPositions = useMemo(
+    () =>
+      points.map((point) => ({
+        left: point.x,
+        top: point.y,
       })),
-    ];
-    if (!showAddNode) {
-      return baseNodes;
-    }
-    return [
-      ...baseNodes,
-      {
-        id: 'add',
-        value: null as number | null,
-        segmentIndex: null as number | null,
-        type: 'add' as const,
-      },
-    ];
-  }, [currentKg, ordered, showAddNode]);
-  const rowCount = Math.max(1, Math.ceil(nodes.length / itemsPerRow));
-  const height = rowCount * dotSize + (rowCount - 1) * rowGap;
-
-  const points = useMemo(() => {
-    return nodes.map((node, index) => {
-      const row = Math.floor(index / itemsPerRow);
-      const col = index % itemsPerRow;
-      const isReversed = row % 2 === 1;
-      const x = isReversed
-        ? availableWidth - dotSize - col * itemWidth
-        : col * itemWidth;
-      const y = row * (dotSize + rowGap);
-      return {
-        id: node.id,
-        segment: node.segment,
-        segmentIndex: node.segmentIndex,
-        value: node.value,
-        type: node.type,
-        index,
-        row,
-        x,
-        y,
-        cx: x + dotSize / 2,
-        cy: y + dotSize / 2,
-      };
-    });
-  }, [availableWidth, dotSize, itemWidth, itemsPerRow, nodes, rowGap]);
+    [points]
+  );
 
   const getProgress = (segmentStart: number, segmentTarget: number, direction: string) => {
     if (currentKg == null) {
@@ -112,11 +53,6 @@ export function GoalSegmentTrack({
     }
     const total = segmentStart - segmentTarget;
     return total > 0 ? clamp((segmentStart - currentKg) / total, 0, 1) : 0;
-  };
-
-  const formatKg = (value: number) => {
-    const fixed = value.toFixed(1);
-    return fixed.endsWith('.0') ? fixed.slice(0, -2) : fixed;
   };
 
   const basePath = useMemo(() => {
@@ -187,13 +123,13 @@ export function GoalSegmentTrack({
       {ordered.length === 0 && !showAddNode ? (
         <Text style={styles.labelText}>{texts.segments.empty}</Text>
       ) : (
-      <View style={[styles.trackLayer, { height }]}>
-        <Canvas style={[styles.canvas, { width: availableWidth, height }]}>
+      <View style={styles.trackLayer}>
+        <Canvas style={styles.canvas}>
           <Path
             path={basePath}
             style="stroke"
             color={colors.creamLine}
-            strokeWidth={3}
+            strokeWidth={GOAL_SEGMENT_STROKE_WIDTH}
             strokeJoin="round"
             strokeCap="round"
           />
@@ -201,12 +137,12 @@ export function GoalSegmentTrack({
             path={progressPath}
             style="stroke"
             color={colors.accentOrange}
-            strokeWidth={3}
+            strokeWidth={GOAL_SEGMENT_STROKE_WIDTH}
             strokeJoin="round"
             strokeCap="round"
           />
         </Canvas>
-        {points.map((point) => {
+        {points.map((point, index) => {
           const segment = point.segment;
           const isAdd = point.type === 'add';
           const isStart = point.type === 'start';
@@ -243,10 +179,7 @@ export function GoalSegmentTrack({
               disabled={!segment && !isAdd}
               style={[
                 styles.segmentWrap,
-                {
-                  left: point.x,
-                  top: point.y,
-                },
+                pointPositions[index],
               ]}>
               <View
                 style={[

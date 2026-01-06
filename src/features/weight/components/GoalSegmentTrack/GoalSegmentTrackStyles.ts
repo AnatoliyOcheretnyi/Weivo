@@ -4,8 +4,17 @@ import type { ThemeColors } from '@/theme';
 import { radii } from '@/theme/radii';
 import { spacing } from '@/theme/spacing';
 import { fontSizes, letterSpacings } from '@/theme/typography';
+import { GOAL_SEGMENT_DOT_SIZE } from './GoalSegmentTrackConstants';
 
-export const createGoalSegmentTrackStyles = (colors: ThemeColors) =>
+type GoalSegmentTrackLayout = {
+  width: number;
+  height: number;
+};
+
+export const createGoalSegmentTrackStyles = (
+  colors: ThemeColors,
+  layout: GoalSegmentTrackLayout
+) =>
   StyleSheet.create({
     container: {
       gap: spacing.xl,
@@ -14,6 +23,8 @@ export const createGoalSegmentTrackStyles = (colors: ThemeColors) =>
       position: 'absolute',
       top: 0,
       left: 0,
+      width: layout.width,
+      height: layout.height,
     },
     trackRow: {
       flexDirection: 'row',
@@ -35,8 +46,8 @@ export const createGoalSegmentTrackStyles = (colors: ThemeColors) =>
       flexDirection: 'row-reverse',
     },
     dot: {
-      width: 36,
-      height: 36,
+      width: GOAL_SEGMENT_DOT_SIZE,
+      height: GOAL_SEGMENT_DOT_SIZE,
       borderRadius: radii.lg,
       backgroundColor: colors.creamLine,
       alignItems: 'center',
@@ -68,6 +79,7 @@ export const createGoalSegmentTrackStyles = (colors: ThemeColors) =>
     trackLayer: {
       position: 'relative',
       width: '100%',
+      height: layout.height,
     },
     labelsRow: {
       flexDirection: 'row',

@@ -1,0 +1,7 @@
+export const GOAL_SEGMENT_DOT_SIZE = 36;
+export const GOAL_SEGMENT_LINE_WIDTH = 40;
+export const GOAL_SEGMENT_GAP = 6;
+export const GOAL_SEGMENT_ROW_GAP = 18;
+export const GOAL_SEGMENT_STROKE_WIDTH = 3;
+export const GOAL_SEGMENT_MIN_ITEMS_PER_ROW = 2;
+export const GOAL_SEGMENT_DEFAULT_WIDTH_OFFSET = 48;
