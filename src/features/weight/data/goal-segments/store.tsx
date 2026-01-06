@@ -4,11 +4,11 @@ import { goalSegmentsStorage } from './storage'
 import type { GoalSegment } from './types'
 type GoalSegmentsStore = {
   segments: GoalSegment[];
-  addSegment: (segment: GoalSegment) => void;
-  updateSegment: (segment: GoalSegment) => void;
-  removeSegment: (id: string) => void;
+  addSegment: (_segment: GoalSegment) => void;
+  updateSegment: (_segment: GoalSegment) => void;
+  removeSegment: (_id: string) => void;
   clearSegments: () => void;
-  reconcileCompletion: (currentKg: number | null) => void;
+  reconcileCompletion: (_currentKg: number | null) => void;
 };
 const segmentsAtom = atom<GoalSegment[]>(goalSegmentsStorage.loadSegments())
 const addSegmentAtom = atom(null, (get, set, segment: GoalSegment) => {
@@ -63,7 +63,7 @@ const reconcileCompletionAtom = atom(null, (get, set, currentKg: number | null) 
     return
   }
   const next = segments.map((segment) =>
-    idsToReset.has(segment.id) ? { ...segment, completedAtISO: null } : segment
+    idsToReset.has(segment.id) ? { ...segment, completedAtISO: undefined } : segment
   )
   goalSegmentsStorage.saveSegments(next)
   set(segmentsAtom, next)

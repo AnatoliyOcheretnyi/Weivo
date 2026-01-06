@@ -2,11 +2,11 @@ import { atom, useAtomValue, useSetAtom } from 'jotai'
 import { useMemo } from 'react'
 import { weightEntries } from '../dev/weight-mock'
 import type { Mood, WeightEntry } from './types'
-import { weightStorage } from './weight-storage'
+import { weightStorage } from './weightStorage'
 type WeightStore = {
   entries: WeightEntry[];
-  addEntry: (weightKg: number, mood?: Mood) => void;
-  removeEntry: (dateISO: string) => void;
+  addEntry: (_weightKg: number, _mood?: Mood) => void;
+  removeEntry: (_dateISO: string) => void;
   clearEntries: () => void;
 };
 const entriesAtom = atom<WeightEntry[]>(weightStorage.initEntries(weightEntries))
