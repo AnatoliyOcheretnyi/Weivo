@@ -1,4 +1,4 @@
-export { useProfileStore } from './data/profile-store'
+export { useProfileStore } from './data/profileStore'
 export type {
   ActivityLevel,
   GoalType,

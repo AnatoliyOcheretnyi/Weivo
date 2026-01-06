@@ -1,10 +1,10 @@
 import { atom, useAtomValue, useSetAtom } from 'jotai'
 import { useMemo } from 'react'
-import { profileStorage } from './profile-storage'
+import { profileStorage } from './profileStorage'
 import type { ProfileData } from './types'
 type ProfileStore = {
   profile: ProfileData;
-  updateProfile: (next: Partial<ProfileData>) => void;
+  updateProfile: (_next: Partial<ProfileData>) => void;
 };
 const profileAtom = atom<ProfileData>(profileStorage.loadProfile() ?? {})
 const updateProfileAtom = atom(null, (get, set, next: Partial<ProfileData>) => {

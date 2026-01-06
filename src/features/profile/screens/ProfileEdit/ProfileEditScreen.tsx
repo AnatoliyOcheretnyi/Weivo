@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react'
-import { Platform, Pressable, ScrollView, Text, View } from 'react-native'
+import { useMemo } from 'react'
+import { Pressable, ScrollView, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useRouter } from 'expo-router'
 import DateTimePicker from '@react-native-community/datetimepicker'
@@ -8,10 +8,10 @@ import { Button } from '@/shared/components/Button'
 import { Input } from '@/shared/components/Input'
 import { useProfileStore } from '@/features/profile'
 import { useWeightStore } from '@/features/weight'
-import type { ActivityLevel, GoalType, Sex, Units, Language, ThemeMode } from '@/features/profile'
 import { themes, useAppTheme } from '@/theme'
 import { createProfileEditStyles } from './ProfileEditScreen.styles'
 import { localeLabels, useTexts } from '@/i18n'
+import { useProfileEditScreen } from './UseProfileEditScreen'
 export default function ProfileEditScreen() {
   const router = useRouter()
   const { profile, updateProfile } = useProfileStore()
@@ -19,114 +19,56 @@ export default function ProfileEditScreen() {
   const { texts, locale } = useTexts()
   const { colors, scheme } = useAppTheme()
   const profileEditStyles = useMemo(() => createProfileEditStyles(colors), [colors])
-  const latestWeight = entries.length > 0 ? entries[entries.length - 1].weightKg : null
-  const [editTab, setEditTab] = useState<'profile' | 'account'>('profile')
-  const [birthDate, setBirthDate] = useState<Date | null>(
-    profile.birthDateISO ? new Date(profile.birthDateISO) : null
-  )
-  const [heightCm, setHeightCm] = useState(
-    profile.heightCm ? String(profile.heightCm) : ''
-  )
-  const [sex, setSex] = useState<Sex>(profile.sex ?? 'male')
-  const [activityLevel, setActivityLevel] = useState<ActivityLevel>(
-    profile.activityLevel ?? 'sedentary'
-  )
-  const [goalTarget, setGoalTarget] = useState(
-    profile.goalTargetKg ? profile.goalTargetKg.toFixed(1) : ''
-  )
-  const [goalRate, setGoalRate] = useState(
-    profile.goalRateKgPerWeek ? profile.goalRateKgPerWeek.toFixed(1) : ''
-  )
-  const [goalRangeMin, setGoalRangeMin] = useState(
-    profile.goalRangeMinKg ? profile.goalRangeMinKg.toFixed(1) : ''
-  )
-  const [goalRangeMax, setGoalRangeMax] = useState(
-    profile.goalRangeMaxKg ? profile.goalRangeMaxKg.toFixed(1) : ''
-  )
-  const [goalType, setGoalType] = useState<GoalType>(profile.goalType ?? 'maintain')
-  const [units, setUnits] = useState<Units>(profile.units ?? 'metric')
-  const [language, setLanguage] = useState<Language>(
-    profile.language && profile.language !== 'system' ? profile.language : (locale as Language)
-  )
-  const [theme, setTheme] = useState<ThemeMode>(profile.theme ?? scheme)
-  const [showDatePicker, setShowDatePicker] = useState(false)
-  const canSave = useMemo(() => {
-    if (heightCm && Number.isNaN(Number(heightCm))) {
-      return false
-    }
-    if (goalTarget && Number.isNaN(Number(goalTarget))) {
-      return false
-    }
-    if (goalRate && Number.isNaN(Number(goalRate))) {
-      return false
-    }
-    if (goalRangeMin && Number.isNaN(Number(goalRangeMin))) {
-      return false
-    }
-    if (goalRangeMax && Number.isNaN(Number(goalRangeMax))) {
-      return false
-    }
-    if (goalType === 'lose' || goalType === 'gain') {
-      if (goalRate) {
-        const rate = Number(goalRate)
-        const maxRate = goalType === 'gain' ? 0.5 : 1
-        if (rate <= 0 || rate > maxRate) {
-          return false
-        }
-      }
-    }
-    if (goalType === 'maintain' && goalRangeMin && goalRangeMax) {
-      if (Number(goalRangeMin) >= Number(goalRangeMax)) {
-        return false
-      }
-    }
-    return true
-  }, [heightCm, goalTarget, goalRate, goalRangeMin, goalRangeMax, goalType])
-  const themeOptions: ThemeMode[] = ['light', 'dark', 'rose', 'sky', 'mint']
-  const themeLabel = (option: ThemeMode) => {
-    switch (option) {
-      case 'light':
-        return texts.profileEdit.themeOptions.light
-      case 'dark':
-        return texts.profileEdit.themeOptions.dark
-      case 'rose':
-        return texts.profileEdit.themeOptions.rose
-      case 'sky':
-        return texts.profileEdit.themeOptions.sky
-      case 'mint':
-        return texts.profileEdit.themeOptions.mint
-      default:
-        return texts.profileEdit.themeOptions.light
-    }
-  }
-  const handleSave = () => {
-    if (!canSave) {
-      return
-    }
-    const nextProfile = {
-      birthDateISO: birthDate ? birthDate.toISOString() : undefined,
-      heightCm: heightCm ? Number(heightCm) : undefined,
-      goalType,
-      sex,
-      activityLevel,
-      units,
-      language,
-      theme,
-      goalTargetKg: goalTarget ? Number(goalTarget) : undefined,
-      goalRateKgPerWeek: goalRate ? Number(goalRate) : undefined,
-      goalRangeMinKg: goalRangeMin ? Number(goalRangeMin) : undefined,
-      goalRangeMaxKg: goalRangeMax ? Number(goalRangeMax) : undefined,
-    }
-    if (goalType === 'maintain') {
-      nextProfile.goalTargetKg = undefined
-      nextProfile.goalRateKgPerWeek = undefined
-    } else {
-      nextProfile.goalRangeMinKg = undefined
-      nextProfile.goalRangeMaxKg = undefined
-    }
-    updateProfile(nextProfile)
-    router.back()
-  }
+  const {
+    latestWeight,
+    editTab,
+    setEditTab,
+    birthDate,
+    showDatePicker,
+    setShowDatePicker,
+    onDateChange,
+    heightCm,
+    setHeightCm,
+    sex,
+    setSex,
+    activityLevel,
+    setActivityLevel,
+    goalTarget,
+    setGoalTarget,
+    goalRate,
+    setGoalRate,
+    goalRangeMin,
+    setGoalRangeMin,
+    goalRangeMax,
+    setGoalRangeMax,
+    goalType,
+    setGoalType,
+    units,
+    setUnits,
+    language,
+    setLanguage,
+    theme,
+    setTheme,
+    canSave,
+    themeLabel,
+    handleSave,
+    tabs,
+    sexOptions,
+    activityOptions,
+    goalTypeOptions,
+    unitOptions,
+    languageOptions,
+    themeOptions,
+    defaultBirthDate,
+  } = useProfileEditScreen({
+    profile,
+    entries,
+    texts,
+    locale,
+    scheme,
+    updateProfile,
+    onDone: router.back,
+  })
   return (
     <SafeAreaView style={profileEditStyles.screen} edges={['top', 'left', 'right']}>
       <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
@@ -134,7 +76,7 @@ export default function ProfileEditScreen() {
           <Text style={profileEditStyles.title}>{texts.profileEdit.title}</Text>
           <Text style={profileEditStyles.subtitle}>{texts.profileEdit.subtitle}</Text>
           <View style={profileEditStyles.tabsRow}>
-            {(['profile', 'account'] as const).map((tab) => (
+            {tabs.map((tab) => (
               <Pressable
                 key={tab}
                 style={[
@@ -147,7 +89,9 @@ export default function ProfileEditScreen() {
                     profileEditStyles.tabText,
                     editTab === tab && profileEditStyles.tabTextActive,
                   ]}>
-                  {tab === 'profile' ? texts.profileEdit.tabs.profile : texts.profileEdit.tabs.account}
+                  {tab === 'profile'
+                    ? texts.profileEdit.tabs.profile
+                    : texts.profileEdit.tabs.account}
                 </Text>
               </Pressable>
             ))}
@@ -175,25 +119,18 @@ export default function ProfileEditScreen() {
                 </Pressable>
                 {showDatePicker && (
                   <DateTimePicker
-                    value={birthDate ?? new Date(2000, 0, 1)}
+                    value={birthDate ?? defaultBirthDate}
                     mode="date"
                     display="spinner"
                     maximumDate={new Date()}
-                    onChange={(_, selectedDate) => {
-                      if (Platform.OS !== 'ios') {
-                        setShowDatePicker(false)
-                      }
-                      if (selectedDate) {
-                        setBirthDate(selectedDate)
-                      }
-                    }}
+                    onChange={onDateChange}
                   />
                 )}
               </View>
               <View style={profileEditStyles.section}>
                 <Text style={profileEditStyles.label}>{texts.profileEdit.sex}</Text>
                 <View style={profileEditStyles.segmentedRow}>
-                  {(['male', 'female'] as Sex[]).map((value) => (
+                  {sexOptions.map((value) => (
                     <Pressable
                       key={value}
                       style={[
@@ -230,9 +167,7 @@ export default function ProfileEditScreen() {
               <View style={profileEditStyles.section}>
                 <Text style={profileEditStyles.label}>{texts.profileEdit.activity}</Text>
                 <View style={profileEditStyles.chipsRow}>
-                  {(
-                    ['sedentary', 'light', 'moderate', 'active', 'veryActive'] as ActivityLevel[]
-                  ).map((level) => (
+                  {activityOptions.map((level) => (
                     <Pressable
                       key={level}
                       style={[
@@ -273,7 +208,7 @@ export default function ProfileEditScreen() {
               <View style={profileEditStyles.section}>
                 <Text style={profileEditStyles.label}>{texts.profileEdit.goalType}</Text>
                 <View style={profileEditStyles.segmentedRow}>
-                  {(['lose', 'maintain', 'gain'] as GoalType[]).map((type) => (
+                  {goalTypeOptions.map((type) => (
                     <Pressable
                       key={type}
                       style={[
@@ -371,7 +306,7 @@ export default function ProfileEditScreen() {
               <View style={profileEditStyles.section}>
                 <Text style={profileEditStyles.label}>{texts.profileEdit.language}</Text>
                 <View style={profileEditStyles.segmentedRow}>
-                  {(['en', 'uk', 'es'] as Language[]).map((option) => (
+                  {languageOptions.map((option) => (
                     <Pressable
                       key={option}
                       style={[
@@ -397,35 +332,37 @@ export default function ProfileEditScreen() {
                     const optionColors = themes[option]
                     const isDark = option === 'dark'
                     return (
-                    <Pressable
-                      key={option}
-                      style={[
-                        profileEditStyles.themeChip,
-                        {
-                          backgroundColor: optionColors.creamWarm,
-                          borderColor: isDark ? optionColors.highlight : optionColors.creamLine,
-                        },
-                        theme === option && profileEditStyles.themeChipActive,
-                        theme === option && isDark && profileEditStyles.themeChipActiveDark,
-                      ]}
-                      onPress={() => setTheme(option)}>
-                      <Text
+                      <Pressable
+                        key={option}
                         style={[
-                          profileEditStyles.themeChipText,
-                          { color: optionColors.ink },
-                          theme === option && profileEditStyles.themeChipTextActive,
-                        ]}>
-                        {themeLabel(option)}
-                      </Text>
-                    </Pressable>
-                  )
+                          profileEditStyles.themeChip,
+                          {
+                            backgroundColor: optionColors.creamWarm,
+                            borderColor: isDark
+                              ? optionColors.highlight
+                              : optionColors.creamLine,
+                          },
+                          theme === option && profileEditStyles.themeChipActive,
+                          theme === option && isDark && profileEditStyles.themeChipActiveDark,
+                        ]}
+                        onPress={() => setTheme(option)}>
+                        <Text
+                          style={[
+                            profileEditStyles.themeChipText,
+                            { color: optionColors.ink },
+                            theme === option && profileEditStyles.themeChipTextActive,
+                          ]}>
+                          {themeLabel(option)}
+                        </Text>
+                      </Pressable>
+                    )
                   })}
                 </View>
               </View>
               <View style={profileEditStyles.section}>
                 <Text style={profileEditStyles.label}>{texts.profileEdit.units}</Text>
                 <View style={profileEditStyles.segmentedRow}>
-                  {(['metric', 'imperial'] as Units[]).map((unit) => (
+                  {unitOptions.map((unit) => (
                     <Pressable
                       key={unit}
                       style={[
