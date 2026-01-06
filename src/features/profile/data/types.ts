@@ -19,4 +19,5 @@ export type ProfileData = {
   language?: Language;
   theme?: ThemeMode;
   onboardingComplete?: boolean;
+  hasSeenSegmentsHint?: boolean;
 };

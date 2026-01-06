@@ -1,6 +1,17 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { Alert, Dimensions, Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
+import Animated, {
+  Easing,
+  FadeIn,
+  FadeOut,
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withSequence,
+  withTiming,
+} from 'react-native-reanimated';
 
 import { useProfileStore } from '@/features/profile';
 import {
@@ -11,13 +22,15 @@ import {
   type GoalSegment,
 } from '@/features/weight';
 import { useAppTheme } from '@/theme';
+import { spacing } from '@/theme/spacing';
 import { createHomeStyles } from './index.styles';
 import { useTexts } from '@/i18n';
 
 export default function HomeScreen() {
   const { entries } = useWeightStore();
   const { segments, updateSegment, reconcileCompletion } = useGoalSegments();
-  const { profile } = useProfileStore();
+  const { profile, updateProfile } = useProfileStore();
+  const router = useRouter();
   const { texts } = useTexts();
   const { colors } = useAppTheme();
   const homeStyles = useMemo(() => createHomeStyles(colors), [colors]);
@@ -64,6 +77,19 @@ export default function HomeScreen() {
       : null;
 
   const [pendingSegmentId, setPendingSegmentId] = useState<string | null>(null);
+  const [progressLayout, setProgressLayout] = useState<{
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  } | null>(null);
+  const progressRef = useRef<View>(null);
+  const shouldShowSegmentsHint =
+    (goalType === 'lose' || goalType === 'gain') &&
+    segments.length === 0 &&
+    !profile.hasSeenSegmentsHint;
+  const [showSegmentsHint, setShowSegmentsHint] = useState(shouldShowSegmentsHint);
+  const ctaPulse = useSharedValue(1);
   const formatKg = (value: number) => {
     const fixed = value.toFixed(1);
     return fixed.endsWith('.0') ? fixed.slice(0, -2) : fixed;
@@ -98,6 +124,28 @@ export default function HomeScreen() {
     }
     return next;
   }, [orderedSegments, pendingSegmentId, stats.current]);
+
+  useEffect(() => {
+    setShowSegmentsHint(shouldShowSegmentsHint);
+  }, [shouldShowSegmentsHint]);
+
+  useEffect(() => {
+    if (!showSegmentsHint) {
+      return;
+    }
+    ctaPulse.value = withRepeat(
+      withSequence(
+        withTiming(1.03, { duration: 900, easing: Easing.inOut(Easing.ease) }),
+        withTiming(1, { duration: 900, easing: Easing.inOut(Easing.ease) })
+      ),
+      -1,
+      false
+    );
+  }, [ctaPulse, showSegmentsHint]);
+
+  const ctaPulseStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: ctaPulse.value }],
+  }));
 
   useEffect(() => {
     if (stats.current > 0) {
@@ -186,6 +234,34 @@ export default function HomeScreen() {
     return texts.profile.values.notSet;
   })();
 
+  const handleDismissSegmentsHint = () => {
+    updateProfile({ hasSeenSegmentsHint: true });
+    setShowSegmentsHint(false);
+  };
+
+  const handleCreateSegment = () => {
+    updateProfile({ hasSeenSegmentsHint: true });
+    setShowSegmentsHint(false);
+    router.push('/segment-create');
+  };
+
+  const handleProgressLayout = () => {
+    if (!progressRef.current) {
+      return;
+    }
+    progressRef.current.measureInWindow((x, y, width, height) => {
+      setProgressLayout({ x, y, width, height });
+    });
+  };
+
+  const hintTop = progressLayout
+    ? progressLayout.y + progressLayout.height + spacing.xl
+    : 0;
+  const hintArrowLeft = progressLayout
+    ? progressLayout.x + progressLayout.width / 2 - spacing.mega - 10
+    : spacing.xxxl;
+  const hintWidth = Dimensions.get('window').width - spacing.mega * 2;
+
   return (
     <SafeAreaView style={homeStyles.screen} edges={['top', 'left', 'right']}>
       <View style={homeStyles.orbLarge} />
@@ -227,23 +303,25 @@ export default function HomeScreen() {
             <Text style={homeStyles.statValue}>{stats.min.toFixed(1)}</Text>
             <Text style={homeStyles.statUnit}>{texts.home.units.kg}</Text>
           </View>
-          <Pressable
-            style={homeStyles.statCard}
-            onPress={handleProgressPress}
-            disabled={!activeSegment}
-          >
-            {activeSegment ? (
-              <GoalProgress
-                currentKg={stats.current}
-                startKg={activeSegment.startKg}
-                targetKg={activeSegment.targetKg}
-                showSuccess={pendingSegmentId === activeSegment.id}
-                onSuccessComplete={handleSegmentComplete}
-              />
-            ) : (
-              <GoalProgress currentKg={0} startKg={0} targetKg={0} />
-            )}
-          </Pressable>
+          <View ref={progressRef} onLayout={handleProgressLayout}>
+            <Pressable
+              style={homeStyles.statCard}
+              onPress={handleProgressPress}
+              disabled={!activeSegment}
+            >
+              {activeSegment ? (
+                <GoalProgress
+                  currentKg={stats.current}
+                  startKg={activeSegment.startKg}
+                  targetKg={activeSegment.targetKg}
+                  showSuccess={pendingSegmentId === activeSegment.id}
+                  onSuccessComplete={handleSegmentComplete}
+                />
+              ) : (
+                <GoalProgress currentKg={0} startKg={0} targetKg={0} />
+              )}
+            </Pressable>
+          </View>
           <View style={homeStyles.statCard}>
             <Text style={homeStyles.statLabel}>{texts.home.entries}</Text>
             <Text style={homeStyles.statValue}>{stats.total}</Text>
@@ -253,6 +331,29 @@ export default function HomeScreen() {
 
         <SkiaWeightChart data={entries} />
       </ScrollView>
+      {showSegmentsHint && progressLayout && (
+        <Animated.View
+          entering={FadeIn.duration(220)}
+          exiting={FadeOut.duration(180)}
+          style={homeStyles.hintOverlay}
+        >
+          <Animated.View style={[homeStyles.hintCard, { top: hintTop, width: hintWidth }]}>
+            <View style={[homeStyles.hintArrow, { left: hintArrowLeft }]} />
+            <Text style={homeStyles.hintTitle}>{texts.home.segmentsHintTitle}</Text>
+            <Text style={homeStyles.hintBody}>{texts.home.segmentsHintBody}</Text>
+            <View style={homeStyles.hintActions}>
+              <Pressable style={homeStyles.hintSecondary} onPress={handleDismissSegmentsHint}>
+                <Text style={homeStyles.hintSecondaryText}>{texts.home.segmentsHintDismiss}</Text>
+              </Pressable>
+              <Animated.View style={[homeStyles.hintPrimaryWrap, ctaPulseStyle]}>
+                <Pressable style={homeStyles.hintPrimary} onPress={handleCreateSegment}>
+                  <Text style={homeStyles.hintPrimaryText}>{texts.home.segmentsHintCta}</Text>
+                </Pressable>
+              </Animated.View>
+            </View>
+          </Animated.View>
+        </Animated.View>
+      )}
     </SafeAreaView>
   );
 }

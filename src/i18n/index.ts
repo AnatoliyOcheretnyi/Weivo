@@ -152,6 +152,11 @@ const translations = {
       goal: 'Goal',
       eta: 'ETA',
       bmi: 'BMI',
+      segmentsHintTitle: 'Your goal segments',
+      segmentsHintBody:
+        'Split your goal into small steps. Each segment keeps you focused and shows progress clearly. Create your first segment now, or do it later in Profile.',
+      segmentsHintCta: 'Create first segment',
+      segmentsHintDismiss: 'Later',
       units: {
         kg: 'kg',
         days: 'days',
@@ -239,10 +244,11 @@ const translations = {
       sex: 'Sex',
       bodyTitle: 'Body metrics.',
       bodyBody:
-        'To calculate your trends and targets as accurately as possible, please share these details.',
+        'To calculate your trends and targets as accurately as possible, please share these details and your activity level below.',
       height: 'Height',
       weight: 'Current weight',
       bodyHelper: 'You can update this anytime.',
+      activityHint: 'Scroll down for activity level.',
       goalTitle: 'What is your goal?',
       goalBody: 'Pick a target and a weekly pace that feels sustainable.',
       goalType: 'Goal type',
@@ -386,6 +392,11 @@ const translations = {
       goal: 'Ціль',
       eta: 'Час',
       bmi: 'ІМТ',
+      segmentsHintTitle: 'Відрізки цілі',
+      segmentsHintBody:
+        'Розбий ціль на невеликі кроки. Так легше тримати фокус і бачити прогрес. Створи перший відрізок зараз або пізніше у профілі.',
+      segmentsHintCta: 'Створити перший відрізок',
+      segmentsHintDismiss: 'Пізніше',
       units: {
         kg: 'кг',
         days: 'днів',
@@ -473,10 +484,11 @@ const translations = {
       sex: 'Стать',
       bodyTitle: 'Параметри тіла.',
       bodyBody:
-        'Щоб максимально точно порахувати тренди й цілі, поділись цими даними, будь ласка.',
+        'Щоб максимально точно порахувати тренди й цілі, поділись цими даними та рівнем активності нижче.',
       height: 'Зріст',
       weight: 'Поточна вага',
       bodyHelper: 'Завжди можна змінити пізніше.',
+      activityHint: 'Прокруть нижче, там рівень активності.',
       goalTitle: 'Яка твоя ціль?',
       goalBody: 'Обери напрям і комфортний темп на тиждень.',
       goalType: 'Тип цілі',
@@ -620,6 +632,11 @@ const translations = {
       goal: 'Objetivo',
       eta: 'ETA',
       bmi: 'IMC',
+      segmentsHintTitle: 'Tramos de objetivo',
+      segmentsHintBody:
+        'Divide tu objetivo en pasos pequeños. Mantén el foco y sigue el progreso con claridad. Crea tu primer tramo ahora o más tarde en Perfil.',
+      segmentsHintCta: 'Crear primer tramo',
+      segmentsHintDismiss: 'Más tarde',
       units: {
         kg: 'kg',
         days: 'días',
@@ -707,10 +724,11 @@ const translations = {
       sex: 'Sexo',
       bodyTitle: 'Métricas corporales.',
       bodyBody:
-        'Para calcular tus tendencias y objetivos con precisión, comparte estos datos por favor.',
+        'Para calcular tus tendencias y objetivos con precisión, comparte estos datos y tu nivel de actividad abajo.',
       height: 'Altura',
       weight: 'Peso actual',
       bodyHelper: 'Puedes actualizarlo cuando quieras.',
+      activityHint: 'Desplázate hacia abajo para el nivel de actividad.',
       goalTitle: '¿Cuál es tu objetivo?',
       goalBody: 'Elige una meta y un ritmo semanal sostenible.',
       goalType: 'Tipo de meta',

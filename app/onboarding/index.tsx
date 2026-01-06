@@ -242,6 +242,7 @@ export default function OnboardingScreen() {
               </View>
               <Text style={onboardingStyles.helper}>{texts.onboarding.bodyHelper}</Text>
             </View>
+            <Text style={onboardingStyles.scrollHint}>{texts.onboarding.activityHint}</Text>
             <View style={onboardingStyles.section}>
               <Text style={onboardingStyles.label}>{texts.onboarding.sex}</Text>
               <View style={onboardingStyles.segmentedRow}>
@@ -308,40 +309,41 @@ export default function OnboardingScreen() {
 
             {(goalType === 'lose' || goalType === 'gain') && (
               <View style={onboardingStyles.section}>
-                <Text style={onboardingStyles.label}>{texts.onboarding.targetWeight}</Text>
-                <View style={onboardingStyles.inputRow}>
-                  <TextInput
-                    value={goalTarget}
-                    onChangeText={setGoalTarget}
-                    keyboardType="numeric"
-                    placeholder="80.0"
-                    placeholderTextColor={colors.inkAccent}
-                    style={onboardingStyles.input}
-                  />
-                  <Text style={onboardingStyles.unit}>kg</Text>
+                <View style={onboardingStyles.goalRow}>
+                  <View style={onboardingStyles.goalCol}>
+                    <Text style={onboardingStyles.label}>{texts.onboarding.targetWeight}</Text>
+                    <View style={[onboardingStyles.inputRow, onboardingStyles.inputRowCompact]}>
+                      <TextInput
+                        value={goalTarget}
+                        onChangeText={setGoalTarget}
+                        keyboardType="numeric"
+                        placeholder="80.0"
+                        placeholderTextColor={colors.inkAccent}
+                        style={onboardingStyles.input}
+                      />
+                      <Text style={onboardingStyles.unit}>kg</Text>
+                    </View>
+                  </View>
+                  <View style={onboardingStyles.goalCol}>
+                    <Text style={onboardingStyles.label}>{texts.onboarding.weeklyPace}</Text>
+                    <View style={[onboardingStyles.inputRow, onboardingStyles.inputRowCompact]}>
+                      <TextInput
+                        value={goalRate}
+                        onChangeText={setGoalRate}
+                        keyboardType="numeric"
+                        placeholder="0.5"
+                        placeholderTextColor={colors.inkAccent}
+                        style={onboardingStyles.input}
+                      />
+                      <Text style={onboardingStyles.unit}>kg/{texts.home.units.weeksShort}</Text>
+                    </View>
+                    <Text style={onboardingStyles.helper}>
+                      {goalType === 'gain'
+                        ? texts.onboarding.weeklyPaceGainHelper
+                        : texts.onboarding.weeklyPaceLoseHelper}
+                    </Text>
+                  </View>
                 </View>
-              </View>
-            )}
-
-            {(goalType === 'lose' || goalType === 'gain') && (
-              <View style={onboardingStyles.section}>
-                <Text style={onboardingStyles.label}>{texts.onboarding.weeklyPace}</Text>
-                <View style={onboardingStyles.inputRow}>
-                  <TextInput
-                    value={goalRate}
-                    onChangeText={setGoalRate}
-                    keyboardType="numeric"
-                    placeholder="0.5"
-                    placeholderTextColor={colors.inkAccent}
-                    style={onboardingStyles.input}
-                  />
-                  <Text style={onboardingStyles.unit}>kg/{texts.home.units.weeksShort}</Text>
-                </View>
-                <Text style={onboardingStyles.helper}>
-                  {goalType === 'gain'
-                    ? texts.onboarding.weeklyPaceGainHelper
-                    : texts.onboarding.weeklyPaceLoseHelper}
-                </Text>
               </View>
             )}
 

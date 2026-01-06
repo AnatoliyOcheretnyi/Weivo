@@ -87,6 +87,9 @@ export const createOnboardingStyles = (colors: ThemeColors) =>
       paddingHorizontal: spacing.xMassive,
       paddingVertical: spacing.huge,
     },
+    inputRowCompact: {
+      paddingHorizontal: spacing.xl,
+    },
     input: {
       flex: 1,
       fontSize: fontSizes.input,
@@ -102,6 +105,15 @@ export const createOnboardingStyles = (colors: ThemeColors) =>
       flexDirection: 'row',
       flexWrap: 'wrap',
       gap: spacing.md,
+    },
+    goalRow: {
+      flexDirection: 'row',
+      flexWrap: 'nowrap',
+      gap: spacing.md,
+    },
+    goalCol: {
+      flex: 1,
+      minWidth: 0,
     },
     segment: {
       flexGrow: 1,
@@ -128,6 +140,12 @@ export const createOnboardingStyles = (colors: ThemeColors) =>
       marginTop: spacing.sm,
       fontSize: fontSizes.sm,
       color: colors.inkMutedLight,
+    },
+    scrollHint: {
+      marginTop: spacing.md,
+      fontSize: fontSizes.sm,
+      color: colors.inkMutedLight,
+      letterSpacing: letterSpacings.sm,
     },
     datePickerWrap: {
       alignItems: 'center',
