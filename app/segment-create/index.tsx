@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -6,10 +6,14 @@ import { useRouter } from 'expo-router';
 import { useAppTheme } from '@/theme';
 import { useTexts } from '@/i18n';
 import { useProfileStore } from '@/features/profile';
-import { useGoalSegments, useWeightStore, type GoalSegment, type GoalSegmentDirection } from '@/features/weight';
+import {
+  GoalSegmentTrack,
+  useGoalSegments,
+  useWeightStore,
+  type GoalSegment,
+  type GoalSegmentDirection,
+} from '@/features/weight';
 import { createSegmentCreateStyles } from './segment-create.styles';
-
-type SegmentMode = 'delta' | 'target';
 
 export default function SegmentCreateScreen() {
   const router = useRouter();
@@ -30,21 +34,18 @@ export default function SegmentCreateScreen() {
     }
     return latestWeight ? latestWeight.toFixed(1) : '';
   }, [lastSegment?.targetKg, latestWeight]);
-  const [mode, setMode] = useState<SegmentMode>('target');
   const [startWeight, setStartWeight] = useState(initialStartWeight);
-  const [delta, setDelta] = useState('');
   const [target, setTarget] = useState('');
   const [note, setNote] = useState('');
+  const scrollRef = useRef<ScrollView>(null);
+  const targetInputRef = useRef<TextInput>(null);
 
   const start = Number(startWeight);
-  const computedTarget =
-    mode === 'delta'
-      ? start + (inferredDirection === 'lose' ? -Number(delta) : Number(delta))
-      : Number(target);
+  const computedTarget = Number(target);
 
   const canSave =
     start > 0 &&
-    (mode === 'delta' ? Number(delta) > 0 : Number(target) > 0) &&
+    Number(target) > 0 &&
     !Number.isNaN(computedTarget);
 
   const handleSave = () => {
@@ -60,36 +61,22 @@ export default function SegmentCreateScreen() {
       createdAtISO: new Date().toISOString(),
     };
     addSegment(segment);
-    router.back();
+    const nextStart =
+      inferredDirection === 'gain' ? computedTarget + 0.1 : computedTarget - 0.1;
+    setStartWeight(nextStart.toFixed(1));
+    setTarget('');
+    setNote('');
+    targetInputRef.current?.focus();
+    scrollRef.current?.scrollTo({ y: 0, animated: true });
   };
 
   return (
     <SafeAreaView style={styles.screen} edges={['top', 'left', 'right']}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView ref={scrollRef} showsVerticalScrollIndicator={false}>
         <View style={styles.card}>
           <View style={styles.handle} />
           <Text style={styles.title}>{texts.segments.createTitle}</Text>
           <Text style={styles.subtitle}>{texts.segments.createSubtitle}</Text>
-
-          <View style={styles.section}>
-            <Text style={styles.label}>{texts.segments.mode}</Text>
-            <View style={styles.segmentedRow}>
-              {(['delta', 'target'] as SegmentMode[]).map((value) => (
-                <Pressable
-                  key={value}
-                  style={[styles.segment, mode === value && styles.segmentActive]}
-                  onPress={() => setMode(value)}>
-                  <Text
-                    style={[styles.segmentText, mode === value && styles.segmentTextActive]}>
-                    {value === 'delta'
-                      ? texts.segments.modeDelta
-                      : texts.segments.modeTarget}
-                  </Text>
-                </Pressable>
-              ))}
-            </View>
-            <Text style={styles.helper}>{texts.segments.modeHelper}</Text>
-          </View>
 
           <View style={styles.section}>
             <Text style={styles.label}>{texts.segments.startWeight}</Text>
@@ -106,37 +93,21 @@ export default function SegmentCreateScreen() {
             </View>
           </View>
 
-          {mode === 'delta' ? (
-            <View style={styles.section}>
-              <Text style={styles.label}>{texts.segments.delta}</Text>
-              <View style={styles.inputRow}>
-                <TextInput
-                  value={delta}
-                  onChangeText={setDelta}
-                  keyboardType="numeric"
-                  placeholder="5.0"
-                  placeholderTextColor={colors.inkAccent}
-                  style={styles.input}
-                />
-                <Text style={styles.unit}>kg</Text>
-              </View>
+          <View style={styles.section}>
+            <Text style={styles.label}>{texts.segments.targetWeight}</Text>
+            <View style={styles.inputRow}>
+              <TextInput
+                value={target}
+                onChangeText={setTarget}
+                keyboardType="numeric"
+                placeholder="110.0"
+                placeholderTextColor={colors.inkAccent}
+                style={styles.input}
+                ref={targetInputRef}
+              />
+              <Text style={styles.unit}>kg</Text>
             </View>
-          ) : (
-            <View style={styles.section}>
-              <Text style={styles.label}>{texts.segments.targetWeight}</Text>
-              <View style={styles.inputRow}>
-                <TextInput
-                  value={target}
-                  onChangeText={setTarget}
-                  keyboardType="numeric"
-                  placeholder="110.0"
-                  placeholderTextColor={colors.inkAccent}
-                  style={styles.input}
-                />
-                <Text style={styles.unit}>kg</Text>
-              </View>
-            </View>
-          )}
+          </View>
 
           <View style={styles.section}>
             <Text style={styles.label}>{texts.segments.note}</Text>
@@ -159,6 +130,30 @@ export default function SegmentCreateScreen() {
               <Text style={styles.saveText}>{texts.segments.save}</Text>
             </Pressable>
           </View>
+        </View>
+
+        <View style={styles.previewSection}>
+          <View style={styles.previewHeader}>
+            <Text style={styles.previewTitle}>{texts.profile.sections.segments}</Text>
+          </View>
+          <View style={styles.previewCard}>
+            <GoalSegmentTrack
+              segments={segments}
+              currentKg={latestWeight || undefined}
+              showAddNode
+              allowSegmentPress={false}
+              onAddPress={() => {
+                targetInputRef.current?.focus();
+                scrollRef.current?.scrollTo({ y: 0, animated: true });
+              }}
+            />
+          </View>
+        </View>
+
+        <View style={styles.doneRow}>
+          <Pressable style={styles.doneButton} onPress={() => router.back()}>
+            <Text style={styles.doneText}>{texts.segments.done}</Text>
+          </Pressable>
         </View>
       </ScrollView>
     </SafeAreaView>

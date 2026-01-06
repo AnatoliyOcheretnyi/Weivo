@@ -48,6 +48,11 @@ export const createGoalSegmentTrackStyles = (colors: ThemeColors) =>
     dotCompleted: {
       backgroundColor: colors.accentOrange,
     },
+    addDot: {
+      borderWidth: 1,
+      borderColor: colors.creamLine,
+      backgroundColor: colors.creamLight,
+    },
     dotText: {
       fontSize: fontSizes.xs,
       color: colors.inkMuted,
@@ -55,6 +60,10 @@ export const createGoalSegmentTrackStyles = (colors: ThemeColors) =>
     },
     dotTextActive: {
       color: colors.highlight,
+    },
+    addDotText: {
+      fontSize: fontSizes.md,
+      color: colors.inkMuted,
     },
     trackLayer: {
       position: 'relative',

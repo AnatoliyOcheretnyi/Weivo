@@ -23,6 +23,7 @@ export default function SegmentDetailScreen() {
     [segments]
   );
   const isLatest = segment ? ordered[0]?.id === segment.id : false;
+  const isCompleted = Boolean(segment?.completedAtISO);
   const [isEditing, setIsEditing] = useState(false);
   const [startWeight, setStartWeight] = useState(
     segment ? segment.startKg.toFixed(1) : ''
@@ -44,6 +45,10 @@ export default function SegmentDetailScreen() {
   }
 
   const handleEditToggle = () => {
+    if (isCompleted) {
+      Alert.alert(texts.segments.completedTitle, texts.segments.completedMessage);
+      return;
+    }
     if (!isLatest) {
       Alert.alert(texts.segments.editBlockedTitle, texts.segments.editBlockedMessage);
       return;
@@ -64,6 +69,10 @@ export default function SegmentDetailScreen() {
   };
 
   const handleDelete = () => {
+    if (isCompleted) {
+      Alert.alert(texts.segments.completedTitle, texts.segments.completedMessage);
+      return;
+    }
     if (!isLatest) {
       Alert.alert(texts.segments.editBlockedTitle, texts.segments.editBlockedMessage);
       return;
@@ -95,11 +104,24 @@ export default function SegmentDetailScreen() {
               <Text style={styles.title}>{texts.segments.detailTitle}</Text>
               <Text style={styles.subtitle}>{texts.segments.detailSubtitle}</Text>
             </View>
-            <View style={styles.headerActions}>
-              <Pressable style={styles.iconButton} onPress={handleEditToggle}>
+          <View style={styles.headerActions}>
+              <Pressable
+                style={[
+                  styles.iconButton,
+                  isCompleted && styles.iconButtonDisabled,
+                ]}
+                onPress={handleEditToggle}
+                disabled={isCompleted}>
                 <IconSymbol name="pencil" size={16} color={colors.inkMuted} />
               </Pressable>
-              <Pressable style={[styles.iconButton, styles.iconButtonDanger]} onPress={handleDelete}>
+              <Pressable
+                style={[
+                  styles.iconButton,
+                  styles.iconButtonDanger,
+                  isCompleted && styles.iconButtonDisabled,
+                ]}
+                onPress={handleDelete}
+                disabled={isCompleted}>
                 <IconSymbol name="trash" size={16} color={colors.accentOrangeDark} />
               </Pressable>
             </View>

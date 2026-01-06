@@ -12,7 +12,13 @@ import { createGoalSegmentTrackStyles } from './styles';
 const clamp = (value: number, min: number, max: number) =>
   Math.min(max, Math.max(min, value));
 
-export function GoalSegmentTrack({ segments, currentKg }: GoalSegmentTrackProps) {
+export function GoalSegmentTrack({
+  segments,
+  currentKg,
+  showAddNode = false,
+  onAddPress,
+  allowSegmentPress = true,
+}: GoalSegmentTrackProps) {
   const { colors } = useAppTheme();
   const styles = useMemo(() => createGoalSegmentTrackStyles(colors), [colors]);
   const { texts } = useTexts();
@@ -31,19 +37,43 @@ export function GoalSegmentTrack({ segments, currentKg }: GoalSegmentTrackProps)
   const itemWidth = dotSize + lineWidth + gap;
   const itemsPerRow = Math.max(2, Math.floor((availableWidth + gap) / itemWidth));
   const nodes = useMemo(() => {
-    if (ordered.length === 0) {
+    if (ordered.length === 0 && !showAddNode) {
       return [];
     }
-    return [
-      { id: `start-${ordered[0].id}`, value: ordered[0].startKg, segmentIndex: null as number | null },
+    const startValue =
+      ordered.length > 0
+        ? ordered[0].startKg
+        : currentKg != null
+          ? currentKg
+          : 0;
+    const baseNodes = [
+      {
+        id: ordered.length > 0 ? `start-${ordered[0].id}` : 'start',
+        value: startValue,
+        segmentIndex: null as number | null,
+        type: 'start' as const,
+      },
       ...ordered.map((segment, index) => ({
         id: segment.id,
         value: segment.targetKg,
         segmentIndex: index,
         segment,
+        type: 'segment' as const,
       })),
     ];
-  }, [ordered]);
+    if (!showAddNode) {
+      return baseNodes;
+    }
+    return [
+      ...baseNodes,
+      {
+        id: 'add',
+        value: null as number | null,
+        segmentIndex: null as number | null,
+        type: 'add' as const,
+      },
+    ];
+  }, [currentKg, ordered, showAddNode]);
   const rowCount = Math.max(1, Math.ceil(nodes.length / itemsPerRow));
   const height = rowCount * dotSize + (rowCount - 1) * rowGap;
 
@@ -61,6 +91,7 @@ export function GoalSegmentTrack({ segments, currentKg }: GoalSegmentTrackProps)
         segment: node.segment,
         segmentIndex: node.segmentIndex,
         value: node.value,
+        type: node.type,
         index,
         row,
         x,
@@ -133,7 +164,8 @@ export function GoalSegmentTrack({ segments, currentKg }: GoalSegmentTrackProps)
   }, [currentKg, ordered, points]);
 
   const activeNodeIndex = useMemo(() => {
-    if (nodes.length === 0) {
+    const segmentNodes = nodes.filter((node) => node.type !== 'add');
+    if (segmentNodes.length === 0) {
       return -1;
     }
     const reachedTarget = (segment: GoalSegment) =>
@@ -142,17 +174,17 @@ export function GoalSegmentTrack({ segments, currentKg }: GoalSegmentTrackProps)
         : currentKg != null && currentKg <= segment.targetKg;
     const firstOpenIndex = ordered.findIndex((segment) => !segment.completedAtISO);
     if (firstOpenIndex === -1) {
-      return nodes.length - 1;
+      return segmentNodes.length - 1;
     }
     const isReached = reachedTarget(ordered[firstOpenIndex]);
-    return Math.min(firstOpenIndex + (isReached ? 1 : 0), nodes.length - 1);
-  }, [currentKg, nodes.length, ordered]);
+    return Math.min(firstOpenIndex + (isReached ? 1 : 0), segmentNodes.length - 1);
+  }, [currentKg, nodes, ordered]);
 
   return (
     <View
       style={styles.container}
       onLayout={(event) => setContainerWidth(event.nativeEvent.layout.width)}>
-      {ordered.length === 0 ? (
+      {ordered.length === 0 && !showAddNode ? (
         <Text style={styles.labelText}>{texts.segments.empty}</Text>
       ) : (
       <View style={[styles.trackLayer, { height }]}>
@@ -176,17 +208,25 @@ export function GoalSegmentTrack({ segments, currentKg }: GoalSegmentTrackProps)
         </Canvas>
         {points.map((point) => {
           const segment = point.segment;
-          const isStart = !segment || point.segmentIndex == null;
-          const reachedTarget = !isStart
+          const isAdd = point.type === 'add';
+          const isStart = point.type === 'start';
+          const reachedTarget = !isStart && segment
             ? segment.direction === 'gain'
               ? currentKg != null && currentKg >= segment.targetKg
               : currentKg != null && currentKg <= segment.targetKg
             : false;
           const isCompleted = isStart
             ? activeNodeIndex > 0
-            : Boolean(segment.completedAtISO) || reachedTarget;
-          const isActive = point.index === activeNodeIndex;
+            : Boolean(segment?.completedAtISO) || reachedTarget;
+          const isActive = !isAdd && point.index === activeNodeIndex;
           const handlePress = () => {
+            if (isAdd) {
+              onAddPress?.();
+              return;
+            }
+            if (!allowSegmentPress) {
+              return;
+            }
             if (!segment) {
               return;
             }
@@ -200,7 +240,7 @@ export function GoalSegmentTrack({ segments, currentKg }: GoalSegmentTrackProps)
             <Pressable
               key={point.id}
               onPress={handlePress}
-              disabled={!segment}
+              disabled={!segment && !isAdd}
               style={[
                 styles.segmentWrap,
                 {
@@ -211,16 +251,21 @@ export function GoalSegmentTrack({ segments, currentKg }: GoalSegmentTrackProps)
               <View
                 style={[
                   styles.dot,
+                  isAdd && styles.addDot,
                   isCompleted && !isActive && styles.dotCompleted,
                   isActive && styles.dotActive,
                 ]}>
-                <Text
-                  style={[
-                    styles.dotText,
-                    (isActive || isCompleted) && styles.dotTextActive,
-                  ]}>
-                  {formatKg(point.value)}
-                </Text>
+                {isAdd ? (
+                  <Text style={styles.addDotText}>+</Text>
+                ) : (
+                  <Text
+                    style={[
+                      styles.dotText,
+                      (isActive || isCompleted) && styles.dotTextActive,
+                    ]}>
+                    {point.value != null ? formatKg(point.value) : ''}
+                  </Text>
+                )}
               </View>
             </Pressable>
           );

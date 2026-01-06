@@ -65,6 +65,9 @@ export const createSegmentDetailStyles = (colors: ThemeColors) =>
       borderWidth: 1,
       borderColor: colors.creamLine,
     },
+    iconButtonDisabled: {
+      opacity: 0.5,
+    },
     section: {
       marginTop: spacing.xMassive,
     },

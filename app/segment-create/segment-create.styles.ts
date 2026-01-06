@@ -131,4 +131,42 @@ export const createSegmentCreateStyles = (colors: ThemeColors) =>
       color: colors.highlight,
       letterSpacing: letterSpacings.sm,
     },
+    previewSection: {
+      marginHorizontal: dimensions.modal.margin,
+      marginTop: spacing.mega,
+      gap: spacing.lg,
+    },
+    previewHeader: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    previewTitle: {
+      fontSize: fontSizes.xs,
+      color: colors.inkMutedLight,
+      textTransform: 'uppercase',
+      letterSpacing: letterSpacings.lg,
+    },
+    previewCard: {
+      backgroundColor: colors.creamLight,
+      borderRadius: radii.xl,
+      padding: spacing.xxl,
+      ...shadows.soft,
+    },
+    doneRow: {
+      marginHorizontal: dimensions.modal.margin,
+      marginTop: spacing.xl,
+      marginBottom: spacing.huge,
+    },
+    doneButton: {
+      paddingVertical: spacing.huge,
+      borderRadius: radii.pill,
+      backgroundColor: colors.inkStrong,
+      alignItems: 'center',
+    },
+    doneText: {
+      fontSize: fontSizes.md,
+      color: colors.highlight,
+      letterSpacing: letterSpacings.sm,
+    },
   });
