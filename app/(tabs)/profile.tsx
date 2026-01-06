@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { Button } from '@/components/Button';
 import { ExternalLink } from '@/components/external-link';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useProfileStore } from '@/features/profile';
@@ -265,11 +266,13 @@ export default function ProfileScreen() {
         <View style={profileStyles.section}>
           <View style={profileStyles.sectionHeader}>
             <Text style={profileStyles.sectionTitle}>{texts.profile.sections.segments}</Text>
-            <Pressable
+            <Button
+              title={texts.profile.actions.addSegment}
+              variant="inverseSmall"
+              onPress={() => router.push('/segment-create')}
               style={profileStyles.sectionAction}
-              onPress={() => router.push('/segment-create')}>
-              <Text style={profileStyles.sectionActionText}>{texts.profile.actions.addSegment}</Text>
-            </Pressable>
+              textStyle={profileStyles.sectionActionText}
+            />
           </View>
           <View style={profileStyles.card}>
             <GoalSegmentTrack segments={segments} currentKg={latestWeight ?? undefined} />

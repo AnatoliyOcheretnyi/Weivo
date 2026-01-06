@@ -24,7 +24,7 @@ export const createSegmentCreateStyles = (colors: ThemeColors) =>
     handle: {
       width: dimensions.modal.handleWidth,
       height: dimensions.modal.handleHeight,
-      borderRadius: radii.pill,
+      borderRadius: radii.full,
       alignSelf: 'center',
       backgroundColor: colors.creamHandle,
       marginBottom: spacing.xxl,
@@ -109,7 +109,7 @@ export const createSegmentCreateStyles = (colors: ThemeColors) =>
     },
     actionButton: {
       flex: 1,
-      borderRadius: radii.pill,
+      borderRadius: radii.full,
     },
     previewSection: {
       marginHorizontal: dimensions.modal.margin,
@@ -139,6 +139,6 @@ export const createSegmentCreateStyles = (colors: ThemeColors) =>
       marginBottom: spacing.huge,
     },
     doneButton: {
-      borderRadius: radii.pill,
+      borderRadius: radii.full,
     },
   });

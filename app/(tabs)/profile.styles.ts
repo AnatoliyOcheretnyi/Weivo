@@ -61,10 +61,7 @@ export const createProfileStyles = (colors: ThemeColors) =>
       alignItems: 'center',
     },
     sectionAction: {
-      paddingHorizontal: spacing.xl,
-      paddingVertical: spacing.md,
-      borderRadius: radii.pill,
-      backgroundColor: colors.creamLight,
+      alignSelf: 'flex-start',
     },
     sectionActionText: {
       fontSize: fontSizes.sm,

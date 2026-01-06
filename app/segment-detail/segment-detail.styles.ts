@@ -24,7 +24,7 @@ export const createSegmentDetailStyles = (colors: ThemeColors) =>
     handle: {
       width: dimensions.modal.handleWidth,
       height: dimensions.modal.handleHeight,
-      borderRadius: radii.pill,
+      borderRadius: radii.full,
       alignSelf: 'center',
       backgroundColor: colors.creamHandle,
       marginBottom: spacing.xxl,
@@ -105,7 +105,7 @@ export const createSegmentDetailStyles = (colors: ThemeColors) =>
     },
     actionButton: {
       flex: 1,
-      borderRadius: radii.pill,
+      borderRadius: radii.full,
     },
     readOnly: {
       opacity: 0.7,

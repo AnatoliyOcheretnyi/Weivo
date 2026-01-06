@@ -190,7 +190,7 @@ export const createHomeStyles = (colors: ThemeColors) =>
     hintSecondary: {
       flexBasis: '30%',
       paddingVertical: spacing.md,
-      borderRadius: radii.pill,
+      borderRadius: radii.full,
       backgroundColor: colors.cream,
       alignItems: 'center',
     },
@@ -205,7 +205,7 @@ export const createHomeStyles = (colors: ThemeColors) =>
     },
     hintPrimary: {
       paddingVertical: spacing.md,
-      borderRadius: radii.pill,
+      borderRadius: radii.full,
       backgroundColor: colors.inkStrong,
       alignItems: 'center',
     },

@@ -32,14 +32,14 @@ export const createOnboardingStyles = (colors: ThemeColors) =>
     progressTrack: {
       height: 4,
       backgroundColor: colors.creamLine,
-      borderRadius: radii.pill,
+      borderRadius: radii.full,
       overflow: 'hidden',
       marginHorizontal: spacing.xMassive,
     },
     progressFill: {
       height: 4,
       backgroundColor: colors.inkStrong,
-      borderRadius: radii.pill,
+      borderRadius: radii.full,
     },
     pager: {
       flexGrow: 0,
