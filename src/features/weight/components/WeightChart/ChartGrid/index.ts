@@ -1,2 +1,2 @@
-export { ChartGrid } from './chart-grid';
+export { ChartGrid } from './ChartGrid';
 export type { ChartGridProps } from './types';

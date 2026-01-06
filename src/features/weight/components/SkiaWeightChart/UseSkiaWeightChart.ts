@@ -16,7 +16,7 @@ import { Skia } from '@shopify/react-native-skia';
 import type { SkPath } from '@shopify/react-native-skia';
 
 import type { WeightEntry } from '../../data/types';
-import { getDaysSpan, getWeightStats } from '../weight-chart/utils';
+import { getDaysSpan, getWeightStats } from '../WeightChart/WeightChartUtils';
 import { dimensions } from '@/theme';
 import { clamp } from '@/shared/utils';
 import { exaggerateNormalized } from './SkiaWeightChartUtils';

@@ -4,10 +4,10 @@ import { GestureDetector } from 'react-native-gesture-handler';
 import { Canvas, Circle, Path } from '@shopify/react-native-skia';
 
 import { dimensions, useAppTheme } from '@/theme';
-import { ChartFooter } from '../weight-chart/chart-footer';
-import { ChartGrid } from '../weight-chart/chart-grid';
-import { ChartHeader } from '../weight-chart/chart-header';
-import { createWeightChartStyles } from '../weight-chart/weight-chart.styles';
+import { ChartFooter } from '../WeightChart/ChartFooter';
+import { ChartGrid } from '../WeightChart/ChartGrid';
+import { ChartHeader } from '../WeightChart/ChartHeader';
+import { createWeightChartStyles } from '../WeightChart/WeightChartStyles';
 import { skiaWeightChartStyles } from './SkiaWeightChartStyles';
 import type { SkiaWeightChartProps } from './SkiaWeightChartTypes';
 import { useSkiaWeightChart } from './UseSkiaWeightChart';

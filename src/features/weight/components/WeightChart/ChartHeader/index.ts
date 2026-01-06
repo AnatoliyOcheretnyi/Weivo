@@ -1,2 +1,2 @@
-export { ChartHeader } from './chart-header';
+export { ChartHeader } from './ChartHeader';
 export type { ChartHeaderProps } from './types';

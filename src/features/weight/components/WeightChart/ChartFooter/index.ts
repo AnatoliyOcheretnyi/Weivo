@@ -1,2 +1,2 @@
-export { ChartFooter } from './chart-footer';
+export { ChartFooter } from './ChartFooter';
 export type { ChartFooterProps } from './types';

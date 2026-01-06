@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
 import { Text, View } from 'react-native';
 
-import type { ChartFooterProps } from './types';
+import type { ChartFooterProps } from './ChartFooterTypes';
 import { useAppTheme } from '@/theme';
-import { createChartFooterStyles } from './chart-footer.styles';
+import { createChartFooterStyles } from './ChartFooterStyles';
 import { useTexts } from '@/i18n';
-import { formatShortDate } from '../utils';
+import { formatShortDate } from '../WeightChartUtils';
 
 export function ChartFooter({ first, last }: ChartFooterProps) {
   const { texts, locale } = useTexts();

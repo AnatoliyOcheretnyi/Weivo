@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
 import { Text, View } from 'react-native';
 
-import type { ChartHeaderProps } from './types';
+import type { ChartHeaderProps } from './ChartHeaderTypes';
 import { useAppTheme } from '@/theme';
-import { createChartHeaderStyles } from './chart-header.styles';
+import { createChartHeaderStyles } from './ChartHeaderStyles';
 import { useTexts } from '@/i18n';
 
 export function ChartHeader({ min, max, totalDays }: ChartHeaderProps) {
