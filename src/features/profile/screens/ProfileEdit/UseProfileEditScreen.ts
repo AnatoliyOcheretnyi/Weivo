@@ -23,7 +23,7 @@ import {
   THEME_OPTIONS,
   UNIT_OPTIONS,
 } from './ProfileEditScreenConstants'
-import { parseNumberInput } from './ProfileEditScreenUtils'
+import { parseNumberInput } from '@/shared/utils'
 type UseProfileEditScreenParams = {
   profile: ProfileData
   entries: WeightEntry[]

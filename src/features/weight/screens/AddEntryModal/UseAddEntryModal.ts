@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from 'react'
 import type { Mood } from '@/features/weight'
 import type { Texts } from '@/i18n'
 import { WEIGHT_MAX_KG, WEIGHT_MIN_KG } from './AddEntryModalConstants'
-import { parseWeightText } from './AddEntryModalUtils'
+import { parseWeightText } from '@/shared/utils'
 type UseAddEntryModalParams = {
   addEntry: (_weightKg: number, _mood?: Mood) => void
   texts: Texts

@@ -23,7 +23,7 @@ import {
 } from '@/features/weight'
 import { useAppTheme } from '@/theme'
 import { spacing } from '@/theme/spacing'
-import { createHomeStyles } from './index.styles'
+import { createHomeStyles } from './_index.styles'
 import { useTexts } from '@/i18n'
 export default function HomeScreen() {
   const { entries } = useWeightStore()
@@ -117,7 +117,7 @@ export default function HomeScreen() {
       return orderedSegments[weightIndex]
     }
     return next
-  }, [orderedSegments, pendingSegmentId, stats.current])
+  }, [orderedSegments, pendingSegmentId, stats])
   useEffect(() => {
     setShowSegmentsHint(shouldShowSegmentsHint)
   }, [shouldShowSegmentsHint])
@@ -141,7 +141,7 @@ export default function HomeScreen() {
     if (stats.current > 0) {
       reconcileCompletion(stats.current)
     }
-  }, [reconcileCompletion, stats.current])
+  }, [reconcileCompletion, stats])
   useEffect(() => {
     if (orderedSegments.length === 0 || stats.current <= 0) {
       return
@@ -160,7 +160,7 @@ export default function HomeScreen() {
     if (pendingSegmentId) {
       setPendingSegmentId(null)
     }
-  }, [orderedSegments, pendingSegmentId, stats.current])
+  }, [orderedSegments, pendingSegmentId, stats])
   const handleSegmentComplete = () => {
     if (!activeSegment || activeSegment.completedAtISO) {
       setPendingSegmentId(null)

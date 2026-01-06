@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { Swipeable } from 'react-native-gesture-handler'
 import { useGoalSegments, useWeightStore } from '@/features/weight'
 import { useAppTheme } from '@/theme'
-import { createEntriesStyles } from './explore.styles'
+import { createEntriesStyles } from './_explore.styles'
 import { useTexts } from '@/i18n'
 export default function EntriesScreen() {
   const { entries, clearEntries, removeEntry } = useWeightStore()

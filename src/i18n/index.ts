@@ -747,6 +747,7 @@ export const localeLabels: Record<Locale, string> = {
 }
 const initLocale = getSystemLocale()
 if (!i18n.isInitialized) {
+  // eslint-disable-next-line import/no-named-as-default-member
   i18n.use(initReactI18next).init({
     compatibilityJSON: 'v4',
     resources: {
@@ -763,17 +764,19 @@ if (!i18n.isInitialized) {
 }
 export const useTexts = () => {
   const { i18n: i18nInstance } = useTranslation()
+  const language = i18nInstance.language
   const texts = useMemo(() => {
     const bundle = i18nInstance.getResourceBundle(i18nInstance.language, 'translation')
     return (bundle ?? translations.en) as Texts
-  }, [i18nInstance.language])
-  return { texts, locale: i18nInstance.language }
+  }, [i18nInstance])
+  return { texts, locale: language }
 }
 export const useI18nSync = (language?: LanguageOption) => {
   useEffect(() => {
     const nextLocale =
       language && language !== 'system' ? normalizeLocale(language) : getSystemLocale()
     if (i18n.language !== nextLocale) {
+      // eslint-disable-next-line import/no-named-as-default-member
       void i18n.changeLanguage(nextLocale)
     }
   }, [language])

@@ -51,6 +51,7 @@ type UseSkiaWeightChartResult = {
 export const useSkiaWeightChart = ({
   data,
 }: UseSkiaWeightChartParams): UseSkiaWeightChartResult => {
+  const hasData = data.length > 0
   const [frameWidth, setFrameWidth] = useState(0)
   const translateX = useSharedValue(0)
   const startTranslateX = useSharedValue(0)
@@ -60,11 +61,17 @@ export const useSkiaWeightChart = ({
   const rangeValue = useSharedValue(1)
   const introProgress = useSharedValue(1)
   const hasAnimatedIntro = useRef(false)
-  const { min, max, first, last } = useMemo(() => getWeightStats(data), [data])
-  const totalDays = useMemo(() => getDaysSpan(data), [data])
+  const { min, max, first, last } = useMemo(
+    () =>
+      hasData
+        ? getWeightStats(data)
+        : { min: 0, max: 0, first: { dateISO: '', weightKg: 0 }, last: { dateISO: '', weightKg: 0 } },
+    [data, hasData]
+  )
+  const totalDays = useMemo(() => (hasData ? getDaysSpan(data) : 0), [data, hasData])
   const pointGap = dimensions.chart.barWidth + dimensions.chart.barGap
   const totalWidth = Math.max(1, (data.length - 1) * pointGap)
-  const weights = useMemo(() => data.map((entry) => entry.weightKg), [data])
+  const weights = useMemo(() => (hasData ? data.map((entry) => entry.weightKg) : []), [data, hasData])
   const formatAxisLabel = useCallback((value: number) => {
     const scale = Math.pow(10, AXIS_LABEL_DECIMALS)
     const rounded = Math.round(value * scale) / scale

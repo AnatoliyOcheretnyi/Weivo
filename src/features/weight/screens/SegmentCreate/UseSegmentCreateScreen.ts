@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from 'react'
 import type { ProfileData } from '@/features/profile'
 import type { GoalSegment, GoalSegmentDirection, WeightEntry } from '@/features/weight'
 import { WEIGHT_STEP_KG } from './SegmentCreateScreenConstants'
-import { parseWeightText } from './SegmentCreateScreenUtils'
+import { parseWeightText } from '@/shared/utils'
 type UseSegmentCreateScreenParams = {
   entries: WeightEntry[]
   segments: GoalSegment[]

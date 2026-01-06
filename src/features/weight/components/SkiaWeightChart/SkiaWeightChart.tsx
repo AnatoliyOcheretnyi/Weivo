@@ -11,9 +11,6 @@ import { skiaWeightChartStyles } from './SkiaWeightChartStyles'
 import type { SkiaWeightChartProps } from './SkiaWeightChartTypes'
 import { useSkiaWeightChart } from './UseSkiaWeightChart'
 export function SkiaWeightChart({ data }: SkiaWeightChartProps) {
-  if (data.length === 0) {
-    return null
-  }
   const { colors, scheme } = useAppTheme()
   const weightChartStyles = useMemo(() => createWeightChartStyles(colors), [colors])
   const {
@@ -29,6 +26,9 @@ export function SkiaWeightChart({ data }: SkiaWeightChartProps) {
     panGesture,
     onFrameLayout,
   } = useSkiaWeightChart({ data })
+  if (data.length === 0) {
+    return null
+  }
   return (
     <View style={weightChartStyles.card}>
       <ChartHeader min={min} max={max} totalDays={totalDays} />

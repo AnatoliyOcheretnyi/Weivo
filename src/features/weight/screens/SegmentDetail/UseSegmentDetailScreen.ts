@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from 'react'
 import { Alert } from 'react-native'
 import type { Texts } from '@/i18n'
 import type { GoalSegment } from '@/features/weight'
-import { parseWeightText } from './SegmentDetailScreenUtils'
+import { parseWeightText } from '@/shared/utils'
 type UseSegmentDetailScreenParams = {
   id?: string
   segments: GoalSegment[]

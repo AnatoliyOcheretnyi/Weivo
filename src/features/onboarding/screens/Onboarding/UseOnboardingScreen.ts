@@ -17,7 +17,7 @@ import {
   SEX_OPTIONS,
   STEP_COUNT,
 } from './OnboardingScreenConstants'
-import { parseNumberInput } from './OnboardingScreenUtils'
+import { parseNumberInput } from '@/shared/utils'
 type UseOnboardingScreenParams = {
   profile: ProfileData
   updateProfile: (_next: Partial<ProfileData>) => void

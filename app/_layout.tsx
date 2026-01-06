@@ -1,5 +1,5 @@
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native'
-import { Stack, useRouter, useSegments, useRootNavigationState } from 'expo-router'
+import { Stack, useRouter, useSegments, useRootNavigationState, type Href } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 import { Provider as JotaiProvider } from 'jotai'
 import { useEffect } from 'react'
@@ -84,9 +84,10 @@ function RootLayoutContent() {
       return
     }
     if (profile.onboardingComplete && isOnboardingRoute) {
-      requestAnimationFrame(() => router.replace('/'))
+      const tabsHref = '/(tabs)' as Href
+      requestAnimationFrame(() => router.replace(tabsHref))
     }
-  }, [profile.onboardingComplete, rootState?.key, router, segments])
+  }, [profile.activityLevel, profile.birthDateISO, profile.goalRangeMaxKg, profile.goalRangeMinKg, profile.goalTargetKg, profile.goalType, profile.heightCm, profile.onboardingComplete, profile.sex, rootState?.key, router, segments])
   return (
     <ThemeProvider value={scheme === 'dark' ? DarkTheme : DefaultTheme}>
       <SafeAreaProvider>

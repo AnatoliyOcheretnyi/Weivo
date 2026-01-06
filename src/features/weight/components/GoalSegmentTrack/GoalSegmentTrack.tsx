@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { Pressable, Text, View } from 'react-native'
 import { useRouter } from 'expo-router'
 import { Canvas, Path, Skia } from '@shopify/react-native-skia'
@@ -8,7 +8,7 @@ import type { GoalSegment } from '../../data/goal-segments/types'
 import type { GoalSegmentTrackProps } from './GoalSegmentTrackTypes'
 import { createGoalSegmentTrackStyles } from './GoalSegmentTrackStyles'
 import { GOAL_SEGMENT_STROKE_WIDTH } from './GoalSegmentTrackConstants'
-import { clamp , formatKg } from '@/shared/utils'
+import { clamp, formatKg } from '@/shared/utils'
 import { useGoalSegmentLayout } from './UseGoalSegmentLayout'
 export function GoalSegmentTrack({
   segments,
@@ -39,7 +39,7 @@ export function GoalSegmentTrack({
       })),
     [points]
   )
-  const getProgress = (segmentStart: number, segmentTarget: number, direction: string) => {
+  const getProgress = useCallback((segmentStart: number, segmentTarget: number, direction: string) => {
     if (currentKg == null) {
       return 0
     }
@@ -49,7 +49,7 @@ export function GoalSegmentTrack({
     }
     const total = segmentStart - segmentTarget
     return total > 0 ? clamp((segmentStart - currentKg) / total, 0, 1) : 0
-  }
+  }, [currentKg])
   const basePath = useMemo(() => {
     if (points.length === 0) {
       return Skia.Path.Make()
@@ -91,7 +91,7 @@ export function GoalSegmentTrack({
       path.lineTo(nx, ny)
     }
     return path
-  }, [currentKg, ordered, points])
+  }, [currentKg, getProgress, ordered, points])
   const activeNodeIndex = useMemo(() => {
     const segmentNodes = nodes.filter((node) => node.type !== 'add')
     if (segmentNodes.length === 0) {
