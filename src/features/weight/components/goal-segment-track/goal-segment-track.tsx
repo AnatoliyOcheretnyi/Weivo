@@ -182,7 +182,9 @@ export function GoalSegmentTrack({ segments, currentKg }: GoalSegmentTrackProps)
               ? currentKg != null && currentKg >= segment.targetKg
               : currentKg != null && currentKg <= segment.targetKg
             : false;
-          const isCompleted = !isStart && (Boolean(segment.completedAtISO) || reachedTarget);
+          const isCompleted = isStart
+            ? activeNodeIndex > 0
+            : Boolean(segment.completedAtISO) || reachedTarget;
           const isActive = point.index === activeNodeIndex;
           const handlePress = () => {
             if (!segment) {
@@ -209,7 +211,7 @@ export function GoalSegmentTrack({ segments, currentKg }: GoalSegmentTrackProps)
               <View
                 style={[
                   styles.dot,
-                  isCompleted && styles.dotCompleted,
+                  isCompleted && !isActive && styles.dotCompleted,
                   isActive && styles.dotActive,
                 ]}>
                 <Text
