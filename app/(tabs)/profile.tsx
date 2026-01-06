@@ -155,9 +155,13 @@ export default function ProfileScreen() {
             <Text style={profileStyles.title}>{texts.profile.title}</Text>
             <Text style={profileStyles.subtitle}>{texts.profile.subtitle}</Text>
           </View>
-          <Pressable style={profileStyles.editButton} onPress={() => router.push('/profile-edit')}>
-            <Text style={profileStyles.editText}>{texts.profile.edit}</Text>
-          </Pressable>
+          <Button
+            title={texts.profile.edit}
+            variant="inverseSmall"
+            onPress={() => router.push('/profile-edit')}
+            style={profileStyles.editButton}
+            textStyle={profileStyles.editText}
+          />
         </View>
 
         <View style={profileStyles.section}>

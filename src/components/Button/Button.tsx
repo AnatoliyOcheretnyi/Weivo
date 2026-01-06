@@ -17,7 +17,7 @@ export function ButtonBase({
   const variantStyle =
     variant === 'primary'
       ? { backgroundColor: colors.inkStrong, borderColor: colors.inkStrong }
-      : { backgroundColor: colors.cream, borderColor: colors.creamLine };
+      : { backgroundColor: colors.creamLight, borderColor: colors.creamLine };
   const labelColor = variant === 'primary' ? colors.highlight : colors.inkMuted;
 
   return (

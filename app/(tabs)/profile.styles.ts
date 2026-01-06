@@ -37,12 +37,6 @@ export const createProfileStyles = (colors: ThemeColors) =>
       letterSpacing: letterSpacings.lg,
     },
     editButton: {
-      borderRadius: radii.full,
-      borderWidth: 1,
-      borderColor: colors.creamLine,
-      backgroundColor: colors.creamLight,
-      paddingHorizontal: spacing.xxl,
-      paddingVertical: spacing.lg,
       alignSelf: 'flex-start',
     },
     editText: {
