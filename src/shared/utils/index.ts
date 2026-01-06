@@ -1,2 +1,2 @@
-export { formatKg } from './formatKg';
-export { clamp } from './clamp';
+export { formatKg } from './formatKg'
+export { clamp } from './clamp'

@@ -1,10 +1,8 @@
-import { StyleSheet } from 'react-native';
-
-import type { ThemeColors } from '@/theme';
-import { fontFamilies, fontSizes, letterSpacings } from '@/theme/typography';
-import { radii } from '@/theme/radii';
-import { spacing } from '@/theme/spacing';
-
+import { StyleSheet } from 'react-native'
+import type { ThemeColors } from '@/theme'
+import { fontFamilies, fontSizes, letterSpacings } from '@/theme/typography'
+import { radii } from '@/theme/radii'
+import { spacing } from '@/theme/spacing'
 export const createChartHeaderStyles = (colors: ThemeColors) =>
   StyleSheet.create({
     headerRow: {
@@ -37,4 +35,4 @@ export const createChartHeaderStyles = (colors: ThemeColors) =>
       letterSpacing: letterSpacings.sm,
       textTransform: 'uppercase',
     },
-  });
+  })

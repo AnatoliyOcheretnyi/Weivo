@@ -1,10 +1,8 @@
-import { StyleSheet } from 'react-native';
-
-import type { ThemeColors } from '@/theme';
-import { radii } from '@/theme/radii';
-import { spacing } from '@/theme/spacing';
-import { fontSizes, letterSpacings } from '@/theme/typography';
-
+import { StyleSheet } from 'react-native'
+import type { ThemeColors } from '@/theme'
+import { radii } from '@/theme/radii'
+import { spacing } from '@/theme/spacing'
+import { fontSizes, letterSpacings } from '@/theme/typography'
 export const createProfileStyles = (colors: ThemeColors) =>
   StyleSheet.create({
     screen: {
@@ -108,4 +106,4 @@ export const createProfileStyles = (colors: ThemeColors) =>
       fontSize: fontSizes.md,
       color: colors.ink,
     },
-  });
+  })

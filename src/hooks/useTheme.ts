@@ -1,1 +1,1 @@
-export { useColorScheme as useTheme } from 'react-native';
+export { useColorScheme as useTheme } from 'react-native'

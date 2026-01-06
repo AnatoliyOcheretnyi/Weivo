@@ -1,9 +1,7 @@
-import { StyleSheet } from 'react-native';
-
-import type { ThemeColors } from '@/theme';
-import { dimensions } from '@/theme/dimensions';
-import { shadows } from '@/theme/shadows';
-
+import { StyleSheet } from 'react-native'
+import type { ThemeColors } from '@/theme'
+import { dimensions } from '@/theme/dimensions'
+import { shadows } from '@/theme/shadows'
 export const createTabLayoutStyles = (colors: ThemeColors) =>
   StyleSheet.create({
     tabBar: {
@@ -41,4 +39,4 @@ export const createTabLayoutStyles = (colors: ThemeColors) =>
       fontSize: dimensions.tabBar.addIconSize,
       lineHeight: dimensions.tabBar.addIconLineHeight,
     },
-  });
+  })

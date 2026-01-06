@@ -1,11 +1,9 @@
-import { StyleSheet } from 'react-native';
-
-import type { ThemeColors } from '@/theme';
-import { fontFamilies, fontSizes, letterSpacings } from '@/theme/typography';
-import { radii } from '@/theme/radii';
-import { shadows } from '@/theme/shadows';
-import { spacing } from '@/theme/spacing';
-
+import { StyleSheet } from 'react-native'
+import type { ThemeColors } from '@/theme'
+import { fontFamilies, fontSizes, letterSpacings } from '@/theme/typography'
+import { radii } from '@/theme/radii'
+import { shadows } from '@/theme/shadows'
+import { spacing } from '@/theme/spacing'
 export const createOnboardingStyles = (colors: ThemeColors) =>
   StyleSheet.create({
     screen: {
@@ -178,4 +176,4 @@ export const createOnboardingStyles = (colors: ThemeColors) =>
       color: colors.inkMutedLight,
       letterSpacing: letterSpacings.md,
     },
-  });
+  })

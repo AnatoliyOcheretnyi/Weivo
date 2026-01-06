@@ -1,5 +1,4 @@
-import { Platform } from 'react-native';
-
+import { Platform } from 'react-native'
 export const fontFamilies = {
   display: Platform.select({ ios: 'Avenir Next', android: 'serif', default: 'Avenir Next' }),
   mono: Platform.select({ ios: 'Menlo', android: 'monospace', default: 'Menlo' }),
@@ -23,8 +22,7 @@ export const fontFamilies = {
       mono: "SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
     },
   }),
-};
-
+}
 export const fontSizes = {
   xs: 10,
   sm: 11,
@@ -40,14 +38,12 @@ export const fontSizes = {
   displayMd: 30,
   displayLg: 32,
   displayXl: 46,
-};
-
+}
 export const lineHeights = {
   sm: 24,
   md: 30,
   lg: 32,
-};
-
+}
 export const letterSpacings = {
   xs: 0.4,
   sm: 0.6,
@@ -55,4 +51,4 @@ export const letterSpacings = {
   lg: 1,
   xl: 1.1,
   xxl: 1.2,
-};
+}

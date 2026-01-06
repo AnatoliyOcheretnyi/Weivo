@@ -1,10 +1,8 @@
-import { StyleSheet } from 'react-native';
-
-import type { ThemeColors } from '@/theme';
-import { dimensions } from '@/theme/dimensions';
-import { fontSizes } from '@/theme/typography';
-import { spacing } from '@/theme/spacing';
-
+import { StyleSheet } from 'react-native'
+import type { ThemeColors } from '@/theme'
+import { dimensions } from '@/theme/dimensions'
+import { spacing } from '@/theme/spacing'
+import { fontSizes } from '@/theme/typography'
 export const createChartGridStyles = (colors: ThemeColors) =>
   StyleSheet.create({
     grid: {
@@ -27,4 +25,4 @@ export const createChartGridStyles = (colors: ThemeColors) =>
       color: colors.inkMuted,
       fontWeight: '600',
     },
-  });
+  })

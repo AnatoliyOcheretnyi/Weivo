@@ -1,1 +1,1 @@
-export { HapticTab } from './HapticTab';
+export { HapticTab } from './HapticTab'

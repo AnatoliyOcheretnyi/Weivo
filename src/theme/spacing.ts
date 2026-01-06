@@ -14,4 +14,4 @@ export const spacing = {
   massive: 28,
   xMassive: 32,
   hugePlus: 40,
-};
+}

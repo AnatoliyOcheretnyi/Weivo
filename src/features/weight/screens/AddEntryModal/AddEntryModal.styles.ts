@@ -1,12 +1,10 @@
-import { StyleSheet } from 'react-native';
-
-import type { ThemeColors } from '@/theme';
-import { dimensions } from '@/theme/dimensions';
-import { fontSizes, letterSpacings } from '@/theme/typography';
-import { radii } from '@/theme/radii';
-import { shadows } from '@/theme/shadows';
-import { spacing } from '@/theme/spacing';
-
+import { StyleSheet } from 'react-native'
+import type { ThemeColors } from '@/theme'
+import { dimensions } from '@/theme/dimensions'
+import { fontSizes, letterSpacings } from '@/theme/typography'
+import { radii } from '@/theme/radii'
+import { shadows } from '@/theme/shadows'
+import { spacing } from '@/theme/spacing'
 export const createModalStyles = (colors: ThemeColors) =>
   StyleSheet.create({
     screen: {
@@ -89,4 +87,4 @@ export const createModalStyles = (colors: ThemeColors) =>
       flex: 1,
       borderRadius: radii.md,
     },
-  });
+  })

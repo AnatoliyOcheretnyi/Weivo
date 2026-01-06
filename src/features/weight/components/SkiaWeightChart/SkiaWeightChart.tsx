@@ -1,23 +1,21 @@
-import { useMemo } from 'react';
-import { View } from 'react-native';
-import { GestureDetector } from 'react-native-gesture-handler';
-import { Canvas, Circle, Path } from '@shopify/react-native-skia';
-
-import { dimensions, useAppTheme } from '@/theme';
-import { ChartFooter } from '../WeightChart/ChartFooter';
-import { ChartGrid } from '../WeightChart/ChartGrid';
-import { ChartHeader } from '../WeightChart/ChartHeader';
-import { createWeightChartStyles } from '../WeightChart/WeightChartStyles';
-import { skiaWeightChartStyles } from './SkiaWeightChartStyles';
-import type { SkiaWeightChartProps } from './SkiaWeightChartTypes';
-import { useSkiaWeightChart } from './UseSkiaWeightChart';
-
+import { useMemo } from 'react'
+import { View } from 'react-native'
+import { GestureDetector } from 'react-native-gesture-handler'
+import { Canvas, Circle, Path } from '@shopify/react-native-skia'
+import { dimensions, useAppTheme } from '@/theme'
+import { ChartFooter } from '../WeightChart/ChartFooter'
+import { ChartGrid } from '../WeightChart/ChartGrid'
+import { ChartHeader } from '../WeightChart/ChartHeader'
+import { createWeightChartStyles } from '../WeightChart/WeightChartStyles'
+import { skiaWeightChartStyles } from './SkiaWeightChartStyles'
+import type { SkiaWeightChartProps } from './SkiaWeightChartTypes'
+import { useSkiaWeightChart } from './UseSkiaWeightChart'
 export function SkiaWeightChart({ data }: SkiaWeightChartProps) {
   if (data.length === 0) {
-    return null;
+    return null
   }
-  const { colors, scheme } = useAppTheme();
-  const weightChartStyles = useMemo(() => createWeightChartStyles(colors), [colors]);
+  const { colors, scheme } = useAppTheme()
+  const weightChartStyles = useMemo(() => createWeightChartStyles(colors), [colors])
   const {
     min,
     max,
@@ -30,12 +28,10 @@ export function SkiaWeightChart({ data }: SkiaWeightChartProps) {
     latestY,
     panGesture,
     onFrameLayout,
-  } = useSkiaWeightChart({ data });
-
+  } = useSkiaWeightChart({ data })
   return (
     <View style={weightChartStyles.card}>
       <ChartHeader min={min} max={max} totalDays={totalDays} />
-
       <View style={weightChartStyles.chartFrame} onLayout={onFrameLayout}>
         <ChartGrid height={dimensions.chart.height} labels={axisLabels} />
         <GestureDetector gesture={panGesture}>
@@ -61,8 +57,7 @@ export function SkiaWeightChart({ data }: SkiaWeightChartProps) {
           </Canvas>
         </GestureDetector>
       </View>
-
       <ChartFooter first={first} last={last} />
     </View>
-  );
+  )
 }

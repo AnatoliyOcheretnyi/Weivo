@@ -1,11 +1,9 @@
-import { StyleSheet } from 'react-native';
-
-import type { ThemeColors } from '@/theme';
-import { dimensions } from '@/theme/dimensions';
-import { radii } from '@/theme/radii';
-import { spacing } from '@/theme/spacing';
-import { fontFamilies, fontSizes, letterSpacings } from '@/theme/typography';
-
+import { StyleSheet } from 'react-native'
+import type { ThemeColors } from '@/theme'
+import { dimensions } from '@/theme/dimensions'
+import { radii } from '@/theme/radii'
+import { spacing } from '@/theme/spacing'
+import { fontFamilies, fontSizes, letterSpacings } from '@/theme/typography'
 export const createHomeStyles = (colors: ThemeColors) =>
   StyleSheet.create({
     screen: {
@@ -215,4 +213,4 @@ export const createHomeStyles = (colors: ThemeColors) =>
       letterSpacing: letterSpacings.sm,
       textTransform: 'uppercase',
     },
-  });
+  })

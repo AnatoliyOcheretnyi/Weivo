@@ -1,2 +1,2 @@
-export { SkiaWeightChart } from './SkiaWeightChart';
-export type { SkiaWeightChartProps } from './SkiaWeightChartTypes';
+export { SkiaWeightChart } from './SkiaWeightChart'
+export type { SkiaWeightChartProps } from './SkiaWeightChartTypes'

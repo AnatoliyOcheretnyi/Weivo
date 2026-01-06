@@ -1,10 +1,8 @@
-import { StyleSheet } from 'react-native';
-
-import type { ThemeColors } from '@/theme';
-import { fontFamilies, fontSizes, letterSpacings } from '@/theme/typography';
-import { spacing } from '@/theme/spacing';
-import { GOAL_PROGRESS_SIZE } from './GoalProgressConstants';
-
+import { StyleSheet } from 'react-native'
+import type { ThemeColors } from '@/theme'
+import { fontFamilies, fontSizes, letterSpacings } from '@/theme/typography'
+import { spacing } from '@/theme/spacing'
+import { GOAL_PROGRESS_SIZE } from './GoalProgressConstants'
 export const createGoalProgressStyles = (colors: ThemeColors) =>
   StyleSheet.create({
     container: {
@@ -35,4 +33,4 @@ export const createGoalProgressStyles = (colors: ThemeColors) =>
       fontFamily: fontFamilies.display,
       letterSpacing: letterSpacings.sm,
     },
-  });
+  })

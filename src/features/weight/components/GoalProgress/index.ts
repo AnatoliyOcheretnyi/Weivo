@@ -1,2 +1,2 @@
-export { GoalProgress } from './GoalProgress';
-export type { GoalProgressProps } from './GoalProgressTypes';
+export { GoalProgress } from './GoalProgress'
+export type { GoalProgressProps } from './GoalProgressTypes'

@@ -1,12 +1,10 @@
-import type { WeightEntry } from '../data/types';
-
+import type { WeightEntry } from '../data/types'
 const parseDateTime = (value: string) => {
-  const [datePart, timePart] = value.split(' ');
-  const [day, month, year] = datePart.split('.').map(Number);
-  const [hour, minute] = timePart.split(':').map(Number);
-  return new Date(year, month - 1, day, hour, minute).toISOString();
-};
-
+  const [datePart, timePart] = value.split(' ')
+  const [day, month, year] = datePart.split('.').map(Number)
+  const [hour, minute] = timePart.split(':').map(Number)
+  return new Date(year, month - 1, day, hour, minute).toISOString()
+}
 const rawEntries = [
   { weightKg: 129.4, dateTime: '06.06.2022 00:00' },
   { weightKg: 120.1, dateTime: '11.06.2022 10:53' },
@@ -60,9 +58,8 @@ const rawEntries = [
   { weightKg: 118.2, dateTime: '29.10.2025 12:03' },
   { weightKg: 116.8, dateTime: '18.11.2025 11:19' },
   { weightKg: 115.9, dateTime: '03.12.2025 12:51' },
-];
-
+]
 export const weightEntries: WeightEntry[] = rawEntries.map((entry) => ({
   dateISO: parseDateTime(entry.dateTime),
   weightKg: entry.weightKg,
-}));
+}))

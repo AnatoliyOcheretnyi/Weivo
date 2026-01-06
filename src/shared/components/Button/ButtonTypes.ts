@@ -1,8 +1,6 @@
-import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
-
+import type { StyleProp, TextStyle, ViewStyle } from 'react-native'
 export type ButtonVariant = 'primary' | 'primarySmall' | 'inverse' | 'inverseSmall';
 export type ButtonSize = 'md' | 'sm';
-
 export type ButtonBaseProps = {
   title: string;
   onPress?: () => void;
@@ -12,7 +10,6 @@ export type ButtonBaseProps = {
   style?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
 };
-
 export type ButtonProps = Omit<ButtonBaseProps, 'variant' | 'size'> & {
   variant?: ButtonVariant;
 };

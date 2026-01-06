@@ -1,5 +1,4 @@
 export type GoalSegmentDirection = 'lose' | 'gain';
-
 export type GoalSegment = {
   id: string;
   startKg: number;

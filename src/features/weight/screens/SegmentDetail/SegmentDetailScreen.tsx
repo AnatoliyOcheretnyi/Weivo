@@ -1,52 +1,48 @@
-import { useMemo, useState } from 'react';
-import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-
-import { Button } from '@/shared/components/Button';
-import { Input } from '@/shared/components/Input';
-import { useAppTheme } from '@/theme';
-import { useTexts } from '@/i18n';
-import { IconSymbol } from '@/shared/components/Icon';
-import { useGoalSegments, type GoalSegment } from '@/features/weight';
-import { createSegmentDetailStyles } from './SegmentDetailScreen.styles';
-
+import { useMemo, useState } from 'react'
+import { Alert, Pressable, ScrollView, Text, View } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import { useLocalSearchParams, useRouter } from 'expo-router'
+import { Button } from '@/shared/components/Button'
+import { Input } from '@/shared/components/Input'
+import { useAppTheme } from '@/theme'
+import { useTexts } from '@/i18n'
+import { IconSymbol } from '@/shared/components/Icon'
+import { useGoalSegments, type GoalSegment } from '@/features/weight'
+import { createSegmentDetailStyles } from './SegmentDetailScreen.styles'
 export default function SegmentDetailScreen() {
-  const router = useRouter();
-  const { id } = useLocalSearchParams<{ id?: string }>();
-  const { texts } = useTexts();
-  const { colors } = useAppTheme();
-  const styles = useMemo(() => createSegmentDetailStyles(colors), [colors]);
-  const { segments, updateSegment, removeSegment } = useGoalSegments();
-
-  const segment = segments.find((item) => item.id === id);
+  const router = useRouter()
+  const { id } = useLocalSearchParams<{ id?: string }>()
+  const { texts } = useTexts()
+  const { colors } = useAppTheme()
+  const styles = useMemo(() => createSegmentDetailStyles(colors), [colors])
+  const { segments, updateSegment, removeSegment } = useGoalSegments()
+  const segment = segments.find((item) => item.id === id)
   const ordered = useMemo(
     () => [...segments].sort((a, b) => b.createdAtISO.localeCompare(a.createdAtISO)),
     [segments]
-  );
-  const isLatest = segment ? ordered[0]?.id === segment.id : false;
-  const isCompleted = Boolean(segment?.completedAtISO);
-  const [isEditing, setIsEditing] = useState(false);
+  )
+  const isLatest = segment ? ordered[0]?.id === segment.id : false
+  const isCompleted = Boolean(segment?.completedAtISO)
+  const [isEditing, setIsEditing] = useState(false)
   const [startWeight, setStartWeight] = useState(
     segment ? segment.startKg.toFixed(1) : ''
-  );
+  )
   const [targetWeight, setTargetWeight] = useState(
     segment ? segment.targetKg.toFixed(1) : ''
-  );
-  const [note, setNote] = useState(segment?.note ?? '');
+  )
+  const [note, setNote] = useState(segment?.note ?? '')
   const parseWeight = (value: string) => {
-    const normalized = value.replace(',', '.');
-    const parsed = Number(normalized);
-    return Number.isFinite(parsed) ? parsed : NaN;
-  };
-  const startValue = useMemo(() => parseWeight(startWeight), [startWeight]);
-  const targetValue = useMemo(() => parseWeight(targetWeight), [targetWeight]);
+    const normalized = value.replace(',', '.')
+    const parsed = Number(normalized)
+    return Number.isFinite(parsed) ? parsed : NaN
+  }
+  const startValue = useMemo(() => parseWeight(startWeight), [startWeight])
+  const targetValue = useMemo(() => parseWeight(targetWeight), [targetWeight])
   const canSave =
     Number.isFinite(startValue) &&
     Number.isFinite(targetValue) &&
     startValue > 0 &&
-    targetValue > 0;
-
+    targetValue > 0
   if (!segment) {
     return (
       <SafeAreaView style={styles.screen} edges={['top', 'left', 'right']}>
@@ -55,44 +51,41 @@ export default function SegmentDetailScreen() {
           <Text style={styles.subtitle}>{texts.segments.detailMissing}</Text>
         </View>
       </SafeAreaView>
-    );
+    )
   }
-
   const handleEditToggle = () => {
     if (isCompleted) {
-      Alert.alert(texts.segments.completedTitle, texts.segments.completedMessage);
-      return;
+      Alert.alert(texts.segments.completedTitle, texts.segments.completedMessage)
+      return
     }
     if (!isLatest) {
-      Alert.alert(texts.segments.editBlockedTitle, texts.segments.editBlockedMessage);
-      return;
+      Alert.alert(texts.segments.editBlockedTitle, texts.segments.editBlockedMessage)
+      return
     }
-    setIsEditing((value) => !value);
-  };
-
+    setIsEditing((value) => !value)
+  }
   const handleSave = () => {
     if (!canSave) {
-      return;
+      return
     }
     const updated: GoalSegment = {
       ...segment,
       startKg: startValue,
       targetKg: targetValue,
       note: note.trim() || undefined,
-    };
-    updateSegment(updated);
-    setIsEditing(false);
-    router.back();
-  };
-
+    }
+    updateSegment(updated)
+    setIsEditing(false)
+    router.back()
+  }
   const handleDelete = () => {
     if (isCompleted) {
-      Alert.alert(texts.segments.completedTitle, texts.segments.completedMessage);
-      return;
+      Alert.alert(texts.segments.completedTitle, texts.segments.completedMessage)
+      return
     }
     if (!isLatest) {
-      Alert.alert(texts.segments.editBlockedTitle, texts.segments.editBlockedMessage);
-      return;
+      Alert.alert(texts.segments.editBlockedTitle, texts.segments.editBlockedMessage)
+      return
     }
     Alert.alert(
       texts.segments.deleteTitle,
@@ -103,14 +96,13 @@ export default function SegmentDetailScreen() {
           text: texts.segments.deleteConfirm,
           style: 'destructive',
           onPress: () => {
-            removeSegment(segment.id);
-            router.back();
+            removeSegment(segment.id)
+            router.back()
           },
         },
       ]
-    );
-  };
-
+    )
+  }
   return (
     <SafeAreaView style={styles.screen} edges={['top', 'left', 'right']}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -143,7 +135,6 @@ export default function SegmentDetailScreen() {
               </Pressable>
             </View>
           </View>
-
           <View style={styles.section}>
             <Text style={styles.label}>{texts.segments.startWeight}</Text>
             <Input
@@ -158,7 +149,6 @@ export default function SegmentDetailScreen() {
               containerStyle={[styles.inputRow, !isEditing && styles.readOnly]}
             />
           </View>
-
           <View style={styles.section}>
             <Text style={styles.label}>{texts.segments.targetWeight}</Text>
             <Input
@@ -173,7 +163,6 @@ export default function SegmentDetailScreen() {
               containerStyle={[styles.inputRow, !isEditing && styles.readOnly]}
             />
           </View>
-
           <View style={styles.section}>
             <Text style={styles.label}>{texts.segments.note}</Text>
             <Input
@@ -185,7 +174,6 @@ export default function SegmentDetailScreen() {
               containerStyle={[styles.inputRow, !isEditing && styles.readOnly]}
             />
           </View>
-
           {isEditing && (
             <View style={styles.actionRow}>
               <Button
@@ -205,5 +193,5 @@ export default function SegmentDetailScreen() {
         </View>
       </ScrollView>
     </SafeAreaView>
-  );
+  )
 }

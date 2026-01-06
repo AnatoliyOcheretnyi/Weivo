@@ -1,12 +1,10 @@
-import { StyleSheet } from 'react-native';
-
-import type { ThemeColors } from '@/theme';
-import { dimensions } from '@/theme/dimensions';
-import { fontSizes, letterSpacings } from '@/theme/typography';
-import { radii } from '@/theme/radii';
-import { shadows } from '@/theme/shadows';
-import { spacing } from '@/theme/spacing';
-
+import { StyleSheet } from 'react-native'
+import type { ThemeColors } from '@/theme'
+import { dimensions } from '@/theme/dimensions'
+import { fontSizes, letterSpacings } from '@/theme/typography'
+import { radii } from '@/theme/radii'
+import { shadows } from '@/theme/shadows'
+import { spacing } from '@/theme/spacing'
 export const createProfileEditStyles = (colors: ThemeColors) =>
   StyleSheet.create({
     screen: {
@@ -188,4 +186,4 @@ export const createProfileEditStyles = (colors: ThemeColors) =>
       flex: 1,
       borderRadius: radii.md,
     },
-  });
+  })

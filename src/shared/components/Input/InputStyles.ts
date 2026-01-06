@@ -1,9 +1,7 @@
-import { StyleSheet } from 'react-native';
-
-import { radii } from '@/theme/radii';
-import { spacing } from '@/theme/spacing';
-import { fontFamilies, fontSizes, letterSpacings } from '@/theme/typography';
-
+import { StyleSheet } from 'react-native'
+import { radii } from '@/theme/radii'
+import { spacing } from '@/theme/spacing'
+import { fontFamilies, fontSizes, letterSpacings } from '@/theme/typography'
 export const inputStyles = StyleSheet.create({
   container: {
     flexDirection: 'row',
@@ -28,4 +26,4 @@ export const inputStyles = StyleSheet.create({
   unit: {
     fontSize: fontSizes.md,
   },
-});
+})

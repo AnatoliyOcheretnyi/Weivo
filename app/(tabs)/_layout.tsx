@@ -1,19 +1,16 @@
-import { Tabs, useRouter } from 'expo-router';
-import { useMemo } from 'react';
-import { Pressable, Text, View } from 'react-native';
-
-import { HapticTab } from '@/shared/components/HapticTab';
-import { IconSymbol } from '@/shared/components/Icon';
-import { dimensions, useAppTheme } from '@/theme';
-import { createTabLayoutStyles } from './_layout.styles';
-import { useTexts } from '@/i18n';
-
+import { Tabs, useRouter } from 'expo-router'
+import { useMemo } from 'react'
+import { Pressable, Text, View } from 'react-native'
+import { HapticTab } from '@/shared/components/HapticTab'
+import { IconSymbol } from '@/shared/components/Icon'
+import { dimensions, useAppTheme } from '@/theme'
+import { createTabLayoutStyles } from './_layout.styles'
+import { useTexts } from '@/i18n'
 export default function TabLayout() {
-  const router = useRouter();
-  const { texts } = useTexts();
-  const { colors } = useAppTheme();
-  const tabLayoutStyles = useMemo(() => createTabLayoutStyles(colors), [colors]);
-
+  const router = useRouter()
+  const { texts } = useTexts()
+  const { colors } = useAppTheme()
+  const tabLayoutStyles = useMemo(() => createTabLayoutStyles(colors), [colors])
   return (
     <Tabs
       screenOptions={{
@@ -65,5 +62,5 @@ export default function TabLayout() {
         }}
       />
     </Tabs>
-  );
+  )
 }

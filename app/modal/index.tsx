@@ -1,5 +1,4 @@
-import { AddEntryModal } from '@/features/weight/screens';
-
+import { AddEntryModal } from '@/features/weight/screens'
 export default function AddEntryRoute() {
-  return <AddEntryModal />;
+  return <AddEntryModal />
 }

@@ -1,11 +1,9 @@
-import { StyleSheet } from 'react-native';
-
-import type { ThemeColors } from '@/theme';
-import { dimensions } from '@/theme/dimensions';
-import { radii } from '@/theme/radii';
-import { shadows } from '@/theme/shadows';
-import { spacing } from '@/theme/spacing';
-
+import { StyleSheet } from 'react-native'
+import type { ThemeColors } from '@/theme'
+import { dimensions } from '@/theme/dimensions'
+import { radii } from '@/theme/radii'
+import { shadows } from '@/theme/shadows'
+import { spacing } from '@/theme/spacing'
 export const createWeightChartStyles = (colors: ThemeColors) =>
   StyleSheet.create({
     card: {
@@ -56,4 +54,4 @@ export const createWeightChartStyles = (colors: ThemeColors) =>
       borderRadius: radii.full,
       backgroundColor: colors.glow,
     },
-  });
+  })

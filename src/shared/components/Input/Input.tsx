@@ -1,10 +1,8 @@
-import { forwardRef } from 'react';
-import { Text, TextInput, View } from 'react-native';
-
-import { useAppTheme } from '@/theme';
-import type { InputProps } from './InputTypes';
-import { inputStyles } from './InputStyles';
-
+import { forwardRef } from 'react'
+import { Text, TextInput, View } from 'react-native'
+import { useAppTheme } from '@/theme'
+import type { InputProps } from './InputTypes'
+import { inputStyles } from './InputStyles'
 export const Input = forwardRef<TextInput, InputProps>(function Input(
   {
     variant = 'default',
@@ -17,7 +15,7 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
   },
   ref
 ) {
-  const { colors } = useAppTheme();
+  const { colors } = useAppTheme()
   return (
     <View
       style={[
@@ -39,5 +37,5 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
         </Text>
       ) : null}
     </View>
-  );
-});
+  )
+})

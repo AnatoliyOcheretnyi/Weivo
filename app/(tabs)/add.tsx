@@ -1,3 +1,3 @@
 export default function AddTabPlaceholder() {
-  return null;
+  return null
 }

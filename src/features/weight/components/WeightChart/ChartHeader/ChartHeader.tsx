@@ -1,15 +1,13 @@
-import { useMemo } from 'react';
-import { Text, View } from 'react-native';
-
-import type { ChartHeaderProps } from './ChartHeaderTypes';
-import { useAppTheme } from '@/theme';
-import { createChartHeaderStyles } from './ChartHeaderStyles';
-import { useTexts } from '@/i18n';
-
+import { useMemo } from 'react'
+import { Text, View } from 'react-native'
+import type { ChartHeaderProps } from './ChartHeaderTypes'
+import { useAppTheme } from '@/theme'
+import { createChartHeaderStyles } from './ChartHeaderStyles'
+import { useTexts } from '@/i18n'
 export function ChartHeader({ min, max, totalDays }: ChartHeaderProps) {
-  const { texts } = useTexts();
-  const { colors } = useAppTheme();
-  const chartHeaderStyles = useMemo(() => createChartHeaderStyles(colors), [colors]);
+  const { texts } = useTexts()
+  const { colors } = useAppTheme()
+  const chartHeaderStyles = useMemo(() => createChartHeaderStyles(colors), [colors])
   return (
     <View style={chartHeaderStyles.headerRow}>
       <View>
@@ -24,5 +22,5 @@ export function ChartHeader({ min, max, totalDays }: ChartHeaderProps) {
         </Text>
       </View>
     </View>
-  );
+  )
 }

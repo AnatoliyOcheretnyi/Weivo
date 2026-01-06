@@ -1,28 +1,22 @@
-import i18n from 'i18next';
-import { initReactI18next, useTranslation } from 'react-i18next';
-import { useEffect, useMemo } from 'react';
-import * as Localization from 'expo-localization';
-
-import type { Language } from '@/features/profile';
-
+import i18n from 'i18next'
+import { initReactI18next, useTranslation } from 'react-i18next'
+import { useEffect, useMemo } from 'react'
+import * as Localization from 'expo-localization'
+import type { Language } from '@/features/profile'
 export type Locale = 'en' | 'uk' | 'es';
 export type LanguageOption = Language | 'system';
-
-const DEFAULT_LOCALE: Locale = 'en';
-const SUPPORTED_LOCALES: Locale[] = ['en', 'uk', 'es'];
-
+const DEFAULT_LOCALE: Locale = 'en'
+const SUPPORTED_LOCALES: Locale[] = ['en', 'uk', 'es']
 const normalizeLocale = (rawLocale?: string | null): Locale => {
-  const normalized = rawLocale?.toLowerCase();
-  const base = normalized?.split(/[-_]/)[0] as Locale | undefined;
-  return base && SUPPORTED_LOCALES.includes(base) ? base : DEFAULT_LOCALE;
-};
-
+  const normalized = rawLocale?.toLowerCase()
+  const base = normalized?.split(/[-_]/)[0] as Locale | undefined
+  return base && SUPPORTED_LOCALES.includes(base) ? base : DEFAULT_LOCALE
+}
 export const getSystemLocale = (): Locale => {
-  const locales = Localization.getLocales?.();
-  const languageTag = locales?.[0]?.languageTag ?? DEFAULT_LOCALE;
-  return normalizeLocale(languageTag);
-};
-
+  const locales = Localization.getLocales?.()
+  const languageTag = locales?.[0]?.languageTag ?? DEFAULT_LOCALE
+  return normalizeLocale(languageTag)
+}
 const translations = {
   en: {
     appName: 'Weivo',
@@ -744,18 +738,14 @@ const translations = {
       stepLabel: 'Paso {current} de {total}',
     },
   },
-};
-
+}
 export type Texts = typeof translations.en;
-
 export const localeLabels: Record<Locale, string> = {
   en: 'English',
   uk: 'Українська',
   es: 'Español',
-};
-
-const initLocale = getSystemLocale();
-
+}
+const initLocale = getSystemLocale()
 if (!i18n.isInitialized) {
   i18n.use(initReactI18next).init({
     compatibilityJSON: 'v4',
@@ -769,26 +759,23 @@ if (!i18n.isInitialized) {
     interpolation: {
       escapeValue: false,
     },
-  });
+  })
 }
-
 export const useTexts = () => {
-  const { i18n: i18nInstance } = useTranslation();
+  const { i18n: i18nInstance } = useTranslation()
   const texts = useMemo(() => {
-    const bundle = i18nInstance.getResourceBundle(i18nInstance.language, 'translation');
-    return (bundle ?? translations.en) as Texts;
-  }, [i18nInstance.language]);
-  return { texts, locale: i18nInstance.language };
-};
-
+    const bundle = i18nInstance.getResourceBundle(i18nInstance.language, 'translation')
+    return (bundle ?? translations.en) as Texts
+  }, [i18nInstance.language])
+  return { texts, locale: i18nInstance.language }
+}
 export const useI18nSync = (language?: LanguageOption) => {
   useEffect(() => {
     const nextLocale =
-      language && language !== 'system' ? normalizeLocale(language) : getSystemLocale();
+      language && language !== 'system' ? normalizeLocale(language) : getSystemLocale()
     if (i18n.language !== nextLocale) {
-      void i18n.changeLanguage(nextLocale);
+      void i18n.changeLanguage(nextLocale)
     }
-  }, [language]);
-};
-
-export default i18n;
+  }, [language])
+}
+export default i18n

@@ -1,9 +1,7 @@
-import { Pressable, Text } from 'react-native';
-
-import { useAppTheme } from '@/theme';
-import type { ButtonBaseProps } from './ButtonTypes';
-import { buttonStyles } from './ButtonStyles';
-
+import { Pressable, Text } from 'react-native'
+import { useAppTheme } from '@/theme'
+import type { ButtonBaseProps } from './ButtonTypes'
+import { buttonStyles } from './ButtonStyles'
 export function ButtonBase({
   title,
   onPress,
@@ -13,13 +11,12 @@ export function ButtonBase({
   style,
   textStyle,
 }: ButtonBaseProps) {
-  const { colors } = useAppTheme();
+  const { colors } = useAppTheme()
   const variantStyle =
     variant === 'primary'
       ? { backgroundColor: colors.inkStrong, borderColor: colors.inkStrong }
-      : { backgroundColor: colors.creamLight, borderColor: colors.creamLine };
-  const labelColor = variant === 'primary' ? colors.highlight : colors.inkMuted;
-
+      : { backgroundColor: colors.creamLight, borderColor: colors.creamLine }
+  const labelColor = variant === 'primary' ? colors.highlight : colors.inkMuted
   return (
     <Pressable
       style={[
@@ -43,5 +40,5 @@ export function ButtonBase({
         {title}
       </Text>
     </Pressable>
-  );
+  )
 }

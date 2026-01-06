@@ -1,16 +1,13 @@
-import { Text, View } from 'react-native';
-
-import type { ChartGridProps } from './ChartGridTypes';
-import { useMemo } from 'react';
-import { useAppTheme } from '@/theme';
-import { createChartGridStyles } from './ChartGridStyles';
-
+import { Text, View } from 'react-native'
+import type { ChartGridProps } from './ChartGridTypes'
+import { useMemo } from 'react'
+import { useAppTheme } from '@/theme'
+import { createChartGridStyles } from './ChartGridStyles'
 export function ChartGrid({ height, labels }: ChartGridProps) {
-  const { colors } = useAppTheme();
-  const chartGridStyles = useMemo(() => createChartGridStyles(colors), [colors]);
-  const labelHeight = 12;
-  const labelInset = 2;
-
+  const { colors } = useAppTheme()
+  const chartGridStyles = useMemo(() => createChartGridStyles(colors), [colors])
+  const labelHeight = 12
+  const labelInset = 2
   return (
     <View style={[chartGridStyles.grid, { height }]} pointerEvents="none">
       <View style={[chartGridStyles.gridLine, { top: 0 }]} />
@@ -39,5 +36,5 @@ export function ChartGrid({ height, labels }: ChartGridProps) {
         </>
       ) : null}
     </View>
-  );
+  )
 }

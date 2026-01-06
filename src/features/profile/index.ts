@@ -1,4 +1,4 @@
-export { useProfileStore } from './data/profile-store';
+export { useProfileStore } from './data/profile-store'
 export type {
   ActivityLevel,
   GoalType,
@@ -7,4 +7,4 @@ export type {
   Sex,
   Language,
   ThemeMode,
-} from './data/types';
+} from './data/types'

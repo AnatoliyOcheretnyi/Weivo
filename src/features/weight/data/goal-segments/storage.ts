@@ -1,70 +1,63 @@
-import { createMMKV } from 'react-native-mmkv';
-
-import type { GoalSegment } from './types';
-
+import { createMMKV } from 'react-native-mmkv'
+import type { GoalSegment } from './types'
 const createStorage = () => {
   try {
-    return createMMKV({ id: 'weivo' });
+    return createMMKV({ id: 'weivo' })
   } catch {
-    return null;
+    return null
   }
-};
-
-const storage = createStorage();
-const SEGMENTS_KEY = 'goal_segments_v1';
-
+}
+const storage = createStorage()
+const SEGMENTS_KEY = 'goal_segments_v1'
 type StoredPayload = {
   segments: GoalSegment[];
 };
-
 const loadPayload = (): StoredPayload | null => {
   if (!storage) {
-    return null;
+    return null
   }
-  const raw = storage.getString(SEGMENTS_KEY);
+  const raw = storage.getString(SEGMENTS_KEY)
   if (!raw) {
-    return null;
+    return null
   }
   try {
-    return JSON.parse(raw) as StoredPayload;
+    return JSON.parse(raw) as StoredPayload
   } catch {
-    return null;
+    return null
   }
-};
-
+}
 const savePayload = (payload: StoredPayload) => {
   if (!storage) {
-    return;
+    return
   }
-  storage.set(SEGMENTS_KEY, JSON.stringify(payload));
-};
-
+  storage.set(SEGMENTS_KEY, JSON.stringify(payload))
+}
 export const goalSegmentsStorage = {
   loadSegments(): GoalSegment[] {
-    return loadPayload()?.segments ?? [];
+    return loadPayload()?.segments ?? []
   },
   saveSegments(segments: GoalSegment[]) {
-    savePayload({ segments });
+    savePayload({ segments })
   },
   addSegment(segment: GoalSegment, existing: GoalSegment[]) {
-    const next = [segment, ...existing];
-    savePayload({ segments: next });
-    return next;
+    const next = [segment, ...existing]
+    savePayload({ segments: next })
+    return next
   },
   updateSegment(updated: GoalSegment, existing: GoalSegment[]) {
     const next = existing.map((segment) =>
       segment.id === updated.id ? updated : segment
-    );
-    savePayload({ segments: next });
-    return next;
+    )
+    savePayload({ segments: next })
+    return next
   },
   removeSegment(id: string, existing: GoalSegment[]) {
-    const next = existing.filter((segment) => segment.id !== id);
-    savePayload({ segments: next });
-    return next;
+    const next = existing.filter((segment) => segment.id !== id)
+    savePayload({ segments: next })
+    return next
   },
   clearSegments() {
-    savePayload({ segments: [] });
-    return [];
+    savePayload({ segments: [] })
+    return []
   },
-};
+}

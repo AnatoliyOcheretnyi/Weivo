@@ -1,12 +1,10 @@
-import { StyleSheet } from 'react-native';
-
-import type { ThemeColors } from '@/theme';
-import { dimensions } from '@/theme/dimensions';
-import { fontFamilies, fontSizes, letterSpacings } from '@/theme/typography';
-import { radii } from '@/theme/radii';
-import { shadows } from '@/theme/shadows';
-import { spacing } from '@/theme/spacing';
-
+import { StyleSheet } from 'react-native'
+import type { ThemeColors } from '@/theme'
+import { dimensions } from '@/theme/dimensions'
+import { fontFamilies, fontSizes, letterSpacings } from '@/theme/typography'
+import { radii } from '@/theme/radii'
+import { shadows } from '@/theme/shadows'
+import { spacing } from '@/theme/spacing'
 export const createSegmentCreateStyles = (colors: ThemeColors) =>
   StyleSheet.create({
     screen: {
@@ -141,4 +139,4 @@ export const createSegmentCreateStyles = (colors: ThemeColors) =>
     doneButton: {
       borderRadius: radii.full,
     },
-  });
+  })

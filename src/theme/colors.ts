@@ -33,8 +33,7 @@ export const colors = {
   darkIcon: '#9BA1A6',
   overlay: 'rgba(20, 16, 12, 0.25)',
   glow: 'rgba(16,16,16,0.12)',
-};
-
+}
 export const darkColors = {
   ink: '#F5EFE6',
   inkStrong: '#0F0D0B',
@@ -70,8 +69,7 @@ export const darkColors = {
   darkIcon: '#9BA1A6',
   overlay: 'rgba(8, 6, 4, 0.6)',
   glow: 'rgba(0,0,0,0.35)',
-};
-
+}
 export const roseColors = {
   ...colors,
   ink: '#2D2425',
@@ -98,8 +96,7 @@ export const roseColors = {
   accentOrangeDark: '#C24355',
   accentOrangeSoft: '#F4A0B0',
   accentTeal: '#5A8B8A',
-};
-
+}
 export const skyColors = {
   ...colors,
   ink: '#23303A',
@@ -126,8 +123,7 @@ export const skyColors = {
   accentOrangeDark: '#33709E',
   accentOrangeSoft: '#8EC1E6',
   accentTeal: '#2D6E80',
-};
-
+}
 export const mintColors = {
   ...colors,
   ink: '#25332E',
@@ -154,18 +150,15 @@ export const mintColors = {
   accentOrangeDark: '#1FA56A',
   accentOrangeSoft: '#8DE9C1',
   accentTeal: '#2D7C68',
-};
-
+}
 export type ThemeColors = typeof colors;
-
 export const themes = {
   light: colors,
   dark: darkColors,
   rose: roseColors,
   sky: skyColors,
   mint: mintColors,
-};
-
+}
 export const themeColors = {
   light: {
     text: colors.ink,
@@ -207,4 +200,4 @@ export const themeColors = {
     tabIconDefault: mintColors.inkAccent,
     tabIconSelected: mintColors.ink,
   },
-};
+}

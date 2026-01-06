@@ -1,16 +1,13 @@
-import { StyleSheet } from 'react-native';
-
-import type { ThemeColors } from '@/theme';
-import { radii } from '@/theme/radii';
-import { spacing } from '@/theme/spacing';
-import { fontSizes, letterSpacings } from '@/theme/typography';
-import { GOAL_SEGMENT_DOT_SIZE } from './GoalSegmentTrackConstants';
-
+import { StyleSheet } from 'react-native'
+import type { ThemeColors } from '@/theme'
+import { radii } from '@/theme/radii'
+import { spacing } from '@/theme/spacing'
+import { fontSizes, letterSpacings } from '@/theme/typography'
+import { GOAL_SEGMENT_DOT_SIZE } from './GoalSegmentTrackConstants'
 type GoalSegmentTrackLayout = {
   width: number;
   height: number;
 };
-
 export const createGoalSegmentTrackStyles = (
   colors: ThemeColors,
   layout: GoalSegmentTrackLayout
@@ -94,4 +91,4 @@ export const createGoalSegmentTrackStyles = (
       color: colors.inkMuted,
       letterSpacing: letterSpacings.sm,
     },
-  });
+  })

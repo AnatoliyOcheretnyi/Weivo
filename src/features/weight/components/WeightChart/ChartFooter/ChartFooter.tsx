@@ -1,16 +1,14 @@
-import { useMemo } from 'react';
-import { Text, View } from 'react-native';
-
-import type { ChartFooterProps } from './ChartFooterTypes';
-import { useAppTheme } from '@/theme';
-import { createChartFooterStyles } from './ChartFooterStyles';
-import { useTexts } from '@/i18n';
-import { formatShortDate } from '../WeightChartUtils';
-
+import { useMemo } from 'react'
+import { Text, View } from 'react-native'
+import type { ChartFooterProps } from './ChartFooterTypes'
+import { useAppTheme } from '@/theme'
+import { createChartFooterStyles } from './ChartFooterStyles'
+import { useTexts } from '@/i18n'
+import { formatShortDate } from '../WeightChartUtils'
 export function ChartFooter({ first, last }: ChartFooterProps) {
-  const { texts, locale } = useTexts();
-  const { colors } = useAppTheme();
-  const chartFooterStyles = useMemo(() => createChartFooterStyles(colors), [colors]);
+  const { texts, locale } = useTexts()
+  const { colors } = useAppTheme()
+  const chartFooterStyles = useMemo(() => createChartFooterStyles(colors), [colors])
   return (
     <View style={chartFooterStyles.footerRow}>
       <View>
@@ -28,5 +26,5 @@ export function ChartFooter({ first, last }: ChartFooterProps) {
         </Text>
       </View>
     </View>
-  );
+  )
 }

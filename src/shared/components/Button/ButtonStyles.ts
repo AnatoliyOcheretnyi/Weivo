@@ -1,9 +1,7 @@
-import { StyleSheet } from 'react-native';
-
-import { radii } from '@/theme/radii';
-import { spacing } from '@/theme/spacing';
-import { fontFamilies, fontSizes, letterSpacings } from '@/theme/typography';
-
+import { StyleSheet } from 'react-native'
+import { radii } from '@/theme/radii'
+import { spacing } from '@/theme/spacing'
+import { fontFamilies, fontSizes, letterSpacings } from '@/theme/typography'
 export const buttonStyles = StyleSheet.create({
   button: {
     borderRadius: radii.full,
@@ -33,4 +31,4 @@ export const buttonStyles = StyleSheet.create({
   disabled: {
     opacity: 0.55,
   },
-});
+})

@@ -1,2 +1,2 @@
-export { GoalSegmentTrack } from './GoalSegmentTrack';
-export type { GoalSegmentTrackProps } from './GoalSegmentTrackTypes';
+export { GoalSegmentTrack } from './GoalSegmentTrack'
+export type { GoalSegmentTrackProps } from './GoalSegmentTrackTypes'

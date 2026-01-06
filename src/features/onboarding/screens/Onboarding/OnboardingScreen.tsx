@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   Animated,
   Dimensions,
@@ -9,99 +9,90 @@ import {
   Text,
   UIManager,
   View,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { useRouter } from 'expo-router';
-import { useProfileStore, type ActivityLevel, type GoalType, type Sex } from '@/features/profile';
-import { useWeightStore } from '@/features/weight';
-import { Input } from '@/shared/components/Input';
-import { IconSymbol } from '@/shared/components/Icon';
-import { useAppTheme } from '@/theme';
-import { useTexts } from '@/i18n';
-import { createOnboardingStyles } from './OnboardingScreen.styles';
-
-const STEP_COUNT = 4;
-
+} from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import DateTimePicker from '@react-native-community/datetimepicker'
+import { useRouter } from 'expo-router'
+import { useProfileStore, type ActivityLevel, type GoalType, type Sex } from '@/features/profile'
+import { useWeightStore } from '@/features/weight'
+import { Input } from '@/shared/components/Input'
+import { IconSymbol } from '@/shared/components/Icon'
+import { useAppTheme } from '@/theme'
+import { useTexts } from '@/i18n'
+import { createOnboardingStyles } from './OnboardingScreen.styles'
+const STEP_COUNT = 4
 export default function OnboardingScreen() {
-  const router = useRouter();
-  const { profile, updateProfile } = useProfileStore();
-  const { addEntry } = useWeightStore();
-  const { texts } = useTexts();
-  const { colors } = useAppTheme();
-  const onboardingStyles = useMemo(() => createOnboardingStyles(colors), [colors]);
-  const scrollRef = useRef<ScrollView>(null);
-  const scrollX = useRef(new Animated.Value(0)).current;
-  const [currentStep, setCurrentStep] = useState(0);
+  const router = useRouter()
+  const { profile, updateProfile } = useProfileStore()
+  const { addEntry } = useWeightStore()
+  const { texts } = useTexts()
+  const { colors } = useAppTheme()
+  const onboardingStyles = useMemo(() => createOnboardingStyles(colors), [colors])
+  const scrollRef = useRef<ScrollView>(null)
+  const scrollX = useRef(new Animated.Value(0)).current
+  const [currentStep, setCurrentStep] = useState(0)
   const [birthDate, setBirthDate] = useState<Date | null>(
     profile.birthDateISO ? new Date(profile.birthDateISO) : null
-  );
-  const [showDatePicker, setShowDatePicker] = useState(true);
-  const [sex, setSex] = useState<Sex>(profile.sex ?? 'male');
+  )
+  const [showDatePicker, setShowDatePicker] = useState(true)
+  const [sex, setSex] = useState<Sex>(profile.sex ?? 'male')
   const [heightCm, setHeightCm] = useState(
     profile.heightCm ? String(profile.heightCm) : ''
-  );
-  const [weightKg, setWeightKg] = useState('');
-  const [goalType, setGoalType] = useState<GoalType>(profile.goalType ?? 'maintain');
+  )
+  const [weightKg, setWeightKg] = useState('')
+  const [goalType, setGoalType] = useState<GoalType>(profile.goalType ?? 'maintain')
   const [goalTarget, setGoalTarget] = useState(
     profile.goalTargetKg ? profile.goalTargetKg.toFixed(1) : ''
-  );
+  )
   const [goalRate, setGoalRate] = useState(
     profile.goalRateKgPerWeek ? profile.goalRateKgPerWeek.toFixed(1) : ''
-  );
+  )
   const [goalRangeMin, setGoalRangeMin] = useState(
     profile.goalRangeMinKg ? profile.goalRangeMinKg.toFixed(1) : ''
-  );
+  )
   const [goalRangeMax, setGoalRangeMax] = useState(
     profile.goalRangeMaxKg ? profile.goalRangeMaxKg.toFixed(1) : ''
-  );
+  )
   const [activityLevel, setActivityLevel] = useState<ActivityLevel>(
     profile.activityLevel ?? 'sedentary'
-  );
-
+  )
   useEffect(() => {
     if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
-      UIManager.setLayoutAnimationEnabledExperimental(true);
+      UIManager.setLayoutAnimationEnabledExperimental(true)
     }
-  }, []);
-
-  const screenWidth = Dimensions.get('window').width;
-  const trackWidth = screenWidth - 64;
+  }, [])
+  const screenWidth = Dimensions.get('window').width
+  const trackWidth = screenWidth - 64
   const progressWidth = scrollX.interpolate({
     inputRange: [0, screenWidth * (STEP_COUNT - 1)],
     outputRange: [0, trackWidth],
     extrapolate: 'clamp',
-  });
-
-  const canContinueAge = Boolean(birthDate);
-  const canContinueBody = Boolean(Number(heightCm) > 0 && Number(weightKg) > 0 && sex);
+  })
+  const canContinueAge = Boolean(birthDate)
+  const canContinueBody = Boolean(Number(heightCm) > 0 && Number(weightKg) > 0 && sex)
   const canContinueGoal = (() => {
     if (goalType === 'maintain') {
-      return Number(goalRangeMin) > 0 && Number(goalRangeMax) > 0 && Number(goalRangeMin) < Number(goalRangeMax);
+      return Number(goalRangeMin) > 0 && Number(goalRangeMax) > 0 && Number(goalRangeMin) < Number(goalRangeMax)
     }
-    const maxRate = goalType === 'gain' ? 0.5 : 1;
-    const rate = Number(goalRate);
-    return Number(goalTarget) > 0 && rate > 0 && rate <= maxRate;
-  })();
-
+    const maxRate = goalType === 'gain' ? 0.5 : 1
+    const rate = Number(goalRate)
+    return Number(goalTarget) > 0 && rate > 0 && rate <= maxRate
+  })()
   const goToStep = (nextStep: number) => {
-    scrollRef.current?.scrollTo({ x: nextStep * screenWidth, animated: true });
-  };
-
+    scrollRef.current?.scrollTo({ x: nextStep * screenWidth, animated: true })
+  }
   const handleNext = () => {
     if (currentStep < STEP_COUNT - 1) {
-      goToStep(currentStep + 1);
+      goToStep(currentStep + 1)
     }
-  };
-
+  }
   const handleBack = () => {
     if (currentStep > 0) {
-      goToStep(currentStep - 1);
+      goToStep(currentStep - 1)
     }
-  };
-
+  }
   const handleFinish = () => {
-    const birthDateISO = birthDate ? birthDate.toISOString() : undefined;
+    const birthDateISO = birthDate ? birthDate.toISOString() : undefined
     const nextProfile = {
       birthDateISO,
       heightCm: heightCm ? Number(heightCm) : undefined,
@@ -113,23 +104,20 @@ export default function OnboardingScreen() {
       goalRangeMinKg: goalRangeMin ? Number(goalRangeMin) : undefined,
       goalRangeMaxKg: goalRangeMax ? Number(goalRangeMax) : undefined,
       onboardingComplete: true,
-    };
-
+    }
     if (goalType === 'maintain') {
-      nextProfile.goalTargetKg = undefined;
-      nextProfile.goalRateKgPerWeek = undefined;
+      nextProfile.goalTargetKg = undefined
+      nextProfile.goalRateKgPerWeek = undefined
     } else {
-      nextProfile.goalRangeMinKg = undefined;
-      nextProfile.goalRangeMaxKg = undefined;
+      nextProfile.goalRangeMinKg = undefined
+      nextProfile.goalRangeMaxKg = undefined
     }
-
     if (weightKg) {
-      addEntry(Number(weightKg));
+      addEntry(Number(weightKg))
     }
-    updateProfile(nextProfile);
-    router.replace('/(tabs)');
-  };
-
+    updateProfile(nextProfile)
+    router.replace('/(tabs)')
+  }
   return (
     <SafeAreaView style={onboardingStyles.screen} edges={['top', 'left', 'right']}>
       <View style={onboardingStyles.header}>
@@ -139,7 +127,6 @@ export default function OnboardingScreen() {
       <View style={onboardingStyles.progressTrack}>
         <Animated.View style={[onboardingStyles.progressFill, { width: progressWidth }]} />
       </View>
-
       <Animated.ScrollView
         ref={scrollRef}
         horizontal
@@ -148,8 +135,8 @@ export default function OnboardingScreen() {
         style={onboardingStyles.pager}
         scrollEventThrottle={16}
         onMomentumScrollEnd={(event) => {
-          const nextStep = Math.round(event.nativeEvent.contentOffset.x / screenWidth);
-          setCurrentStep(nextStep);
+          const nextStep = Math.round(event.nativeEvent.contentOffset.x / screenWidth)
+          setCurrentStep(nextStep)
         }}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { x: scrollX } } }],
@@ -164,13 +151,11 @@ export default function OnboardingScreen() {
             </View>
           </ScrollView>
         </View>
-
         <View style={[onboardingStyles.page, { width: screenWidth }]}>
           <ScrollView showsVerticalScrollIndicator={false} style={onboardingStyles.pageContent}>
             <View style={onboardingStyles.card}>
             <Text style={onboardingStyles.cardTitle}>{texts.onboarding.ageTitle}</Text>
             <Text style={onboardingStyles.cardBody}>{texts.onboarding.ageBody}</Text>
-
             <View style={onboardingStyles.section}>
               <Text style={onboardingStyles.label}>{texts.onboarding.birthDate}</Text>
               <View style={onboardingStyles.inputRow}>
@@ -193,7 +178,7 @@ export default function OnboardingScreen() {
                     maximumDate={new Date()}
                     onChange={(_, selectedDate) => {
                       if (selectedDate) {
-                        setBirthDate(selectedDate);
+                        setBirthDate(selectedDate)
                       }
                     }}
                   />
@@ -201,17 +186,14 @@ export default function OnboardingScreen() {
               )}
               <Text style={onboardingStyles.helper}>{texts.onboarding.birthDateHelper}</Text>
             </View>
-
             </View>
           </ScrollView>
         </View>
-
         <View style={[onboardingStyles.page, { width: screenWidth }]}>
           <ScrollView showsVerticalScrollIndicator={false} style={onboardingStyles.pageContent}>
             <View style={onboardingStyles.card}>
             <Text style={onboardingStyles.cardTitle}>{texts.onboarding.bodyTitle}</Text>
             <Text style={onboardingStyles.cardBody}>{texts.onboarding.bodyBody}</Text>
-
             <View style={onboardingStyles.section}>
               <Text style={onboardingStyles.label}>{texts.onboarding.height}</Text>
               <Input
@@ -224,7 +206,6 @@ export default function OnboardingScreen() {
                 unitStyle={onboardingStyles.unit}
               />
             </View>
-
             <View style={onboardingStyles.section}>
               <Text style={onboardingStyles.label}>{texts.onboarding.weight}</Text>
               <Input
@@ -266,13 +247,11 @@ export default function OnboardingScreen() {
             </View>
           </ScrollView>
         </View>
-
         <View style={[onboardingStyles.page, { width: screenWidth }]}>
           <ScrollView showsVerticalScrollIndicator={false} style={onboardingStyles.pageContent}>
             <View style={onboardingStyles.card}>
             <Text style={onboardingStyles.cardTitle}>{texts.onboarding.goalTitle}</Text>
             <Text style={onboardingStyles.cardBody}>{texts.onboarding.goalBody}</Text>
-
             <View style={onboardingStyles.section}>
               <Text style={onboardingStyles.label}>{texts.onboarding.goalType}</Text>
               <View style={onboardingStyles.segmentedRow}>
@@ -284,8 +263,8 @@ export default function OnboardingScreen() {
                       goalType === type && onboardingStyles.segmentActive,
                     ]}
                     onPress={() => {
-                      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-                      setGoalType(type);
+                      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+                      setGoalType(type)
                     }}>
                     <Text
                       style={[
@@ -302,7 +281,6 @@ export default function OnboardingScreen() {
                 ))}
               </View>
             </View>
-
             {(goalType === 'lose' || goalType === 'gain') && (
               <View style={onboardingStyles.section}>
                 <View style={onboardingStyles.goalRow}>
@@ -340,7 +318,6 @@ export default function OnboardingScreen() {
                 </View>
               </View>
             )}
-
             {goalType === 'maintain' && (
               <View style={onboardingStyles.section}>
                 <Text style={onboardingStyles.label}>{texts.onboarding.targetRange}</Text>
@@ -370,7 +347,6 @@ export default function OnboardingScreen() {
                 </View>
               </View>
             )}
-
             <View style={onboardingStyles.section}>
               <Text style={onboardingStyles.label}>{texts.onboarding.activity}</Text>
               <View style={onboardingStyles.segmentedRow}>
@@ -418,7 +394,6 @@ export default function OnboardingScreen() {
           </ScrollView>
         </View>
       </Animated.ScrollView>
-
       <View style={onboardingStyles.actions}>
         {currentStep === 0 ? (
           <View />
@@ -463,5 +438,5 @@ export default function OnboardingScreen() {
         )}
       </View>
     </SafeAreaView>
-  );
+  )
 }

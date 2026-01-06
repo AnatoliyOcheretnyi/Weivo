@@ -1,138 +1,134 @@
-import { useRouter } from 'expo-router';
-import { useMemo } from 'react';
-import { Pressable, ScrollView, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-
-import { Button } from '@/shared/components/Button';
-import { ExternalLink } from '@/shared/components/ExternalLink';
-import { IconSymbol } from '@/shared/components/Icon';
-import { useProfileStore } from '@/features/profile';
-import { GoalSegmentTrack, useGoalSegments, useWeightStore } from '@/features/weight';
-import { localeLabels, useTexts } from '@/i18n';
-import { useAppTheme } from '@/theme';
-import { createProfileStyles } from './profile.styles';
-
+import { useRouter } from 'expo-router'
+import { useMemo } from 'react'
+import { Pressable, ScrollView, Text, View } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import { Button } from '@/shared/components/Button'
+import { ExternalLink } from '@/shared/components/ExternalLink'
+import { IconSymbol } from '@/shared/components/Icon'
+import { useProfileStore } from '@/features/profile'
+import { GoalSegmentTrack, useGoalSegments, useWeightStore } from '@/features/weight'
+import { localeLabels, useTexts } from '@/i18n'
+import { useAppTheme } from '@/theme'
+import { createProfileStyles } from './profile.styles'
 export default function ProfileScreen() {
-  const { entries } = useWeightStore();
-  const { segments } = useGoalSegments();
-  const { profile } = useProfileStore();
-  const router = useRouter();
-  const { texts, locale } = useTexts();
-  const { colors, scheme } = useAppTheme();
-  const profileStyles = useMemo(() => createProfileStyles(colors), [colors]);
-  const latestWeight = entries.length > 0 ? entries[entries.length - 1].weightKg : null;
-  const birthDateISO = profile.birthDateISO ?? null;
-  const heightCm = profile.heightCm ?? null;
-  const goalType = profile.goalType ?? 'maintain';
-  const goalTargetKg = profile.goalTargetKg ?? null;
-  const goalRateKgPerWeek = profile.goalRateKgPerWeek ?? null;
-  const goalRangeMinKg = profile.goalRangeMinKg ?? null;
-  const goalRangeMaxKg = profile.goalRangeMaxKg ?? null;
-  const sex = profile.sex ?? null;
-  const activityLevel = profile.activityLevel ?? 'sedentary';
-
+  const { entries } = useWeightStore()
+  const { segments } = useGoalSegments()
+  const { profile } = useProfileStore()
+  const router = useRouter()
+  const { texts, locale } = useTexts()
+  const { colors, scheme } = useAppTheme()
+  const profileStyles = useMemo(() => createProfileStyles(colors), [colors])
+  const latestWeight = entries.length > 0 ? entries[entries.length - 1].weightKg : null
+  const birthDateISO = profile.birthDateISO ?? null
+  const heightCm = profile.heightCm ?? null
+  const goalType = profile.goalType ?? 'maintain'
+  const goalTargetKg = profile.goalTargetKg ?? null
+  const goalRateKgPerWeek = profile.goalRateKgPerWeek ?? null
+  const goalRangeMinKg = profile.goalRangeMinKg ?? null
+  const goalRangeMaxKg = profile.goalRangeMaxKg ?? null
+  const sex = profile.sex ?? null
+  const activityLevel = profile.activityLevel ?? 'sedentary'
   const birthDateLabel = birthDateISO
     ? new Date(birthDateISO).toLocaleDateString(locale, {
         month: 'short',
         day: 'numeric',
         year: 'numeric',
       })
-    : texts.profile.values.notSet;
+    : texts.profile.values.notSet
   const calculateAge = (dateISO: string) => {
-    const birth = new Date(dateISO);
-    const today = new Date();
-    let age = today.getFullYear() - birth.getFullYear();
-    const monthDelta = today.getMonth() - birth.getMonth();
+    const birth = new Date(dateISO)
+    const today = new Date()
+    let age = today.getFullYear() - birth.getFullYear()
+    const monthDelta = today.getMonth() - birth.getMonth()
     if (monthDelta < 0 || (monthDelta === 0 && today.getDate() < birth.getDate())) {
-      age -= 1;
+      age -= 1
     }
-    return Math.max(0, age);
-  };
-  const ageLabel = birthDateISO ? calculateAge(birthDateISO).toString() : texts.profile.values.notSet;
+    return Math.max(0, age)
+  }
+  const ageLabel = birthDateISO ? calculateAge(birthDateISO).toString() : texts.profile.values.notSet
   const heightLabel = heightCm
     ? `${Math.floor(heightCm / 100)}m ${heightCm % 100}cm`
-    : texts.profile.values.notSet;
+    : texts.profile.values.notSet
   const sexLabel = sex
     ? sex === 'male'
       ? texts.profile.values.sexMale
       : texts.profile.values.sexFemale
-    : texts.profile.values.notSet;
+    : texts.profile.values.notSet
   const bmiValue =
     latestWeight && heightCm
       ? (latestWeight / Math.pow(heightCm / 100, 2)).toFixed(1)
-      : texts.profile.values.notSet;
+      : texts.profile.values.notSet
   const activityMultiplier = (() => {
     switch (activityLevel) {
       case 'light':
-        return 1.375;
+        return 1.375
       case 'moderate':
-        return 1.55;
+        return 1.55
       case 'active':
-        return 1.725;
+        return 1.725
       case 'veryActive':
-        return 1.9;
+        return 1.9
       default:
-        return 1.2;
+        return 1.2
     }
-  })();
-
+  })()
   const calories = (() => {
     if (!latestWeight || !heightCm || !birthDateISO || !sex) {
-      return { maintenance: null, target: null };
+      return { maintenance: null, target: null }
     }
-    const age = calculateAge(birthDateISO);
-    const sexOffset = sex === 'male' ? 5 : -161;
-    const bmr = 10 * latestWeight + 6.25 * heightCm - 5 * age + sexOffset;
-    const tdee = bmr * activityMultiplier;
+    const age = calculateAge(birthDateISO)
+    const sexOffset = sex === 'male' ? 5 : -161
+    const bmr = 10 * latestWeight + 6.25 * heightCm - 5 * age + sexOffset
+    const tdee = bmr * activityMultiplier
     if ((goalType === 'lose' || goalType === 'gain') && goalRateKgPerWeek) {
-      const delta = (goalRateKgPerWeek * 7700) / 7;
-      const target = goalType === 'lose' ? tdee - delta : tdee + delta;
-      return { maintenance: Math.round(tdee), target: Math.round(target) };
+      const delta = (goalRateKgPerWeek * 7700) / 7
+      const target = goalType === 'lose' ? tdee - delta : tdee + delta
+      return { maintenance: Math.round(tdee), target: Math.round(target) }
     }
-    return { maintenance: Math.round(tdee), target: Math.round(tdee) };
-  })();
+    return { maintenance: Math.round(tdee), target: Math.round(tdee) }
+  })()
   const goalTypeLabel =
     goalType === 'lose'
       ? texts.profile.values.goalLose
       : goalType === 'gain'
         ? texts.profile.values.goalGain
-        : texts.profile.values.goalMaintain;
+        : texts.profile.values.goalMaintain
   const goalRateLabel =
     goalRateKgPerWeek && (goalType === 'lose' || goalType === 'gain')
       ? `${goalRateKgPerWeek.toFixed(1)} kg / ${texts.home.units.weeksShort}`
-      : texts.profile.values.notSet;
+      : texts.profile.values.notSet
   const goalRangeLabel =
     goalType === 'maintain' && goalRangeMinKg && goalRangeMaxKg
       ? `${goalRangeMinKg.toFixed(1)}–${goalRangeMaxKg.toFixed(1)} kg`
-      : texts.profile.values.notSet;
+      : texts.profile.values.notSet
   const predictionLabel = (() => {
     if (!latestWeight) {
-      return texts.profile.values.notSet;
+      return texts.profile.values.notSet
     }
     if (goalType === 'maintain') {
       if (goalRangeMinKg != null && goalRangeMaxKg != null) {
         if (latestWeight >= goalRangeMinKg && latestWeight <= goalRangeMaxKg) {
-          return texts.profile.values.inRange;
+          return texts.profile.values.inRange
         }
         if (goalRateKgPerWeek) {
-          const target = latestWeight < goalRangeMinKg ? goalRangeMinKg : goalRangeMaxKg;
-          const weeks = Math.ceil(Math.abs(latestWeight - target) / goalRateKgPerWeek);
-          return `≈ ${weeks} ${texts.home.units.weeksShort}`;
+          const target = latestWeight < goalRangeMinKg ? goalRangeMinKg : goalRangeMaxKg
+          const weeks = Math.ceil(Math.abs(latestWeight - target) / goalRateKgPerWeek)
+          return `≈ ${weeks} ${texts.home.units.weeksShort}`
         }
       }
-      return texts.profile.values.notSet;
+      return texts.profile.values.notSet
     }
     if (!goalTargetKg || !goalRateKgPerWeek) {
-      return texts.profile.values.notSet;
+      return texts.profile.values.notSet
     }
-    const weeks = Math.ceil(Math.abs(latestWeight - goalTargetKg) / goalRateKgPerWeek);
-    return `≈ ${weeks} ${texts.home.units.weeksShort}`;
-  })();
+    const weeks = Math.ceil(Math.abs(latestWeight - goalTargetKg) / goalRateKgPerWeek)
+    return `≈ ${weeks} ${texts.home.units.weeksShort}`
+  })()
   const storedLanguage =
-    profile.language && profile.language !== 'system' ? profile.language : undefined;
+    profile.language && profile.language !== 'system' ? profile.language : undefined
   const languageLabel = storedLanguage
     ? localeLabels[storedLanguage]
-    : localeLabels[locale as keyof typeof localeLabels];
+    : localeLabels[locale as keyof typeof localeLabels]
   const themeLabel =
     scheme === 'dark'
       ? texts.profile.values.themeDark
@@ -142,8 +138,7 @@ export default function ProfileScreen() {
           ? texts.profile.values.themeSky
           : scheme === 'mint'
             ? texts.profile.values.themeMint
-            : texts.profile.values.themeLight;
-
+            : texts.profile.values.themeLight
   return (
     <SafeAreaView style={profileStyles.screen} edges={['top', 'left', 'right']}>
       <ScrollView
@@ -163,7 +158,6 @@ export default function ProfileScreen() {
             textStyle={profileStyles.editText}
           />
         </View>
-
         <View style={profileStyles.section}>
           <Text style={profileStyles.sectionTitle}>{texts.profile.sections.basics}</Text>
           <View style={profileStyles.card}>
@@ -191,7 +185,6 @@ export default function ProfileScreen() {
           </View>
         </View>
       </View>
-
         <View style={profileStyles.section}>
           <Text style={profileStyles.sectionTitle}>{texts.profile.sections.metrics}</Text>
           <View style={profileStyles.card}>
@@ -232,7 +225,6 @@ export default function ProfileScreen() {
             </View>
           </View>
         </View>
-
         <View style={profileStyles.section}>
           <Text style={profileStyles.sectionTitle}>{texts.profile.sections.goal}</Text>
           <View style={profileStyles.card}>
@@ -266,7 +258,6 @@ export default function ProfileScreen() {
             </View>
           </View>
         </View>
-
         <View style={profileStyles.section}>
           <View style={profileStyles.sectionHeader}>
             <Text style={profileStyles.sectionTitle}>{texts.profile.sections.segments}</Text>
@@ -282,7 +273,6 @@ export default function ProfileScreen() {
             <GoalSegmentTrack segments={segments} currentKg={latestWeight ?? undefined} />
           </View>
         </View>
-
         <View style={profileStyles.section}>
           <Text style={profileStyles.sectionTitle}>{texts.profile.sections.preferences}</Text>
           <View style={profileStyles.card}>
@@ -304,7 +294,6 @@ export default function ProfileScreen() {
             </View>
           </View>
         </View>
-
         <View style={profileStyles.section}>
           <Text style={profileStyles.sectionTitle}>{texts.profile.sections.support}</Text>
           <View style={profileStyles.card}>
@@ -321,5 +310,5 @@ export default function ProfileScreen() {
         </View>
       </ScrollView>
     </SafeAreaView>
-  );
+  )
 }

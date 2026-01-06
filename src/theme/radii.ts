@@ -8,4 +8,4 @@ export const radii = {
   xxxl: 26,
   card: 28,
   full: 999,
-};
+}

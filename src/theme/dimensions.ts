@@ -65,4 +65,4 @@ export const dimensions = {
   list: {
     moodSize: 14,
   },
-};
+}

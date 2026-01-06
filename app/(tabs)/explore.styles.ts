@@ -1,11 +1,9 @@
-import { StyleSheet } from 'react-native';
-
-import type { ThemeColors } from '@/theme';
-import { dimensions } from '@/theme/dimensions';
-import { fontSizes, letterSpacings } from '@/theme/typography';
-import { radii } from '@/theme/radii';
-import { spacing } from '@/theme/spacing';
-
+import { StyleSheet } from 'react-native'
+import type { ThemeColors } from '@/theme'
+import { dimensions } from '@/theme/dimensions'
+import { fontSizes, letterSpacings } from '@/theme/typography'
+import { radii } from '@/theme/radii'
+import { spacing } from '@/theme/spacing'
 export const createEntriesStyles = (colors: ThemeColors) =>
   StyleSheet.create({
     screen: {
@@ -127,4 +125,4 @@ export const createEntriesStyles = (colors: ThemeColors) =>
     deltaDown: {
       color: colors.accentTeal,
     },
-  });
+  })
