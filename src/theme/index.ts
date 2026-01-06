@@ -5,4 +5,4 @@ export { fontFamilies, fontSizes, letterSpacings, lineHeights } from './typograp
 export { radii } from './radii';
 export { shadows } from './shadows';
 export { spacing } from './spacing';
-export { useAppTheme } from './use-app-theme';
+export { useAppTheme } from './useAppTheme';
