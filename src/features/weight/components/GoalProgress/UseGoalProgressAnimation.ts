@@ -1,11 +1,14 @@
 import { Skia } from '@shopify/react-native-skia';
-import { useCallback, useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import {
+  cancelAnimation,
   Easing,
   useDerivedValue,
   useSharedValue,
   withTiming,
+  withDelay,
 } from 'react-native-reanimated';
+import { scheduleOnRN } from 'react-native-worklets';
 
 import {
   GOAL_PROGRESS_PROGRESS_DURATION_MS,
@@ -29,28 +32,27 @@ export const useGoalProgressAnimation = ({
   stroke,
 }: UseGoalProgressAnimationParams) => {
   const progressValue = useSharedValue(0);
-  const successTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const clearSuccessTimeout = useCallback(() => {
-    if (successTimeoutRef.current) {
-      clearTimeout(successTimeoutRef.current);
-      successTimeoutRef.current = null;
-    }
-  }, []);
+  const successTrigger = useSharedValue(0);
 
   useEffect(() => {
-    clearSuccessTimeout();
+    cancelAnimation(successTrigger);
     if (showSuccess) {
       progressValue.value = 0;
       progressValue.value = withTiming(1, {
         duration: GOAL_PROGRESS_SUCCESS_DURATION_MS,
         easing: Easing.out(Easing.cubic),
       });
-      // TODO: Replace JS timer with Reanimated scheduleOnRN once available in this version.
       if (onSuccessComplete) {
-        successTimeoutRef.current = setTimeout(() => {
-          onSuccessComplete();
-        }, GOAL_PROGRESS_SUCCESS_DURATION_MS + GOAL_PROGRESS_SUCCESS_DELAY_MS);
+        successTrigger.value = 0;
+        successTrigger.value = withDelay(
+          GOAL_PROGRESS_SUCCESS_DURATION_MS + GOAL_PROGRESS_SUCCESS_DELAY_MS,
+          withTiming(1, { duration: 0 }, (finished) => {
+            'worklet';
+            if (finished) {
+              scheduleOnRN(onSuccessComplete);
+            }
+          })
+        );
       }
       return;
     }
@@ -58,9 +60,9 @@ export const useGoalProgressAnimation = ({
       duration: GOAL_PROGRESS_PROGRESS_DURATION_MS,
       easing: Easing.out(Easing.cubic),
     });
-  }, [clearSuccessTimeout, displayProgress, onSuccessComplete, progressValue, showSuccess]);
+  }, [displayProgress, onSuccessComplete, progressValue, showSuccess, successTrigger]);
 
-  useEffect(() => clearSuccessTimeout, [clearSuccessTimeout]);
+  useEffect(() => () => cancelAnimation(successTrigger), [successTrigger]);
 
   const inset = stroke / 2;
   const arcPath = useDerivedValue(() => {

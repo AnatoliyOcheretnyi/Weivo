@@ -1,7 +1,4 @@
-export const clamp = (value: number, min: number, max: number) => {
-  'worklet';
-  return Math.min(Math.max(value, min), max);
-};
+import { clamp } from '@/shared/utils';
 
 export const exaggerateNormalized = (normalized: number, factor: number) => {
   'worklet';

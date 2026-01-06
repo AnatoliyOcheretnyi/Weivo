@@ -1,4 +1,4 @@
-export { SkiaWeightChart } from './components/skia-weight-chart';
+export { SkiaWeightChart } from './components/SkiaWeightChart';
 export { GoalProgress } from './components/GoalProgress';
 export { GoalSegmentTrack } from './components/GoalSegmentTrack';
 export { useGoalSegments } from './data/goal-segments/store';
