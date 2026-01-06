@@ -22,14 +22,6 @@ export function GoalSegmentTrack({ segments, currentKg }: GoalSegmentTrackProps)
     () => [...segments].sort((a, b) => a.createdAtISO.localeCompare(b.createdAtISO)),
     [segments]
   );
-  const activeIndex = ordered.findIndex((segment) => !segment.completedAtISO);
-  const lastIndex = ordered.length - 1;
-
-  if (ordered.length === 0) {
-    return (
-      <Text style={styles.labelText}>{texts.segments.empty}</Text>
-    );
-  }
 
   const dotSize = 36;
   const lineWidth = 40;
@@ -38,11 +30,25 @@ export function GoalSegmentTrack({ segments, currentKg }: GoalSegmentTrackProps)
   const availableWidth = containerWidth || Dimensions.get('window').width - 48;
   const itemWidth = dotSize + lineWidth + gap;
   const itemsPerRow = Math.max(2, Math.floor((availableWidth + gap) / itemWidth));
-  const rowCount = Math.max(1, Math.ceil(ordered.length / itemsPerRow));
+  const nodes = useMemo(() => {
+    if (ordered.length === 0) {
+      return [];
+    }
+    return [
+      { id: `start-${ordered[0].id}`, value: ordered[0].startKg, segmentIndex: null as number | null },
+      ...ordered.map((segment, index) => ({
+        id: segment.id,
+        value: segment.targetKg,
+        segmentIndex: index,
+        segment,
+      })),
+    ];
+  }, [ordered]);
+  const rowCount = Math.max(1, Math.ceil(nodes.length / itemsPerRow));
   const height = rowCount * dotSize + (rowCount - 1) * rowGap;
 
   const points = useMemo(() => {
-    return ordered.map((segment, index) => {
+    return nodes.map((node, index) => {
       const row = Math.floor(index / itemsPerRow);
       const col = index % itemsPerRow;
       const isReversed = row % 2 === 1;
@@ -51,8 +57,10 @@ export function GoalSegmentTrack({ segments, currentKg }: GoalSegmentTrackProps)
         : col * itemWidth;
       const y = row * (dotSize + rowGap);
       return {
-        id: segment.id,
-        segment,
+        id: node.id,
+        segment: node.segment,
+        segmentIndex: node.segmentIndex,
+        value: node.value,
         index,
         row,
         x,
@@ -61,7 +69,7 @@ export function GoalSegmentTrack({ segments, currentKg }: GoalSegmentTrackProps)
         cy: y + dotSize / 2,
       };
     });
-  }, [availableWidth, dotSize, itemWidth, ordered, itemsPerRow, rowGap]);
+  }, [availableWidth, dotSize, itemWidth, itemsPerRow, nodes, rowGap]);
 
   const getProgress = (segmentStart: number, segmentTarget: number, direction: string) => {
     if (currentKg == null) {
@@ -100,10 +108,11 @@ export function GoalSegmentTrack({ segments, currentKg }: GoalSegmentTrackProps)
       segment.direction === 'gain'
         ? currentKg != null && currentKg >= segment.targetKg
         : currentKg != null && currentKg <= segment.targetKg;
-    const firstOpenIndex = points.findIndex(
-      (point) => !point.segment.completedAtISO && !reachedTarget(point.segment)
+    const firstOpenIndex = ordered.findIndex(
+      (segment) => !segment.completedAtISO && !reachedTarget(segment)
     );
-    const completedEdgeCount = firstOpenIndex === -1 ? points.length - 1 : firstOpenIndex - 1;
+    const completedEdgeCount =
+      firstOpenIndex === -1 ? ordered.length - 1 : firstOpenIndex - 1;
     const path = Skia.Path.Make();
     path.moveTo(points[0].cx, points[0].cy);
     if (completedEdgeCount >= 0) {
@@ -111,8 +120,8 @@ export function GoalSegmentTrack({ segments, currentKg }: GoalSegmentTrackProps)
         path.lineTo(points[i + 1].cx, points[i + 1].cy);
       }
     }
-    if (firstOpenIndex >= 0 && firstOpenIndex < points.length - 1) {
-      const segment = points[firstOpenIndex].segment;
+    if (firstOpenIndex >= 0 && firstOpenIndex < ordered.length) {
+      const segment = ordered[firstOpenIndex];
       const progress = getProgress(segment.startKg, segment.targetKg, segment.direction);
       const start = points[firstOpenIndex];
       const end = points[firstOpenIndex + 1];
@@ -121,12 +130,31 @@ export function GoalSegmentTrack({ segments, currentKg }: GoalSegmentTrackProps)
       path.lineTo(nx, ny);
     }
     return path;
-  }, [currentKg, points]);
+  }, [currentKg, ordered, points]);
+
+  const activeNodeIndex = useMemo(() => {
+    if (nodes.length === 0) {
+      return -1;
+    }
+    const reachedTarget = (segment: GoalSegment) =>
+      segment.direction === 'gain'
+        ? currentKg != null && currentKg >= segment.targetKg
+        : currentKg != null && currentKg <= segment.targetKg;
+    const firstOpenIndex = ordered.findIndex((segment) => !segment.completedAtISO);
+    if (firstOpenIndex === -1) {
+      return nodes.length - 1;
+    }
+    const isReached = reachedTarget(ordered[firstOpenIndex]);
+    return Math.min(firstOpenIndex + (isReached ? 1 : 0), nodes.length - 1);
+  }, [currentKg, nodes.length, ordered]);
 
   return (
     <View
       style={styles.container}
       onLayout={(event) => setContainerWidth(event.nativeEvent.layout.width)}>
+      {ordered.length === 0 ? (
+        <Text style={styles.labelText}>{texts.segments.empty}</Text>
+      ) : (
       <View style={[styles.trackLayer, { height }]}>
         <Canvas style={[styles.canvas, { width: availableWidth, height }]}>
           <Path
@@ -148,13 +176,18 @@ export function GoalSegmentTrack({ segments, currentKg }: GoalSegmentTrackProps)
         </Canvas>
         {points.map((point) => {
           const segment = point.segment;
-          const reachedTarget =
-            segment.direction === 'gain'
+          const isStart = !segment || point.segmentIndex == null;
+          const reachedTarget = !isStart
+            ? segment.direction === 'gain'
               ? currentKg != null && currentKg >= segment.targetKg
-              : currentKg != null && currentKg <= segment.targetKg;
-          const isCompleted = Boolean(segment.completedAtISO) || reachedTarget;
-          const isActive = activeIndex === -1 ? point.index === lastIndex : point.index === activeIndex;
+              : currentKg != null && currentKg <= segment.targetKg
+            : false;
+          const isCompleted = !isStart && (Boolean(segment.completedAtISO) || reachedTarget);
+          const isActive = point.index === activeNodeIndex;
           const handlePress = () => {
+            if (!segment) {
+              return;
+            }
             router.push({
               pathname: '/segment-detail',
               params: { id: segment.id },
@@ -163,8 +196,9 @@ export function GoalSegmentTrack({ segments, currentKg }: GoalSegmentTrackProps)
 
           return (
             <Pressable
-              key={segment.id}
+              key={point.id}
               onPress={handlePress}
+              disabled={!segment}
               style={[
                 styles.segmentWrap,
                 {
@@ -176,20 +210,21 @@ export function GoalSegmentTrack({ segments, currentKg }: GoalSegmentTrackProps)
                 style={[
                   styles.dot,
                   isCompleted && styles.dotCompleted,
-                  isActive && !isCompleted && styles.dotActive,
+                  isActive && styles.dotActive,
                 ]}>
                 <Text
                   style={[
                     styles.dotText,
                     (isActive || isCompleted) && styles.dotTextActive,
                   ]}>
-                  {formatKg(segment.targetKg)}
+                  {formatKg(point.value)}
                 </Text>
               </View>
             </Pressable>
           );
         })}
       </View>
+      )}
     </View>
   );
 }
