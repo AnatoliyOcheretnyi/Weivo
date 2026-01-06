@@ -1,9 +1,11 @@
 import { useMemo, useRef, useState } from 'react';
-import { Pressable, ScrollView, Text, TextInput, View } from 'react-native';
+import { Pressable, ScrollView, Text, View } from 'react-native';
+import type { TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 
 import { Button } from '@/components/Button';
+import { Input } from '@/components/Input';
 import { useAppTheme } from '@/theme';
 import { useTexts } from '@/i18n';
 import { useProfileStore } from '@/features/profile';
@@ -81,46 +83,42 @@ export default function SegmentCreateScreen() {
 
           <View style={styles.section}>
             <Text style={styles.label}>{texts.segments.startWeight}</Text>
-            <View style={styles.inputRow}>
-              <TextInput
-                value={startWeight}
-                onChangeText={setStartWeight}
-                keyboardType="numeric"
-                placeholder="115.0"
-                placeholderTextColor={colors.inkAccent}
-                style={styles.input}
-              />
-              <Text style={styles.unit}>kg</Text>
-            </View>
+            <Input
+              value={startWeight}
+              onChangeText={setStartWeight}
+              keyboardType="numeric"
+              placeholder="115.0"
+              inputStyle={styles.input}
+              unit="kg"
+              unitStyle={styles.unit}
+              containerStyle={styles.inputRow}
+            />
           </View>
 
           <View style={styles.section}>
             <Text style={styles.label}>{texts.segments.targetWeight}</Text>
-            <View style={styles.inputRow}>
-              <TextInput
-                value={target}
-                onChangeText={setTarget}
-                keyboardType="numeric"
-                placeholder="110.0"
-                placeholderTextColor={colors.inkAccent}
-                style={styles.input}
-                ref={targetInputRef}
-              />
-              <Text style={styles.unit}>kg</Text>
-            </View>
+            <Input
+              value={target}
+              onChangeText={setTarget}
+              keyboardType="numeric"
+              placeholder="110.0"
+              inputStyle={styles.input}
+              unit="kg"
+              unitStyle={styles.unit}
+              ref={targetInputRef}
+              containerStyle={styles.inputRow}
+            />
           </View>
 
           <View style={styles.section}>
             <Text style={styles.label}>{texts.segments.note}</Text>
-            <View style={styles.inputRow}>
-              <TextInput
-                value={note}
-                onChangeText={setNote}
-                placeholder={texts.segments.notePlaceholder}
-                placeholderTextColor={colors.inkAccent}
-                style={styles.input}
-              />
-            </View>
+            <Input
+              value={note}
+              onChangeText={setNote}
+              placeholder={texts.segments.notePlaceholder}
+              inputStyle={styles.input}
+              containerStyle={styles.inputRow}
+            />
           </View>
 
           <View style={styles.actionRow}>

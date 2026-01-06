@@ -1,11 +1,12 @@
 import { useMemo, useState } from 'react';
-import { Platform, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
+import { Platform, Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { Button } from '@/components/Button';
+import { Input } from '@/components/Input';
 import { useProfileStore } from '@/features/profile';
 import { useWeightStore } from '@/features/weight';
 import type { ActivityLevel, GoalType, Sex, Units, Language, ThemeMode } from '@/features/profile';
@@ -136,7 +137,7 @@ export default function ProfileEditScreen() {
 
   return (
     <SafeAreaView style={profileEditStyles.screen} edges={['top', 'left', 'right']}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
         <View style={profileEditStyles.card}>
           <Text style={profileEditStyles.title}>{texts.profileEdit.title}</Text>
           <Text style={profileEditStyles.subtitle}>{texts.profileEdit.subtitle}</Text>
@@ -227,17 +228,16 @@ export default function ProfileEditScreen() {
 
               <View style={profileEditStyles.section}>
                 <Text style={profileEditStyles.label}>{texts.profileEdit.height}</Text>
-                <View style={profileEditStyles.inputRow}>
-                  <TextInput
-                    value={heightCm}
-                    onChangeText={setHeightCm}
-                    keyboardType="numeric"
-                    placeholder="175"
-                    placeholderTextColor={colors.inkAccent}
-                    style={profileEditStyles.input}
-                  />
-                  <Text style={profileEditStyles.unit}>cm</Text>
-                </View>
+                <Input
+                  variant="compact"
+                  value={heightCm}
+                  onChangeText={setHeightCm}
+                  keyboardType="numeric"
+                  placeholder="175"
+                  inputStyle={profileEditStyles.input}
+                  unit="cm"
+                  unitStyle={profileEditStyles.unit}
+                />
               </View>
 
               <View style={profileEditStyles.section}>
@@ -313,34 +313,33 @@ export default function ProfileEditScreen() {
 
               {(goalType === 'lose' || goalType === 'gain') && (
                 <View style={profileEditStyles.section}>
-                  <Text style={profileEditStyles.label}>{texts.profileEdit.goalTarget}</Text>
-                  <View style={profileEditStyles.inputRow}>
-                    <TextInput
-                      value={goalTarget}
-                      onChangeText={setGoalTarget}
-                      keyboardType="numeric"
-                      placeholder="110.0"
-                      placeholderTextColor={colors.inkAccent}
-                      style={profileEditStyles.input}
-                    />
-                    <Text style={profileEditStyles.unit}>kg</Text>
-                  </View>
-                </View>
-              )}
-
-              {(goalType === 'lose' || goalType === 'gain') && (
-                <View style={profileEditStyles.section}>
-                  <Text style={profileEditStyles.label}>{texts.profileEdit.goalRate}</Text>
-                  <View style={profileEditStyles.inputRow}>
-                    <TextInput
-                      value={goalRate}
-                      onChangeText={setGoalRate}
-                      keyboardType="numeric"
-                      placeholder="0.5"
-                      placeholderTextColor={colors.inkAccent}
-                      style={profileEditStyles.input}
-                    />
-                    <Text style={profileEditStyles.unit}>kg/{texts.home.units.weeksShort}</Text>
+                  <View style={profileEditStyles.goalRow}>
+                    <View style={profileEditStyles.goalCol}>
+                      <Text style={profileEditStyles.label}>{texts.profileEdit.goalTarget}</Text>
+                      <Input
+                        variant="compact"
+                        value={goalTarget}
+                        onChangeText={setGoalTarget}
+                        keyboardType="numeric"
+                        placeholder="110.0"
+                        inputStyle={profileEditStyles.input}
+                        unit="kg"
+                        unitStyle={profileEditStyles.unit}
+                      />
+                    </View>
+                    <View style={profileEditStyles.goalCol}>
+                      <Text style={profileEditStyles.label}>{texts.profileEdit.goalRate}</Text>
+                      <Input
+                        variant="compact"
+                        value={goalRate}
+                        onChangeText={setGoalRate}
+                        keyboardType="numeric"
+                        placeholder="0.5"
+                        inputStyle={profileEditStyles.input}
+                        unit={`kg/${texts.home.units.weeksShort}`}
+                        unitStyle={profileEditStyles.unit}
+                      />
+                    </View>
                   </View>
                 </View>
               )}
@@ -348,34 +347,36 @@ export default function ProfileEditScreen() {
               {goalType === 'maintain' && (
                 <View style={profileEditStyles.section}>
                   <Text style={profileEditStyles.label}>{texts.profileEdit.goalRange}</Text>
-                  <View style={profileEditStyles.segmentedRow}>
-                    <View style={[profileEditStyles.inputRow, { flex: 1 }]}>
-                      <TextInput
+                  <View style={profileEditStyles.rangeRow}>
+                    <View style={profileEditStyles.rangeCol}>
+                      <Input
+                        variant="compact"
                         value={goalRangeMin}
                         onChangeText={setGoalRangeMin}
                         keyboardType="numeric"
                         placeholder="78.0"
-                        placeholderTextColor={colors.inkAccent}
-                        style={profileEditStyles.input}
+                        inputStyle={profileEditStyles.input}
+                        unit="kg"
+                        unitStyle={profileEditStyles.unit}
                       />
-                      <Text style={profileEditStyles.unit}>kg</Text>
                     </View>
-                    <View style={profileEditStyles.rangeCurrent}>
+                    <View style={profileEditStyles.rangeCurrent} pointerEvents="none">
                       <Text style={profileEditStyles.rangeCurrentText}>
                         {texts.profileEdit.currentWeight}{' '}
                         {latestWeight ? `${latestWeight.toFixed(1)} kg` : texts.profile.values.notSet}
                       </Text>
                     </View>
-                    <View style={[profileEditStyles.inputRow, { flex: 1 }]}>
-                      <TextInput
+                    <View style={profileEditStyles.rangeCol}>
+                      <Input
+                        variant="compact"
                         value={goalRangeMax}
                         onChangeText={setGoalRangeMax}
                         keyboardType="numeric"
                         placeholder="81.0"
-                        placeholderTextColor={colors.inkAccent}
-                        style={profileEditStyles.input}
+                        inputStyle={profileEditStyles.input}
+                        unit="kg"
+                        unitStyle={profileEditStyles.unit}
                       />
-                      <Text style={profileEditStyles.unit}>kg</Text>
                     </View>
                   </View>
                 </View>

@@ -7,7 +7,6 @@ import {
   Pressable,
   ScrollView,
   Text,
-  TextInput,
   UIManager,
   View,
 } from 'react-native';
@@ -16,6 +15,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { useRouter } from 'expo-router';
 import { useProfileStore, type ActivityLevel, type GoalType, type Sex } from '@/features/profile';
 import { useWeightStore } from '@/features/weight';
+import { Input } from '@/components/Input';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useAppTheme } from '@/theme';
 import { useTexts } from '@/i18n';
@@ -214,32 +214,28 @@ export default function OnboardingScreen() {
 
             <View style={onboardingStyles.section}>
               <Text style={onboardingStyles.label}>{texts.onboarding.height}</Text>
-              <View style={onboardingStyles.inputRow}>
-                <TextInput
-                  value={heightCm}
-                  onChangeText={setHeightCm}
-                  keyboardType="numeric"
-                  placeholder="175"
-                  placeholderTextColor={colors.inkAccent}
-                  style={onboardingStyles.input}
-                />
-                <Text style={onboardingStyles.unit}>cm</Text>
-              </View>
+              <Input
+                value={heightCm}
+                onChangeText={setHeightCm}
+                keyboardType="numeric"
+                placeholder="175"
+                inputStyle={onboardingStyles.input}
+                unit="cm"
+                unitStyle={onboardingStyles.unit}
+              />
             </View>
 
             <View style={onboardingStyles.section}>
               <Text style={onboardingStyles.label}>{texts.onboarding.weight}</Text>
-              <View style={onboardingStyles.inputRow}>
-                <TextInput
-                  value={weightKg}
-                  onChangeText={setWeightKg}
-                  keyboardType="numeric"
-                  placeholder="85.0"
-                  placeholderTextColor={colors.inkAccent}
-                  style={onboardingStyles.input}
-                />
-                <Text style={onboardingStyles.unit}>kg</Text>
-              </View>
+              <Input
+                value={weightKg}
+                onChangeText={setWeightKg}
+                keyboardType="numeric"
+                placeholder="85.0"
+                inputStyle={onboardingStyles.input}
+                unit="kg"
+                unitStyle={onboardingStyles.unit}
+              />
               <Text style={onboardingStyles.helper}>{texts.onboarding.bodyHelper}</Text>
             </View>
             <Text style={onboardingStyles.scrollHint}>{texts.onboarding.activityHint}</Text>
@@ -312,31 +308,29 @@ export default function OnboardingScreen() {
                 <View style={onboardingStyles.goalRow}>
                   <View style={onboardingStyles.goalCol}>
                     <Text style={onboardingStyles.label}>{texts.onboarding.targetWeight}</Text>
-                    <View style={[onboardingStyles.inputRow, onboardingStyles.inputRowCompact]}>
-                      <TextInput
-                        value={goalTarget}
-                        onChangeText={setGoalTarget}
-                        keyboardType="numeric"
-                        placeholder="80.0"
-                        placeholderTextColor={colors.inkAccent}
-                        style={onboardingStyles.input}
-                      />
-                      <Text style={onboardingStyles.unit}>kg</Text>
-                    </View>
+                    <Input
+                      variant="compact"
+                      value={goalTarget}
+                      onChangeText={setGoalTarget}
+                      keyboardType="numeric"
+                      placeholder="80.0"
+                      inputStyle={onboardingStyles.input}
+                      unit="kg"
+                      unitStyle={onboardingStyles.unit}
+                    />
                   </View>
                   <View style={onboardingStyles.goalCol}>
                     <Text style={onboardingStyles.label}>{texts.onboarding.weeklyPace}</Text>
-                    <View style={[onboardingStyles.inputRow, onboardingStyles.inputRowCompact]}>
-                      <TextInput
-                        value={goalRate}
-                        onChangeText={setGoalRate}
-                        keyboardType="numeric"
-                        placeholder="0.5"
-                        placeholderTextColor={colors.inkAccent}
-                        style={onboardingStyles.input}
-                      />
-                      <Text style={onboardingStyles.unit}>kg/{texts.home.units.weeksShort}</Text>
-                    </View>
+                    <Input
+                      variant="compact"
+                      value={goalRate}
+                      onChangeText={setGoalRate}
+                      keyboardType="numeric"
+                      placeholder="0.5"
+                      inputStyle={onboardingStyles.input}
+                      unit={`kg/${texts.home.units.weeksShort}`}
+                      unitStyle={onboardingStyles.unit}
+                    />
                     <Text style={onboardingStyles.helper}>
                       {goalType === 'gain'
                         ? texts.onboarding.weeklyPaceGainHelper
@@ -351,28 +345,28 @@ export default function OnboardingScreen() {
               <View style={onboardingStyles.section}>
                 <Text style={onboardingStyles.label}>{texts.onboarding.targetRange}</Text>
                 <View style={onboardingStyles.segmentedRow}>
-                  <View style={[onboardingStyles.inputRow, { flex: 1 }]}>
-                    <TextInput
-                      value={goalRangeMin}
-                      onChangeText={setGoalRangeMin}
-                      keyboardType="numeric"
-                      placeholder="78.0"
-                      placeholderTextColor={colors.inkAccent}
-                      style={onboardingStyles.input}
-                    />
-                    <Text style={onboardingStyles.unit}>kg</Text>
-                  </View>
-                  <View style={[onboardingStyles.inputRow, { flex: 1 }]}>
-                    <TextInput
-                      value={goalRangeMax}
-                      onChangeText={setGoalRangeMax}
-                      keyboardType="numeric"
-                      placeholder="81.0"
-                      placeholderTextColor={colors.inkAccent}
-                      style={onboardingStyles.input}
-                    />
-                    <Text style={onboardingStyles.unit}>kg</Text>
-                  </View>
+                  <Input
+                    variant="compact"
+                    value={goalRangeMin}
+                    onChangeText={setGoalRangeMin}
+                    keyboardType="numeric"
+                    placeholder="78.0"
+                    inputStyle={onboardingStyles.input}
+                    unit="kg"
+                    unitStyle={onboardingStyles.unit}
+                    containerStyle={{ flex: 1 }}
+                  />
+                  <Input
+                    variant="compact"
+                    value={goalRangeMax}
+                    onChangeText={setGoalRangeMax}
+                    keyboardType="numeric"
+                    placeholder="81.0"
+                    inputStyle={onboardingStyles.input}
+                    unit="kg"
+                    unitStyle={onboardingStyles.unit}
+                    containerStyle={{ flex: 1 }}
+                  />
                 </View>
               </View>
             )}

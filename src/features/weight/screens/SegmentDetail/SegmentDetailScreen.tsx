@@ -1,9 +1,10 @@
 import { useMemo, useState } from 'react';
-import { Alert, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
+import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
 import { Button } from '@/components/Button';
+import { Input } from '@/components/Input';
 import { useAppTheme } from '@/theme';
 import { useTexts } from '@/i18n';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -130,48 +131,44 @@ export default function SegmentDetailScreen() {
 
           <View style={styles.section}>
             <Text style={styles.label}>{texts.segments.startWeight}</Text>
-            <View style={[styles.inputRow, !isEditing && styles.readOnly]}>
-              <TextInput
-                value={startWeight}
-                onChangeText={setStartWeight}
-                keyboardType="numeric"
-                placeholder="115.0"
-                placeholderTextColor={colors.inkAccent}
-                style={styles.input}
-                editable={isEditing}
-              />
-              <Text style={styles.unit}>kg</Text>
-            </View>
+            <Input
+              value={startWeight}
+              onChangeText={setStartWeight}
+              keyboardType="numeric"
+              placeholder="115.0"
+              inputStyle={styles.input}
+              unit="kg"
+              unitStyle={styles.unit}
+              editable={isEditing}
+              containerStyle={[styles.inputRow, !isEditing && styles.readOnly]}
+            />
           </View>
 
           <View style={styles.section}>
             <Text style={styles.label}>{texts.segments.targetWeight}</Text>
-            <View style={[styles.inputRow, !isEditing && styles.readOnly]}>
-              <TextInput
-                value={targetWeight}
-                onChangeText={setTargetWeight}
-                keyboardType="numeric"
-                placeholder="110.0"
-                placeholderTextColor={colors.inkAccent}
-                style={styles.input}
-                editable={isEditing}
-              />
-              <Text style={styles.unit}>kg</Text>
-            </View>
+            <Input
+              value={targetWeight}
+              onChangeText={setTargetWeight}
+              keyboardType="numeric"
+              placeholder="110.0"
+              inputStyle={styles.input}
+              unit="kg"
+              unitStyle={styles.unit}
+              editable={isEditing}
+              containerStyle={[styles.inputRow, !isEditing && styles.readOnly]}
+            />
           </View>
 
           <View style={styles.section}>
             <Text style={styles.label}>{texts.segments.note}</Text>
-            <View style={[styles.inputRow, !isEditing && styles.readOnly]}>
-              <TextInput
-                value={note}
-                onChangeText={setNote}
-                placeholder={texts.segments.notePlaceholder}
-                placeholderTextColor={colors.inkAccent}
-                style={styles.input}
-                editable={isEditing}
-              />
-            </View>
+            <Input
+              value={note}
+              onChangeText={setNote}
+              placeholder={texts.segments.notePlaceholder}
+              inputStyle={styles.input}
+              editable={isEditing}
+              containerStyle={[styles.inputRow, !isEditing && styles.readOnly]}
+            />
           </View>
 
           {isEditing && (

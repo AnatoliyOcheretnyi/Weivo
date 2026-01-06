@@ -96,6 +96,24 @@ export const createProfileEditStyles = (colors: ThemeColors) =>
       flexDirection: 'row',
       gap: spacing.md,
     },
+    goalRow: {
+      flexDirection: 'row',
+      gap: spacing.md,
+    },
+    goalCol: {
+      flex: 1,
+      minWidth: 0,
+      gap: spacing.sm,
+    },
+    rangeRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.md,
+    },
+    rangeCol: {
+      flex: 1,
+      minWidth: 0,
+    },
     segment: {
       flex: 1,
       alignItems: 'center',

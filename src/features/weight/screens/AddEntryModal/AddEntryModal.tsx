@@ -1,9 +1,10 @@
 import { useMemo, useState } from 'react';
-import { Pressable, Text, TextInput, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 
 import { Button } from '@/components/Button';
+import { Input } from '@/components/Input';
 import { useWeightStore } from '@/features/weight';
 import type { Mood } from '@/features/weight';
 import { useAppTheme } from '@/theme';
@@ -47,17 +48,17 @@ export default function AddEntryModal() {
         <Text style={modalStyles.title}>{texts.modal.title}</Text>
         <Text style={modalStyles.subtitle}>{texts.modal.subtitle}</Text>
 
-        <View style={modalStyles.inputRow}>
-          <TextInput
-            value={weightText}
-            onChangeText={setWeightText}
-            placeholder={texts.modal.placeholderWeight}
-            keyboardType="decimal-pad"
-            style={modalStyles.input}
-            placeholderTextColor={colors.inkAccent}
-          />
-          <Text style={modalStyles.unit}>{texts.home.units.kg}</Text>
-        </View>
+        <Input
+          value={weightText}
+          onChangeText={setWeightText}
+          placeholder={texts.modal.placeholderWeight}
+          keyboardType="decimal-pad"
+          unit={texts.home.units.kg}
+          containerStyle={modalStyles.inputRow}
+          inputStyle={modalStyles.input}
+          unitStyle={modalStyles.unit}
+          placeholderTextColor={colors.inkAccent}
+        />
 
         <Text style={modalStyles.sectionLabel}>{texts.modal.moodLabel}</Text>
         <View style={modalStyles.moodRow}>
