@@ -6,7 +6,7 @@ import { fontFamilies, fontSizes, letterSpacings } from '@/theme/typography';
 
 export const buttonStyles = StyleSheet.create({
   button: {
-    borderRadius: radii.pill,
+    borderRadius: radii.full,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
