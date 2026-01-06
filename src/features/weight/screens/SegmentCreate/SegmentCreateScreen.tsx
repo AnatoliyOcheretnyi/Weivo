@@ -4,8 +4,8 @@ import type { TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 
-import { Button } from '@/components/Button';
-import { Input } from '@/components/Input';
+import { Button } from '@/shared/components/Button';
+import { Input } from '@/shared/components/Input';
 import { useAppTheme } from '@/theme';
 import { useTexts } from '@/i18n';
 import { useProfileStore } from '@/features/profile';

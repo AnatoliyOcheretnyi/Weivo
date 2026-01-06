@@ -5,8 +5,8 @@ import { useRouter } from 'expo-router';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
-import { Button } from '@/components/Button';
-import { Input } from '@/components/Input';
+import { Button } from '@/shared/components/Button';
+import { Input } from '@/shared/components/Input';
 import { useProfileStore } from '@/features/profile';
 import { useWeightStore } from '@/features/weight';
 import type { ActivityLevel, GoalType, Sex, Units, Language, ThemeMode } from '@/features/profile';

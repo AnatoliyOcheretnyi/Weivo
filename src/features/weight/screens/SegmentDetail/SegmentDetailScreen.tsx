@@ -3,11 +3,11 @@ import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
-import { Button } from '@/components/Button';
-import { Input } from '@/components/Input';
+import { Button } from '@/shared/components/Button';
+import { Input } from '@/shared/components/Input';
 import { useAppTheme } from '@/theme';
 import { useTexts } from '@/i18n';
-import { IconSymbol } from '@/components/ui/icon-symbol';
+import { IconSymbol } from '@/shared/components/Icon';
 import { useGoalSegments, type GoalSegment } from '@/features/weight';
 import { createSegmentDetailStyles } from './SegmentDetailScreen.styles';
 

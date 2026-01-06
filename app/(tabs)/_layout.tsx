@@ -2,8 +2,8 @@ import { Tabs, useRouter } from 'expo-router';
 import { useMemo } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
-import { HapticTab } from '@/components/haptic-tab';
-import { IconSymbol } from '@/components/ui/icon-symbol';
+import { HapticTab } from '@/shared/components/HapticTab';
+import { IconSymbol } from '@/shared/components/Icon';
 import { dimensions, useAppTheme } from '@/theme';
 import { createTabLayoutStyles } from './_layout.styles';
 import { useTexts } from '@/i18n';

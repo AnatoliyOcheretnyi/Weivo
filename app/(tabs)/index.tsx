@@ -13,7 +13,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
-import { Button } from '@/components/Button';
+import { Button } from '@/shared/components/Button';
 import { useProfileStore } from '@/features/profile';
 import {
   GoalProgress,

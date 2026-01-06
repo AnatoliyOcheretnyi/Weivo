@@ -3,9 +3,9 @@ import { useMemo } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Button } from '@/components/Button';
-import { ExternalLink } from '@/components/external-link';
-import { IconSymbol } from '@/components/ui/icon-symbol';
+import { Button } from '@/shared/components/Button';
+import { ExternalLink } from '@/shared/components/ExternalLink';
+import { IconSymbol } from '@/shared/components/Icon';
 import { useProfileStore } from '@/features/profile';
 import { GoalSegmentTrack, useGoalSegments, useWeightStore } from '@/features/weight';
 import { localeLabels, useTexts } from '@/i18n';
