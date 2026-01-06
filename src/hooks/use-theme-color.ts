@@ -5,16 +5,19 @@
 
 import { themeColors, useAppTheme } from '@/theme';
 
+type ThemeName = keyof typeof themeColors;
+type ThemeColorName = keyof typeof themeColors.light;
+
 export function useThemeColor(
-  props: { light?: string; dark?: string },
-  colorName: keyof typeof themeColors.light & keyof typeof themeColors.dark
+  props: Partial<Record<ThemeName, string>>,
+  colorName: ThemeColorName
 ) {
   const { scheme } = useAppTheme();
-  const colorFromProps = props[scheme];
+  const colorFromProps = props[scheme as ThemeName];
 
   if (colorFromProps) {
     return colorFromProps;
   } else {
-    return themeColors[scheme][colorName];
+    return themeColors[scheme as ThemeName][colorName];
   }
 }

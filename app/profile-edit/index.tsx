@@ -8,7 +8,7 @@ import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useProfileStore } from '@/features/profile';
 import { useWeightStore } from '@/features/weight';
 import type { ActivityLevel, GoalType, Sex, Units, Language, ThemeMode } from '@/features/profile';
-import { useAppTheme } from '@/theme';
+import { themes, useAppTheme } from '@/theme';
 import { createProfileEditStyles } from './profile-edit.styles';
 import { localeLabels, useTexts } from '@/i18n';
 
@@ -83,6 +83,24 @@ export default function ProfileEditScreen() {
     }
     return true;
   }, [heightCm, goalTarget, goalRate, goalRangeMin, goalRangeMax, goalType]);
+
+  const themeOptions: ThemeMode[] = ['light', 'dark', 'rose', 'sky', 'mint'];
+  const themeLabel = (option: ThemeMode) => {
+    switch (option) {
+      case 'light':
+        return texts.profileEdit.themeOptions.light;
+      case 'dark':
+        return texts.profileEdit.themeOptions.dark;
+      case 'rose':
+        return texts.profileEdit.themeOptions.rose;
+      case 'sky':
+        return texts.profileEdit.themeOptions.sky;
+      case 'mint':
+        return texts.profileEdit.themeOptions.mint;
+      default:
+        return texts.profileEdit.themeOptions.light;
+    }
+  };
 
   const handleSave = () => {
     if (!canSave) {
@@ -389,26 +407,34 @@ export default function ProfileEditScreen() {
 
               <View style={profileEditStyles.section}>
                 <Text style={profileEditStyles.label}>{texts.profileEdit.theme}</Text>
-                <View style={profileEditStyles.segmentedRow}>
-                  {(['light', 'dark'] as ThemeMode[]).map((option) => (
+                <View style={profileEditStyles.chipsRow}>
+                  {themeOptions.map((option) => {
+                    const optionColors = themes[option];
+                    const isDark = option === 'dark';
+                    return (
                     <Pressable
                       key={option}
                       style={[
-                        profileEditStyles.segment,
-                        theme === option && profileEditStyles.segmentActive,
+                        profileEditStyles.themeChip,
+                        {
+                          backgroundColor: optionColors.creamWarm,
+                          borderColor: isDark ? optionColors.highlight : optionColors.creamLine,
+                        },
+                        theme === option && profileEditStyles.themeChipActive,
+                        theme === option && isDark && profileEditStyles.themeChipActiveDark,
                       ]}
                       onPress={() => setTheme(option)}>
                       <Text
                         style={[
-                          profileEditStyles.segmentText,
-                          theme === option && profileEditStyles.segmentTextActive,
+                          profileEditStyles.themeChipText,
+                          { color: optionColors.ink },
+                          theme === option && profileEditStyles.themeChipTextActive,
                         ]}>
-                        {option === 'light'
-                          ? texts.profile.values.themeLight
-                          : texts.profile.values.themeDark}
+                        {themeLabel(option)}
                       </Text>
                     </Pressable>
-                  ))}
+                  );
+                  })}
                 </View>
               </View>
 

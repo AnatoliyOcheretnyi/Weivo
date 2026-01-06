@@ -32,7 +32,7 @@ export function SkiaWeightChart({ data }: SkiaWeightChartProps) {
   if (data.length === 0) {
     return null;
   }
-  const { colors } = useAppTheme();
+  const { colors, scheme } = useAppTheme();
   const weightChartStyles = useMemo(() => createWeightChartStyles(colors), [colors]);
   const [frameWidth, setFrameWidth] = useState(0);
   const translateX = useSharedValue(0);
@@ -378,7 +378,7 @@ export function SkiaWeightChart({ data }: SkiaWeightChartProps) {
         onLayout={(event) => setFrameWidth(event.nativeEvent.layout.width)}>
         <ChartGrid height={dimensions.chart.height} labels={axisLabels} />
         <GestureDetector gesture={panGesture}>
-          <Canvas style={skiaWeightChartStyles.canvas}>
+          <Canvas key={scheme} style={skiaWeightChartStyles.canvas}>
             <Path
               path={linePath}
               style="stroke"

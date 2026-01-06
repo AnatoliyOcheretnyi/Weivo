@@ -115,6 +115,27 @@ export const createProfileEditStyles = (colors: ThemeColors) =>
     segmentTextActive: {
       color: colors.highlight,
     },
+    themeChip: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingVertical: spacing.xl,
+      paddingHorizontal: spacing.lg,
+      borderRadius: radii.full,
+      borderWidth: 1,
+      minWidth: 68,
+    },
+    themeChipActive: {
+      borderColor: colors.inkStrong,
+    },
+    themeChipActiveDark: {
+      borderColor: colors.highlight,
+    },
+    themeChipText: {
+      fontSize: fontSizes.sm,
+      textTransform: 'uppercase',
+      letterSpacing: letterSpacings.sm,
+    },
+    themeChipTextActive: {},
     chipsRow: {
       flexDirection: 'row',
       flexWrap: 'wrap',

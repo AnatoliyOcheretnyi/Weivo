@@ -133,7 +133,15 @@ export default function ProfileScreen() {
     ? localeLabels[storedLanguage]
     : localeLabels[locale as keyof typeof localeLabels];
   const themeLabel =
-    scheme === 'dark' ? texts.profile.values.themeDark : texts.profile.values.themeLight;
+    scheme === 'dark'
+      ? texts.profile.values.themeDark
+      : scheme === 'rose'
+        ? texts.profile.values.themeRose
+        : scheme === 'sky'
+          ? texts.profile.values.themeSky
+          : scheme === 'mint'
+            ? texts.profile.values.themeMint
+            : texts.profile.values.themeLight;
 
   return (
     <SafeAreaView style={profileStyles.screen} edges={['top', 'left', 'right']}>

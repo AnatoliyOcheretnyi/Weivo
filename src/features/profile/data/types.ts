@@ -3,7 +3,7 @@ export type Units = 'metric' | 'imperial';
 export type Sex = 'male' | 'female';
 export type ActivityLevel = 'sedentary' | 'light' | 'moderate' | 'active' | 'veryActive';
 export type Language = 'system' | 'en' | 'uk' | 'es';
-export type ThemeMode = 'light' | 'dark';
+export type ThemeMode = 'light' | 'dark' | 'rose' | 'sky' | 'mint';
 
 export type ProfileData = {
   birthDateISO?: string;

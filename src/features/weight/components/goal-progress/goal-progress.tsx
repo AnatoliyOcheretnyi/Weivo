@@ -30,7 +30,8 @@ export function GoalProgress({
   const rawProgress = isGain ? currentKg - startKg : startKg - currentKg;
   const progressKg = totalDelta > 0 ? clamp(rawProgress, 0, totalDelta) : 0;
   const progress = totalDelta > 0 ? clamp(progressKg / totalDelta, 0, 1) : 0;
-  const displayProgress = progress === 0 && totalDelta > 0 ? 0.01 : progress;
+  const isAtStart = Math.abs(currentKg - startKg) < 0.05;
+  const displayProgress = progress === 0 && totalDelta > 0 && isAtStart ? 0.01 : progress;
   const size = 84;
   const stroke = 8;
   const inset = stroke / 2;

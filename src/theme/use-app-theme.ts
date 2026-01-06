@@ -6,7 +6,7 @@ export const useAppTheme = () => {
   const { profile } = useProfileStore();
   const systemScheme = useColorScheme() ?? 'light';
   const scheme =
-    profile.theme === 'dark' ? 'dark' : profile.theme === 'light' ? 'light' : systemScheme;
+    profile.theme && profile.theme in themes ? profile.theme : systemScheme;
   const colors = themes[scheme];
   return { scheme, colors };
 };
