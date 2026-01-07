@@ -35,6 +35,7 @@ export const EntryRow = memo(function EntryRow({
     neutral: texts.moods.neutral,
     sad: texts.moods.sad,
     angry: texts.moods.angry,
+    celebrate: texts.moods.celebrate,
   } as const
   const formatFullDate = useCallback(
     (dateISO: string) =>

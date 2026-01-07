@@ -22,6 +22,10 @@ export const Triggers = {
   ClearAll: 'ClearAll',
   DeleteEntry: 'DeleteEntry',
   AddEntry: 'AddEntry',
+  FeedbackTelegram: 'FeedbackTelegram',
+  SegmentsHint: 'SegmentsHint',
+  SegmentsHintLater: 'SegmentsHintLater',
+  SegmentsHintCreate: 'SegmentsHintCreate',
 } as const
 export type Screen = (typeof Screens)[keyof typeof Screens]
 export type Action = (typeof Actions)[keyof typeof Actions]

@@ -93,6 +93,8 @@ const translations = {
         activityModerateDesc: 'Training 2–3x per week.',
         activityActiveDesc: 'Training 4–5x per week.',
         activityVeryActiveDesc: 'Hard training, physical job.',
+        feedbackHint:
+          'Have an idea or a feature request? Let me know and I will try to improve it. 🙂',
       },
     },
     profileEdit: {
@@ -224,6 +226,7 @@ const translations = {
       neutral: '😐',
       sad: '😔',
       angry: '😠',
+      celebrate: '🎉',
     },
     greeting: {
       wave: '👋',
@@ -340,6 +343,8 @@ const translations = {
         activityModerateDesc: 'Тренування 2–3 рази на тиждень.',
         activityActiveDesc: 'Тренування 4–5 разів на тиждень.',
         activityVeryActiveDesc: 'Інтенсивні тренування або фізична робота.',
+        feedbackHint:
+          'Є ідея, фіча чи покращення? Напиши — буду вдячний і постараюсь реалізувати. 🙂',
       },
     },
     profileEdit: {
@@ -471,6 +476,7 @@ const translations = {
       neutral: '😐',
       sad: '😔',
       angry: '😠',
+      celebrate: '🎉',
     },
     greeting: {
       wave: '👋',
@@ -587,6 +593,8 @@ const translations = {
         activityModerateDesc: 'Entrenamiento 2–3 veces por semana.',
         activityActiveDesc: 'Entrenamiento 4–5 veces por semana.',
         activityVeryActiveDesc: 'Entrenamiento intenso o trabajo físico.',
+        feedbackHint:
+          '¿Tienes una idea o mejora? Escríbeme y trataré de implementarla. 🙂',
       },
     },
     profileEdit: {
@@ -718,6 +726,7 @@ const translations = {
       neutral: '😐',
       sad: '😔',
       angry: '😠',
+      celebrate: '🎉',
     },
     greeting: {
       wave: '👋',

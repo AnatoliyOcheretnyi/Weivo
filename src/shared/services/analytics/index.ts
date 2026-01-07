@@ -151,7 +151,6 @@ export const analyticsService = {
 }
 const warnMissingFirebase = () => {
   if (__DEV__) {
-    // eslint-disable-next-line no-console
     console.warn('Firebase app is not initialized yet; analytics is disabled.')
   }
 }
@@ -163,5 +162,4 @@ const hasFirebaseApp = () => {
   }
 }
 const resolveVoid = Promise.resolve()
-
 export { Actions, Screens, Triggers } from './AnalyticsEvents'

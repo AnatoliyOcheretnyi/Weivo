@@ -27,6 +27,7 @@ export const useAddEntryModal = ({
   const [mood, setMood] = useState<Mood | undefined>()
   const moodOptions = useMemo<MoodOption[]>(
     () => [
+      { key: 'celebrate', label: texts.moods.celebrate },
       { key: 'happy', label: texts.moods.happy },
       { key: 'neutral', label: texts.moods.neutral },
       { key: 'sad', label: texts.moods.sad },

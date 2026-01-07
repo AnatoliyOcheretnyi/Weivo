@@ -106,4 +106,10 @@ export const createProfileStyles = (colors: ThemeColors) =>
       fontSize: fontSizes.md,
       color: colors.ink,
     },
+    supportHint: {
+      fontSize: fontSizes.sm,
+      color: colors.inkMuted,
+      letterSpacing: letterSpacings.sm,
+      lineHeight: 18,
+    },
   })

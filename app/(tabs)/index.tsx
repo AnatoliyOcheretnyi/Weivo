@@ -25,7 +25,7 @@ import { useAppTheme } from '@/theme'
 import { spacing } from '@/theme/spacing'
 import { createHomeStyles } from './_index.styles'
 import { useTexts } from '@/i18n'
-import { Actions, Screens, analyticsService } from '@/shared/services/analytics'
+import { Actions, Screens, Triggers, analyticsService } from '@/shared/services/analytics'
 export default function HomeScreen() {
   const { entries } = useWeightStore()
   const { segments, updateSegment, reconcileCompletion } = useGoalSegments()
@@ -87,6 +87,7 @@ export default function HomeScreen() {
     height: number;
   } | null>(null)
   const progressRef = useRef<View>(null)
+  const hasLoggedSegmentsHintRef = useRef(false)
   const shouldShowSegmentsHint =
     (goalType === 'lose' || goalType === 'gain') &&
     segments.length === 0 &&
@@ -128,6 +129,17 @@ export default function HomeScreen() {
   useEffect(() => {
     setShowSegmentsHint(shouldShowSegmentsHint)
   }, [shouldShowSegmentsHint])
+  useEffect(() => {
+    if (!showSegmentsHint || !progressLayout || hasLoggedSegmentsHintRef.current) {
+      return
+    }
+    analyticsService.createAnalyticEvent({
+      screen: Screens.Home,
+      trigger: Triggers.SegmentsHint,
+      action: Actions.View,
+    })
+    hasLoggedSegmentsHintRef.current = true
+  }, [progressLayout, showSegmentsHint])
   useEffect(() => {
     if (!showSegmentsHint) {
       return
@@ -226,10 +238,20 @@ export default function HomeScreen() {
     return texts.profile.values.notSet
   })()
   const handleDismissSegmentsHint = () => {
+    analyticsService.createAnalyticEvent({
+      screen: Screens.Home,
+      trigger: Triggers.SegmentsHintLater,
+      action: Actions.Click,
+    })
     updateProfile({ hasSeenSegmentsHint: true })
     setShowSegmentsHint(false)
   }
   const handleCreateSegment = () => {
+    analyticsService.createAnalyticEvent({
+      screen: Screens.Home,
+      trigger: Triggers.SegmentsHintCreate,
+      action: Actions.Click,
+    })
     updateProfile({ hasSeenSegmentsHint: true })
     setShowSegmentsHint(false)
     router.push('/segment-create')

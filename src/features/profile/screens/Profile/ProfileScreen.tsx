@@ -1,4 +1,4 @@
-import { useRouter } from 'expo-router'
+import { type ExternalPathString, useRouter } from 'expo-router'
 import { useEffect, useMemo } from 'react'
 import { ScrollView, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -11,7 +11,7 @@ import { useTexts } from '@/i18n'
 import { useAppTheme } from '@/theme'
 import { createProfileStyles } from './ProfileScreen.styles'
 import { useProfileScreen } from './UseProfileScreen'
-import { Actions, Screens, analyticsService } from '@/shared/services/analytics'
+import { Actions, Screens, Triggers, analyticsService } from '@/shared/services/analytics'
 export default function ProfileScreen() {
   const { entries } = useWeightStore()
   const { segments } = useGoalSegments()
@@ -20,6 +20,10 @@ export default function ProfileScreen() {
   const { texts, locale } = useTexts()
   const { colors, scheme } = useAppTheme()
   const profileStyles = useMemo(() => createProfileStyles(colors), [colors])
+  const supportLink = (
+    process.env.EXPO_PUBLIC_SUPPORT_TG_LINK ??
+    'https://t.me/Gokotto'
+  ) as ExternalPathString
   useEffect(() => {
     analyticsService.createAnalyticEvent({
       screen: Screens.Profile,
@@ -214,13 +218,23 @@ export default function ProfileScreen() {
           <View style={profileStyles.card}>
             <View style={profileStyles.row}>
               <Text style={profileStyles.label}>{texts.profile.fields.feedback}</Text>
-              <ExternalLink href="https://t.me/Gokotto" style={profileStyles.linkRow}>
+              <ExternalLink
+                href={supportLink}
+                style={profileStyles.linkRow}
+                onPress={() =>
+                  analyticsService.createAnalyticEvent({
+                    screen: Screens.Profile,
+                    trigger: Triggers.FeedbackTelegram,
+                    action: Actions.Click,
+                  })
+                }>
                 <Text style={profileStyles.value}>{texts.profile.values.feedbackLink}</Text>
                 <View style={profileStyles.linkIcon}>
                   <IconSymbol size={14} name="arrow.up.right" color={colors.inkMuted} />
                 </View>
               </ExternalLink>
             </View>
+            <Text style={profileStyles.supportHint}>{texts.profile.values.feedbackHint}</Text>
           </View>
         </View>
       </ScrollView>
