@@ -9,7 +9,7 @@ import { useAppTheme } from '@/theme'
 import { createModalStyles } from './AddEntryModal.styles'
 import { useTexts } from '@/i18n'
 import { useAddEntryModal } from './UseAddEntryModal'
-import { analyticsService } from '@/shared/services/analytics'
+import { Actions, Screens, analyticsService } from '@/shared/services/analytics'
 export default function AddEntryModal() {
   const router = useRouter()
   const { addEntry } = useWeightStore()
@@ -17,7 +17,10 @@ export default function AddEntryModal() {
   const { colors } = useAppTheme()
   const modalStyles = useMemo(() => createModalStyles(colors), [colors])
   useEffect(() => {
-    analyticsService.logView('add_entry')
+    analyticsService.createAnalyticEvent({
+      screen: Screens.AddEntry,
+      action: Actions.View,
+    })
   }, [])
   const {
     weightText,

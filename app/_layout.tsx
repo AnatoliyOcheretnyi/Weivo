@@ -12,7 +12,7 @@ import { useI18nSync, useTexts } from '@/i18n'
 import { useAppTheme } from '@/theme'
 import { crashlytics } from '@/shared/services/crashlytics'
 import { analyticsService } from '@/shared/services/analytics'
-import { getApps } from '@react-native-firebase/app'
+import { getApp } from '@react-native-firebase/app'
 crashlytics.init({ dsn: process.env.EXPO_PUBLIC_SENTRY_DSN })
 // TODO: Disable analytics in dev before release.
 void analyticsService.init({ enabled: true })
@@ -74,7 +74,11 @@ function RootLayoutContent() {
   const router = useRouter()
   const rootState = useRootNavigationState()
   useEffect(() => {
-    console.log('firebase apps', getApps().map((app) => app.name))
+    try {
+      console.log('firebase app', getApp().name)
+    } catch {
+      console.log('firebase app', 'not initialized')
+    }
   }, [])
   useEffect(() => {
     if (!rootState?.key || !segments.length) {

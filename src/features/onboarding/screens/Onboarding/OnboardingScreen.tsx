@@ -14,7 +14,7 @@ import { WelcomeStep } from './steps/WelcomeStep'
 import { AgeStep } from './steps/AgeStep'
 import { BodyStep } from './steps/BodyStep'
 import { GoalStep } from './steps/GoalStep'
-import { analyticsService } from '@/shared/services/analytics'
+import { Actions, Screens, analyticsService } from '@/shared/services/analytics'
 export default function OnboardingScreen() {
   const router = useRouter()
   const { profile, updateProfile } = useProfileStore()
@@ -23,7 +23,10 @@ export default function OnboardingScreen() {
   const { colors } = useAppTheme()
   const onboardingStyles = useMemo(() => createOnboardingStyles(colors), [colors])
   useEffect(() => {
-    analyticsService.logView('onboarding')
+    analyticsService.createAnalyticEvent({
+      screen: Screens.Onboarding,
+      action: Actions.View,
+    })
   }, [])
   const {
     scrollRef,

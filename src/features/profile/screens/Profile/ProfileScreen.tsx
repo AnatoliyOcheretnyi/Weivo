@@ -11,7 +11,7 @@ import { useTexts } from '@/i18n'
 import { useAppTheme } from '@/theme'
 import { createProfileStyles } from './ProfileScreen.styles'
 import { useProfileScreen } from './UseProfileScreen'
-import { analyticsService } from '@/shared/services/analytics'
+import { Actions, Screens, analyticsService } from '@/shared/services/analytics'
 export default function ProfileScreen() {
   const { entries } = useWeightStore()
   const { segments } = useGoalSegments()
@@ -21,7 +21,10 @@ export default function ProfileScreen() {
   const { colors, scheme } = useAppTheme()
   const profileStyles = useMemo(() => createProfileStyles(colors), [colors])
   useEffect(() => {
-    analyticsService.logView('profile')
+    analyticsService.createAnalyticEvent({
+      screen: Screens.Profile,
+      action: Actions.View,
+    })
   }, [])
   const {
     latestWeight,

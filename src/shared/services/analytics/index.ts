@@ -1,6 +1,20 @@
-import analytics from '@react-native-firebase/analytics'
-import { getApps } from '@react-native-firebase/app'
+import { getApp, getApps } from '@react-native-firebase/app'
+import {
+  getAnalytics,
+  logEvent,
+  logScreenView,
+  resetAnalyticsData,
+  setAnalyticsCollectionEnabled,
+  setUserId,
+  setUserProperties,
+} from '@react-native-firebase/analytics'
 import { createMMKV } from 'react-native-mmkv'
+import {
+  buildAnalyticsEventName,
+  type Screen,
+  type Trigger,
+  type Action,
+} from './AnalyticsEvents'
 type AnalyticsInitOptions = {
   enabled?: boolean
 }
@@ -41,12 +55,13 @@ export const analyticsService = {
       warnMissingFirebase()
       return
     }
+    const analyticsInstance = getAnalytics(getApp())
     if (enabled != null) {
-      await analytics().setAnalyticsCollectionEnabled(enabled)
+      await setAnalyticsCollectionEnabled(analyticsInstance, enabled)
     }
     const userId = getOrCreateUserId()
     if (userId) {
-      await analytics().setUserId(userId)
+      await setUserId(analyticsInstance, userId)
     }
     isInitialized = true
   },
@@ -55,9 +70,10 @@ export const analyticsService = {
       warnMissingFirebase()
       return null
     }
+    const analyticsInstance = getAnalytics(getApp())
     const userId = getOrCreateUserId()
     if (userId) {
-      await analytics().setUserId(userId)
+      await setUserId(analyticsInstance, userId)
     }
     return userId
   },
@@ -66,49 +82,71 @@ export const analyticsService = {
       warnMissingFirebase()
       return resolveVoid
     }
-    return analytics().logEvent(name, params)
+    return logEvent(getAnalytics(getApp()), name, params)
+  },
+  createAnalyticEvent: ({
+    screen,
+    action,
+    trigger,
+    extraProperties,
+  }: {
+    screen: Screen
+    action: Action
+    trigger?: Trigger
+    extraProperties?: AnalyticsEventParams
+  }) => {
+    const name = buildAnalyticsEventName({ screen, trigger, action })
+    return analyticsService.logEvent(name, {
+      screen,
+      trigger,
+      action,
+      ...extraProperties,
+    })
   },
   logView: (screen: string) => {
     if (!hasFirebaseApp()) {
       warnMissingFirebase()
       return resolveVoid
     }
-    return analytics().logEvent('view_screen', { screen })
+    return logEvent(getAnalytics(getApp()), 'view_screen', { screen })
   },
   logClick: (target: string, screen?: string) => {
     if (!hasFirebaseApp()) {
       warnMissingFirebase()
       return resolveVoid
     }
-    return analytics().logEvent('click', screen ? { target, screen } : { target })
+    return logEvent(getAnalytics(getApp()), 'click', screen ? { target, screen } : { target })
   },
   logScreenView: (screenName: string, screenClass?: string) => {
     if (!hasFirebaseApp()) {
       warnMissingFirebase()
       return resolveVoid
     }
-    return analytics().logScreenView({ screen_name: screenName, screen_class: screenClass })
+    return logScreenView(getAnalytics(getApp()), {
+      screen_name: screenName,
+      screen_class: screenClass,
+    })
   },
   setUserId: (id: string | null) => {
     if (!hasFirebaseApp()) {
       warnMissingFirebase()
       return resolveVoid
     }
-    return analytics().setUserId(id)
+    return setUserId(getAnalytics(getApp()), id)
   },
   setUserProperties: (properties: AnalyticsUserProperties) => {
     if (!hasFirebaseApp()) {
       warnMissingFirebase()
       return resolveVoid
     }
-    return analytics().setUserProperties(properties)
+    return setUserProperties(getAnalytics(getApp()), properties)
   },
   resetAnalyticsData: () => {
     if (!hasFirebaseApp()) {
       warnMissingFirebase()
       return resolveVoid
     }
-    return analytics().resetAnalyticsData()
+    return resetAnalyticsData(getAnalytics(getApp()))
   },
 }
 const warnMissingFirebase = () => {
@@ -117,5 +155,13 @@ const warnMissingFirebase = () => {
     console.warn('Firebase app is not initialized yet; analytics is disabled.')
   }
 }
-const hasFirebaseApp = () => getApps().length > 0
+const hasFirebaseApp = () => {
+  try {
+    return getApps().length > 0
+  } catch {
+    return false
+  }
+}
 const resolveVoid = Promise.resolve()
+
+export { Actions, Screens, Triggers } from './AnalyticsEvents'

@@ -7,7 +7,7 @@ import { useAppTheme } from '@/theme'
 import { useTexts } from '@/i18n'
 import { createEntriesStyles } from './EntriesScreen.styles'
 import { EntryRow } from './EntriesRow'
-import { analyticsService } from '@/shared/services/analytics'
+import { Actions, Screens, Triggers, analyticsService } from '@/shared/services/analytics'
 type Entry = ReturnType<typeof useWeightStore>['entries'][number]
 export default function EntriesScreen() {
   const { entries, clearEntries, removeEntry } = useWeightStore()
@@ -19,7 +19,10 @@ export default function EntriesScreen() {
   const [isDeleting, setIsDeleting] = useState(false)
   const deleteTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   useEffect(() => {
-    analyticsService.logView('entries')
+    analyticsService.createAnalyticEvent({
+      screen: Screens.Entries,
+      action: Actions.View,
+    })
     return () => {
       if (deleteTimeoutRef.current) {
         clearTimeout(deleteTimeoutRef.current)
@@ -36,8 +39,11 @@ export default function EntriesScreen() {
           text: texts.entries.clearAllConfirm,
           style: 'destructive',
           onPress: () => {
-            analyticsService.logClick('clear_entries', 'entries')
-            analyticsService.logEvent('entries_clear')
+            analyticsService.createAnalyticEvent({
+              screen: Screens.Entries,
+              trigger: Triggers.ClearAll,
+              action: Actions.Click,
+            })
             setIsDeleting(true)
             clearEntries()
             if (deleteTimeoutRef.current) {
@@ -53,10 +59,14 @@ export default function EntriesScreen() {
     (item: Entry, nextEntries: Entry[]) => {
       const nextCurrentKg =
         nextEntries.length > 0 ? nextEntries[nextEntries.length - 1].weightKg : null
-      analyticsService.logClick('delete_entry', 'entries')
-      analyticsService.logEvent('entry_delete', {
-        has_mood: item.mood ? 'true' : 'false',
-        source: 'swipe',
+      analyticsService.createAnalyticEvent({
+        screen: Screens.Entries,
+        trigger: Triggers.DeleteEntry,
+        action: Actions.Click,
+        extraProperties: {
+          has_mood: item.mood ? 'true' : 'false',
+          source: 'swipe',
+        },
       })
       setIsDeleting(true)
       removeEntry(item.dateISO)

@@ -13,7 +13,7 @@ import {
   sanitizeDecimalInput,
   sanitizeNoteInput,
 } from '@/shared/utils'
-import { analyticsService } from '@/shared/services/analytics'
+import { Actions, Screens, analyticsService } from '@/shared/services/analytics'
 type UseSegmentDetailScreenParams = {
   id?: string
   segments: GoalSegment[]
@@ -108,8 +108,12 @@ export const useSegmentDetailScreen = ({
       note: note.trim() || undefined,
     }
     updateSegment(updated)
-    analyticsService.logEvent('segment_update', {
-      has_note: note.trim() ? 'true' : 'false',
+    analyticsService.createAnalyticEvent({
+      screen: Screens.SegmentDetail,
+      action: Actions.Update,
+      extraProperties: {
+        has_note: note.trim() ? 'true' : 'false',
+      },
     })
     setIsEditing(false)
     onDone()
@@ -135,7 +139,10 @@ export const useSegmentDetailScreen = ({
           text: texts.segments.deleteConfirm,
           style: 'destructive',
           onPress: () => {
-            analyticsService.logEvent('segment_delete')
+            analyticsService.createAnalyticEvent({
+              screen: Screens.SegmentDetail,
+              action: Actions.Delete,
+            })
             removeSegment(segment.id)
             onDone()
           },

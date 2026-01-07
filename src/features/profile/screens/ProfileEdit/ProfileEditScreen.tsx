@@ -12,7 +12,7 @@ import { themes, useAppTheme } from '@/theme'
 import { createProfileEditStyles } from './ProfileEditScreen.styles'
 import { localeLabels, useTexts } from '@/i18n'
 import { useProfileEditScreen } from './UseProfileEditScreen'
-import { analyticsService } from '@/shared/services/analytics'
+import { Actions, Screens, analyticsService } from '@/shared/services/analytics'
 export default function ProfileEditScreen() {
   const router = useRouter()
   const { profile, updateProfile } = useProfileStore()
@@ -21,7 +21,10 @@ export default function ProfileEditScreen() {
   const { colors, scheme } = useAppTheme()
   const profileEditStyles = useMemo(() => createProfileEditStyles(colors), [colors])
   useEffect(() => {
-    analyticsService.logView('profile_edit')
+    analyticsService.createAnalyticEvent({
+      screen: Screens.ProfileEdit,
+      action: Actions.View,
+    })
   }, [])
   const {
     latestWeight,

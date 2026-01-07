@@ -25,7 +25,7 @@ import { useAppTheme } from '@/theme'
 import { spacing } from '@/theme/spacing'
 import { createHomeStyles } from './_index.styles'
 import { useTexts } from '@/i18n'
-import { analyticsService } from '@/shared/services/analytics'
+import { Actions, Screens, analyticsService } from '@/shared/services/analytics'
 export default function HomeScreen() {
   const { entries } = useWeightStore()
   const { segments, updateSegment, reconcileCompletion } = useGoalSegments()
@@ -35,7 +35,10 @@ export default function HomeScreen() {
   const { colors } = useAppTheme()
   const homeStyles = useMemo(() => createHomeStyles(colors), [colors])
   useEffect(() => {
-    analyticsService.logView('home')
+    analyticsService.createAnalyticEvent({
+      screen: Screens.Home,
+      action: Actions.View,
+    })
   }, [])
   const heightCm = profile.heightCm ?? null
   const goalType = profile.goalType ?? null

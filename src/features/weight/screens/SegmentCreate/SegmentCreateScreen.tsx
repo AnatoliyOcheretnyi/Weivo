@@ -15,14 +15,17 @@ import {
 import { GOAL_NOTE_MAX_LENGTH } from '@/shared/utils'
 import { createSegmentCreateStyles } from './SegmentCreateScreen.styles'
 import { useSegmentCreateScreen } from './UseSegmentCreateScreen'
-import { analyticsService } from '@/shared/services/analytics'
+import { Actions, Screens, analyticsService } from '@/shared/services/analytics'
 export default function SegmentCreateScreen() {
   const router = useRouter()
   const { texts } = useTexts()
   const { colors } = useAppTheme()
   const styles = useMemo(() => createSegmentCreateStyles(colors), [colors])
   useEffect(() => {
-    analyticsService.logView('segment_create')
+    analyticsService.createAnalyticEvent({
+      screen: Screens.CreateNewSegment,
+      action: Actions.View,
+    })
   }, [])
   const { entries } = useWeightStore()
   const { profile } = useProfileStore()

@@ -11,7 +11,7 @@ import { useGoalSegments } from '@/features/weight'
 import { GOAL_NOTE_MAX_LENGTH } from '@/shared/utils'
 import { createSegmentDetailStyles } from './SegmentDetailScreen.styles'
 import { useSegmentDetailScreen } from './UseSegmentDetailScreen'
-import { analyticsService } from '@/shared/services/analytics'
+import { Actions, Screens, analyticsService } from '@/shared/services/analytics'
 export default function SegmentDetailScreen() {
   const router = useRouter()
   const { id } = useLocalSearchParams<{ id?: string }>()
@@ -19,7 +19,10 @@ export default function SegmentDetailScreen() {
   const { colors } = useAppTheme()
   const styles = useMemo(() => createSegmentDetailStyles(colors), [colors])
   useEffect(() => {
-    analyticsService.logView('segment_detail')
+    analyticsService.createAnalyticEvent({
+      screen: Screens.SegmentDetail,
+      action: Actions.View,
+    })
   }, [])
   const { segments, updateSegment, removeSegment } = useGoalSegments()
   const {
