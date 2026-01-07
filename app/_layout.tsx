@@ -9,6 +9,8 @@ import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { useProfileStore } from '@/features/profile'
 import { useI18nSync, useTexts } from '@/i18n'
 import { useAppTheme } from '@/theme'
+import { crashlytics } from '@/shared/services/crashlytics'
+crashlytics.init({ dsn: process.env.EXPO_PUBLIC_SENTRY_DSN })
 export const unstable_settings = {
   anchor: '(tabs)',
 }
