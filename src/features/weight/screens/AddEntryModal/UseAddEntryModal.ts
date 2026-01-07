@@ -8,6 +8,7 @@ import {
   parseWeightText,
   sanitizeDecimalInput,
 } from '@/shared/utils'
+import { analyticsService } from '@/shared/services/analytics'
 type UseAddEntryModalParams = {
   addEntry: (_weightKg: number, _mood?: Mood) => void
   texts: Texts
@@ -50,6 +51,10 @@ export const useAddEntryModal = ({
       return
     }
     addEntry(Number(weightValue.toFixed(1)), mood)
+    analyticsService.logEvent('entry_add', {
+      has_mood: mood ? 'true' : 'false',
+      source: 'modal',
+    })
     onDone()
   }, [addEntry, canSave, mood, onDone, weightValue])
   return {

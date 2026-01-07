@@ -7,10 +7,15 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import 'react-native-reanimated'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { useProfileStore } from '@/features/profile'
+import { useGoalSegments, useWeightStore } from '@/features/weight'
 import { useI18nSync, useTexts } from '@/i18n'
 import { useAppTheme } from '@/theme'
 import { crashlytics } from '@/shared/services/crashlytics'
+import { analyticsService } from '@/shared/services/analytics'
+import { getApps } from '@react-native-firebase/app'
 crashlytics.init({ dsn: process.env.EXPO_PUBLIC_SENTRY_DSN })
+// TODO: Disable analytics in dev before release.
+void analyticsService.init({ enabled: true })
 export const unstable_settings = {
   anchor: '(tabs)',
 }
@@ -63,9 +68,14 @@ function RootStack() {
 function RootLayoutContent() {
   const { scheme } = useAppTheme()
   const { profile } = useProfileStore()
+  const { entries } = useWeightStore()
+  const { segments: goalSegments } = useGoalSegments()
   const segments = useSegments()
   const router = useRouter()
   const rootState = useRootNavigationState()
+  useEffect(() => {
+    console.log('firebase apps', getApps().map((app) => app.name))
+  }, [])
   useEffect(() => {
     if (!rootState?.key || !segments.length) {
       return
@@ -90,6 +100,30 @@ function RootLayoutContent() {
       requestAnimationFrame(() => router.replace(tabsHref))
     }
   }, [profile.activityLevel, profile.birthDateISO, profile.goalRangeMaxKg, profile.goalRangeMinKg, profile.goalTargetKg, profile.goalType, profile.heightCm, profile.onboardingComplete, profile.sex, rootState?.key, router, segments])
+  useEffect(() => {
+    void analyticsService.ensureUserId()
+    analyticsService.setUserProperties({
+      goal_type: profile.goalType ?? null,
+      units: profile.units ?? null,
+      language: profile.language ?? null,
+      onboarding_complete: profile.onboardingComplete ? 'true' : 'false',
+      has_segments: goalSegments.length > 0 ? 'true' : 'false',
+      has_entries: entries.length > 0 ? 'true' : 'false',
+      theme: profile.theme ?? null,
+      activity_level: profile.activityLevel ?? null,
+      sex: profile.sex ?? null,
+    })
+  }, [
+    entries.length,
+    profile.activityLevel,
+    profile.goalType,
+    profile.language,
+    profile.onboardingComplete,
+    profile.sex,
+    profile.theme,
+    profile.units,
+    goalSegments.length,
+  ])
   return (
     <ThemeProvider value={scheme === 'dark' ? DarkTheme : DefaultTheme}>
       <SafeAreaProvider>

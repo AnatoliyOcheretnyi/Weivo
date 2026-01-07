@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { Animated, Pressable, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useRouter, type Href } from 'expo-router'
@@ -14,6 +14,7 @@ import { WelcomeStep } from './steps/WelcomeStep'
 import { AgeStep } from './steps/AgeStep'
 import { BodyStep } from './steps/BodyStep'
 import { GoalStep } from './steps/GoalStep'
+import { analyticsService } from '@/shared/services/analytics'
 export default function OnboardingScreen() {
   const router = useRouter()
   const { profile, updateProfile } = useProfileStore()
@@ -21,6 +22,9 @@ export default function OnboardingScreen() {
   const { texts } = useTexts()
   const { colors } = useAppTheme()
   const onboardingStyles = useMemo(() => createOnboardingStyles(colors), [colors])
+  useEffect(() => {
+    analyticsService.logView('onboarding')
+  }, [])
   const {
     scrollRef,
     scrollX,

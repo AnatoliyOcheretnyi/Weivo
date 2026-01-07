@@ -30,6 +30,7 @@ import {
   parseNumberInput,
   sanitizeDecimalInput,
 } from '@/shared/utils'
+import { analyticsService } from '@/shared/services/analytics'
 type UseOnboardingScreenParams = {
   profile: ProfileData
   updateProfile: (_next: Partial<ProfileData>) => void
@@ -250,6 +251,7 @@ export const useOnboardingScreen = ({
       addEntry(parseNumberInput(weightKg))
     }
     updateProfile(nextProfile)
+    analyticsService.logEvent('onboarding_complete', { goal_type: goalType })
     onDone()
   }, [
     activityLevel,

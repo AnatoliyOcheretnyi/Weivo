@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { Pressable, ScrollView, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useRouter } from 'expo-router'
@@ -12,6 +12,7 @@ import { themes, useAppTheme } from '@/theme'
 import { createProfileEditStyles } from './ProfileEditScreen.styles'
 import { localeLabels, useTexts } from '@/i18n'
 import { useProfileEditScreen } from './UseProfileEditScreen'
+import { analyticsService } from '@/shared/services/analytics'
 export default function ProfileEditScreen() {
   const router = useRouter()
   const { profile, updateProfile } = useProfileStore()
@@ -19,6 +20,9 @@ export default function ProfileEditScreen() {
   const { texts, locale } = useTexts()
   const { colors, scheme } = useAppTheme()
   const profileEditStyles = useMemo(() => createProfileEditStyles(colors), [colors])
+  useEffect(() => {
+    analyticsService.logView('profile_edit')
+  }, [])
   const {
     latestWeight,
     editTab,

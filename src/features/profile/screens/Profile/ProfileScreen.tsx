@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router'
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { ScrollView, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Button } from '@/shared/components/Button'
@@ -11,6 +11,7 @@ import { useTexts } from '@/i18n'
 import { useAppTheme } from '@/theme'
 import { createProfileStyles } from './ProfileScreen.styles'
 import { useProfileScreen } from './UseProfileScreen'
+import { analyticsService } from '@/shared/services/analytics'
 export default function ProfileScreen() {
   const { entries } = useWeightStore()
   const { segments } = useGoalSegments()
@@ -19,6 +20,9 @@ export default function ProfileScreen() {
   const { texts, locale } = useTexts()
   const { colors, scheme } = useAppTheme()
   const profileStyles = useMemo(() => createProfileStyles(colors), [colors])
+  useEffect(() => {
+    analyticsService.logView('profile')
+  }, [])
   const {
     latestWeight,
     birthDateLabel,

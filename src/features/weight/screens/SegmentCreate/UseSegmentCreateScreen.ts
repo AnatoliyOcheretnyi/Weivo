@@ -15,6 +15,7 @@ import {
   sanitizeDecimalInput,
   sanitizeNoteInput,
 } from '@/shared/utils'
+import { analyticsService } from '@/shared/services/analytics'
 type UseSegmentCreateScreenParams = {
   entries: WeightEntry[]
   segments: GoalSegment[]
@@ -98,6 +99,10 @@ export const useSegmentCreateScreen = ({
       createdAtISO: new Date().toISOString(),
     }
     addSegment(segment)
+    analyticsService.logEvent('segment_create', {
+      direction: inferredDirection,
+      has_note: note.trim() ? 'true' : 'false',
+    })
     const nextStart =
       inferredDirection === 'gain' ? targetValue + WEIGHT_STEP_KG : targetValue - WEIGHT_STEP_KG
     setStartWeight(nextStart.toFixed(1))

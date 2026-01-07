@@ -10,9 +10,11 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.poets-tololo.Weivo"
+      "bundleIdentifier": "com.poets-tololo.Weivo",
+      "googleServicesFile": "./ios/GoogleService-Info.plist"
     },
     "android": {
+      "googleServicesFile": "./android/app/google-services.json",
       "adaptiveIcon": {
         "backgroundColor": "#EFE4D7",
         "foregroundImage": "./assets/images/android-icon-foreground.png",

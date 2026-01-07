@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { Pressable, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useRouter } from 'expo-router'
@@ -9,12 +9,16 @@ import { useAppTheme } from '@/theme'
 import { createModalStyles } from './AddEntryModal.styles'
 import { useTexts } from '@/i18n'
 import { useAddEntryModal } from './UseAddEntryModal'
+import { analyticsService } from '@/shared/services/analytics'
 export default function AddEntryModal() {
   const router = useRouter()
   const { addEntry } = useWeightStore()
   const { texts } = useTexts()
   const { colors } = useAppTheme()
   const modalStyles = useMemo(() => createModalStyles(colors), [colors])
+  useEffect(() => {
+    analyticsService.logView('add_entry')
+  }, [])
   const {
     weightText,
     setWeightText,

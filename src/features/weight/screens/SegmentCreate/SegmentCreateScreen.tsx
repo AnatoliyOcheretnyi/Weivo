@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { ScrollView, Text, View, type TextInput } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useRouter } from 'expo-router'
@@ -15,11 +15,15 @@ import {
 import { GOAL_NOTE_MAX_LENGTH } from '@/shared/utils'
 import { createSegmentCreateStyles } from './SegmentCreateScreen.styles'
 import { useSegmentCreateScreen } from './UseSegmentCreateScreen'
+import { analyticsService } from '@/shared/services/analytics'
 export default function SegmentCreateScreen() {
   const router = useRouter()
   const { texts } = useTexts()
   const { colors } = useAppTheme()
   const styles = useMemo(() => createSegmentCreateStyles(colors), [colors])
+  useEffect(() => {
+    analyticsService.logView('segment_create')
+  }, [])
   const { entries } = useWeightStore()
   const { profile } = useProfileStore()
   const { segments, addSegment } = useGoalSegments()
