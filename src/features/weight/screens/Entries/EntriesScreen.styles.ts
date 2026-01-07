@@ -13,7 +13,9 @@ export const createEntriesStyles = (colors: ThemeColors) =>
     content: {
       padding: spacing.mega,
       paddingBottom: dimensions.entries.paddingBottom,
-      gap: spacing.xxl,
+    },
+    separator: {
+      height: spacing.xxl,
     },
     header: {
       marginBottom: dimensions.explore.headerBottom,
