@@ -1,4 +1,4 @@
-import { memo, useCallback, useRef, useState } from 'react'
+import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { Alert, Pressable, Text, View } from 'react-native'
 import Swipeable, { type SwipeableMethods } from 'react-native-gesture-handler/ReanimatedSwipeable'
 import Animated, { FadeOut, LinearTransition } from 'react-native-reanimated'
@@ -36,12 +36,15 @@ export const EntryRow = memo(function EntryRow({
     sad: texts.moods.sad,
     angry: texts.moods.angry,
   } as const
-  const formatFullDate = (dateISO: string) =>
-    new Date(dateISO).toLocaleDateString(locale, {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    })
+  const formatFullDate = useCallback(
+    (dateISO: string) =>
+      new Date(dateISO).toLocaleDateString(locale, {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      }),
+    [locale]
+  )
   const prev = data[index + 1]
   const delta = prev ? item.weightKg - prev.weightKg : 0
   const deltaLabel =
@@ -69,22 +72,32 @@ export const EntryRow = memo(function EntryRow({
       ]
     )
   }, [entries, item, onDelete, texts])
+  useEffect(() => {
+    swipeRef.current?.close()
+    setIsOpen(false)
+  }, [item.dateISO])
+  const handleSwipeOpen = useCallback(() => setIsOpen(true), [])
+  const handleSwipeClose = useCallback(() => setIsOpen(false), [])
+  const renderRightActions = useCallback(
+    () => (
+      <Pressable style={entriesStyles.deleteAction} onPress={confirmDelete}>
+        <Text style={entriesStyles.deleteText}>{texts.entries.deleteConfirm}</Text>
+      </Pressable>
+    ),
+    [confirmDelete, entriesStyles.deleteAction, entriesStyles.deleteText, texts]
+  )
   return (
     <Animated.View
-      exiting={FadeOut.duration(180)}
+      exiting={FadeOut.duration(200)}
       layout={isDeleting ? LinearTransition.duration(180) : undefined}
       style={[entriesStyles.swipeContainer, isOpen && entriesStyles.swipeContainerActive]}>
       <Swipeable
         ref={swipeRef}
         overshootRight={false}
-        onSwipeableWillOpen={() => setIsOpen(true)}
-        onSwipeableWillClose={() => setIsOpen(false)}
+        onSwipeableWillOpen={handleSwipeOpen}
+        onSwipeableWillClose={handleSwipeClose}
         onSwipeableOpen={confirmDelete}
-        renderRightActions={() => (
-          <Pressable style={entriesStyles.deleteAction} onPress={confirmDelete}>
-            <Text style={entriesStyles.deleteText}>{texts.entries.deleteConfirm}</Text>
-          </Pressable>
-        )}>
+        renderRightActions={renderRightActions}>
         <View style={entriesStyles.rowContent}>
           <View>
             <Text style={entriesStyles.date}>{formatFullDate(item.dateISO)}</Text>
