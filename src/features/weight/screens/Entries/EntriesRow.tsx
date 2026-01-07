@@ -1,7 +1,7 @@
 import { memo, useCallback, useRef, useState } from 'react'
 import { Alert, Pressable, Text, View } from 'react-native'
-import { Swipeable } from 'react-native-gesture-handler'
-import Animated, { FadeOut, Layout } from 'react-native-reanimated'
+import Swipeable, { type SwipeableMethods } from 'react-native-gesture-handler/ReanimatedSwipeable'
+import Animated, { FadeOut, LinearTransition } from 'react-native-reanimated'
 import { createEntriesStyles } from './EntriesScreen.styles'
 import { useTexts } from '@/i18n'
 import { useWeightStore } from '@/features/weight'
@@ -28,7 +28,7 @@ export const EntryRow = memo(function EntryRow({
   isDeleting,
   onDelete,
 }: EntryRowProps) {
-  const swipeRef = useRef<Swipeable>(null)
+  const swipeRef = useRef<SwipeableMethods | null>(null)
   const [isOpen, setIsOpen] = useState(false)
   const moodMap = {
     happy: texts.moods.happy,
@@ -72,7 +72,7 @@ export const EntryRow = memo(function EntryRow({
   return (
     <Animated.View
       exiting={FadeOut.duration(180)}
-      layout={isDeleting ? Layout.duration(180) : undefined}
+      layout={isDeleting ? LinearTransition.duration(180) : undefined}
       style={[entriesStyles.swipeContainer, isOpen && entriesStyles.swipeContainerActive]}>
       <Swipeable
         ref={swipeRef}
