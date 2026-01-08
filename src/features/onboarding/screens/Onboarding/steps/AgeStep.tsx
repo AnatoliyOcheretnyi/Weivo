@@ -1,4 +1,4 @@
-import { ScrollView, Text, View } from 'react-native'
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import type { Texts } from '@/i18n'
 type AgeStepProps = {
@@ -9,6 +9,7 @@ type AgeStepProps = {
   isActive: boolean
   defaultBirthDate: Date
   onDateChange: (_event: unknown, _selectedDate?: Date) => void
+  onOpenDatePicker: () => void
 }
 export function AgeStep({
   texts,
@@ -18,6 +19,7 @@ export function AgeStep({
   isActive,
   defaultBirthDate,
   onDateChange,
+  onOpenDatePicker,
 }: AgeStepProps) {
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={styles.pageContent}>
@@ -36,6 +38,11 @@ export function AgeStep({
                   })
                 : texts.onboarding.birthDatePlaceholder}
             </Text>
+            <Pressable
+              style={StyleSheet.absoluteFillObject}
+              onPress={onOpenDatePicker}
+              accessibilityRole="button"
+            />
           </View>
           {showDatePicker && isActive && (
             <View style={styles.datePickerWrap}>

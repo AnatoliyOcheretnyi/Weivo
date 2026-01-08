@@ -8,6 +8,7 @@ import {
   UIManager,
   type ScrollView,
 } from 'react-native'
+import { DateTimePickerAndroid } from '@react-native-community/datetimepicker'
 import type { ActivityLevel, GoalType, ProfileData, Sex } from '@/features/profile'
 import type { Texts } from '@/i18n'
 import {
@@ -51,7 +52,7 @@ export const useOnboardingScreen = ({
   const [birthDate, setBirthDate] = useState<Date | null>(
     profile.birthDateISO ? new Date(profile.birthDateISO) : null
   )
-  const showDatePicker = true
+  const [showDatePicker, setShowDatePicker] = useState(false)
   const [sex, setSex] = useState<Sex>(profile.sex ?? 'male')
   const [heightCm, setHeightCm] = useState(profile.heightCm ? String(profile.heightCm) : '')
   const [weightKg, setWeightKg] = useState('')
@@ -279,6 +280,20 @@ export const useOnboardingScreen = ({
       setBirthDate(selectedDate)
     }
   }, [])
+  const onOpenDatePicker = useCallback(() => {
+    if (Platform.OS === 'android') {
+      DateTimePickerAndroid.open({
+        value: birthDate ?? DEFAULT_BIRTH_DATE,
+        mode: 'date',
+        display: 'spinner',
+        is24Hour: true,
+        maximumDate: new Date(),
+        onChange: onDateChange,
+      })
+      return
+    }
+    setShowDatePicker(true)
+  }, [birthDate, onDateChange])
   const onGoalTypeChange = useCallback((nextGoalType: GoalType) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
     setGoalType(nextGoalType)
@@ -322,6 +337,7 @@ export const useOnboardingScreen = ({
     handleBack,
     handleFinish,
     onDateChange,
+    onOpenDatePicker,
     onGoalTypeChange,
     handleMomentumEnd,
     options: {

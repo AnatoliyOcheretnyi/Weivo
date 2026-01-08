@@ -37,6 +37,7 @@ export default function OnboardingScreen() {
     birthDate,
     showDatePicker,
     onDateChange,
+    onOpenDatePicker,
     heightCm,
     setHeightCm,
     weightKg,
@@ -106,6 +107,7 @@ export default function OnboardingScreen() {
             isActive={currentStep === 1}
             defaultBirthDate={defaultBirthDate}
             onDateChange={onDateChange}
+            onOpenDatePicker={onOpenDatePicker}
           />
         </View>
         <View style={[onboardingStyles.page, { width: screenWidth }]}>

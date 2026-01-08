@@ -1,5 +1,5 @@
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native'
-import { Stack, useRouter, useSegments, useRootNavigationState, type Href } from 'expo-router'
+import { Redirect, Stack, useSegments, useRootNavigationState } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 import { Provider as JotaiProvider } from 'jotai'
 import { useEffect } from 'react'
@@ -71,7 +71,6 @@ function RootLayoutContent() {
   const { entries } = useWeightStore()
   const { segments: goalSegments } = useGoalSegments()
   const segments = useSegments()
-  const router = useRouter()
   const rootState = useRootNavigationState()
   useEffect(() => {
     try {
@@ -80,30 +79,27 @@ function RootLayoutContent() {
       console.log('firebase app', 'not initialized')
     }
   }, [])
-  useEffect(() => {
-    if (!rootState?.key || !segments.length) {
-      return
-    }
-    const isOnboardingRoute = segments[0] === 'onboarding'
-    const hasProfileData = Boolean(
-      profile.birthDateISO ||
-        profile.heightCm ||
-        profile.sex ||
-        profile.goalType ||
-        profile.goalTargetKg ||
-        profile.goalRangeMinKg ||
-        profile.goalRangeMaxKg ||
-        profile.activityLevel
-    )
-    if (!profile.onboardingComplete && !hasProfileData && !isOnboardingRoute) {
-      requestAnimationFrame(() => router.replace('/onboarding'))
-      return
-    }
-    if (profile.onboardingComplete && isOnboardingRoute) {
-      const tabsHref = '/(tabs)' as Href
-      requestAnimationFrame(() => router.replace(tabsHref))
-    }
-  }, [profile.activityLevel, profile.birthDateISO, profile.goalRangeMaxKg, profile.goalRangeMinKg, profile.goalTargetKg, profile.goalType, profile.heightCm, profile.onboardingComplete, profile.sex, rootState?.key, router, segments])
+  if (!rootState?.key || !segments.length) {
+    return null
+  }
+  const isOnboardingRoute = segments[0] === 'onboarding'
+  const hasProfileData = Boolean(
+    profile.birthDateISO ||
+      profile.heightCm ||
+      profile.sex ||
+      profile.goalType ||
+      profile.goalTargetKg ||
+      profile.goalRangeMinKg ||
+      profile.goalRangeMaxKg ||
+      profile.activityLevel
+  )
+  const shouldShowOnboarding = !profile.onboardingComplete && !hasProfileData
+  if (shouldShowOnboarding && !isOnboardingRoute) {
+    return <Redirect href="/onboarding" />
+  }
+  if (!shouldShowOnboarding && isOnboardingRoute) {
+    return <Redirect href="/(tabs)" />
+  }
   useEffect(() => {
     void analyticsService.ensureUserId()
     analyticsService.setUserProperties({
