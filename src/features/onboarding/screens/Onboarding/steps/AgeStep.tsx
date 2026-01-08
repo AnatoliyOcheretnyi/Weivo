@@ -6,6 +6,7 @@ type AgeStepProps = {
   styles: Record<string, any>
   birthDate: Date | null
   showDatePicker: boolean
+  isActive: boolean
   defaultBirthDate: Date
   onDateChange: (_event: unknown, _selectedDate?: Date) => void
 }
@@ -14,6 +15,7 @@ export function AgeStep({
   styles,
   birthDate,
   showDatePicker,
+  isActive,
   defaultBirthDate,
   onDateChange,
 }: AgeStepProps) {
@@ -35,7 +37,7 @@ export function AgeStep({
                 : texts.onboarding.birthDatePlaceholder}
             </Text>
           </View>
-          {showDatePicker && (
+          {showDatePicker && isActive && (
             <View style={styles.datePickerWrap}>
               <DateTimePicker
                 value={birthDate ?? defaultBirthDate}

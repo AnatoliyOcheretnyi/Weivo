@@ -103,6 +103,7 @@ export default function OnboardingScreen() {
             styles={onboardingStyles}
             birthDate={birthDate}
             showDatePicker={showDatePicker}
+            isActive={currentStep === 1}
             defaultBirthDate={defaultBirthDate}
             onDateChange={onDateChange}
           />

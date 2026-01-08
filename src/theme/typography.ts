@@ -1,6 +1,10 @@
 import { Platform } from 'react-native'
 export const fontFamilies = {
-  display: Platform.select({ ios: 'Avenir Next', android: 'serif', default: 'Avenir Next' }),
+  display: Platform.select({
+    ios: 'Avenir Next',
+    android: 'sans-serif-medium',
+    default: 'Avenir Next',
+  }),
   mono: Platform.select({ ios: 'Menlo', android: 'monospace', default: 'Menlo' }),
   system: Platform.select({
     ios: {
@@ -10,9 +14,9 @@ export const fontFamilies = {
       mono: 'ui-monospace',
     },
     default: {
-      sans: 'normal',
+      sans: 'sans-serif',
       serif: 'serif',
-      rounded: 'normal',
+      rounded: 'sans-serif',
       mono: 'monospace',
     },
     web: {
