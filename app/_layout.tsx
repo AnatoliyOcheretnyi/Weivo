@@ -24,10 +24,14 @@ function I18nSync() {
   useI18nSync(profile.language)
   return null
 }
-function RootStack() {
+function RootStack({
+  initialRouteName,
+}: {
+  initialRouteName: '(tabs)' | 'onboarding/index'
+}) {
   const { texts } = useTexts()
   return (
-    <Stack>
+    <Stack initialRouteName={initialRouteName}>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen name="onboarding/index" options={{ headerShown: false }} />
       <Stack.Screen
@@ -79,9 +83,7 @@ function RootLayoutContent() {
       console.log('firebase app', 'not initialized')
     }
   }, [])
-  if (!rootState?.key || !segments.length) {
-    return null
-  }
+  const navigationReady = Boolean(rootState?.key && segments.length)
   const isOnboardingRoute = segments[0] === 'onboarding'
   const hasProfileData = Boolean(
     profile.birthDateISO ||
@@ -94,12 +96,11 @@ function RootLayoutContent() {
       profile.activityLevel
   )
   const shouldShowOnboarding = !profile.onboardingComplete && !hasProfileData
-  if (shouldShowOnboarding && !isOnboardingRoute) {
-    return <Redirect href="/onboarding" />
-  }
-  if (!shouldShowOnboarding && isOnboardingRoute) {
-    return <Redirect href="/(tabs)" />
-  }
+  const initialRouteName = shouldShowOnboarding ? 'onboarding/index' : '(tabs)'
+  const shouldBlockUI =
+    !navigationReady ||
+    (shouldShowOnboarding && !isOnboardingRoute) ||
+    (!shouldShowOnboarding && isOnboardingRoute)
   useEffect(() => {
     void analyticsService.ensureUserId()
     analyticsService.setUserProperties({
@@ -124,13 +125,34 @@ function RootLayoutContent() {
     profile.units,
     goalSegments.length,
   ])
+  if (navigationReady && shouldShowOnboarding && !isOnboardingRoute) {
+    return <Redirect href="/onboarding" />
+  }
+  if (navigationReady && !shouldShowOnboarding && isOnboardingRoute) {
+    return <Redirect href="/(tabs)" />
+  }
   return (
     <ThemeProvider value={scheme === 'dark' ? DarkTheme : DefaultTheme}>
       <SafeAreaProvider>
         <GestureHandlerRootView style={{ flex: 1 }}>
           <I18nSync />
-          <RootStack />
+          <RootStack
+            key={initialRouteName}
+            initialRouteName={initialRouteName}
+          />
           <StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
+          {shouldBlockUI ? (
+            <GestureHandlerRootView
+              style={{
+                backgroundColor: scheme === 'dark' ? '#000' : '#EFE4D7',
+                bottom: 0,
+                left: 0,
+                position: 'absolute',
+                right: 0,
+                top: 0,
+              }}
+            />
+          ) : null}
         </GestureHandlerRootView>
       </SafeAreaProvider>
     </ThemeProvider>

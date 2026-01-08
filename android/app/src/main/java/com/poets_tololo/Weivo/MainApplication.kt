@@ -1,4 +1,4 @@
-package com.weivo
+package com.poets_tololo.weivo
 
 import android.app.Application
 import android.content.res.Configuration

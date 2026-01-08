@@ -4,7 +4,7 @@ import { Pressable, Text, View } from 'react-native'
 import { HapticTab } from '@/shared/components/HapticTab'
 import { IconSymbol } from '@/shared/components/Icon'
 import { dimensions, useAppTheme } from '@/theme'
-import { createTabLayoutStyles } from './_layout.styles'
+import { createTabLayoutStyles } from '@/features/navigation/screens/TabLayout/TabLayout.styles'
 import { useTexts } from '@/i18n'
 export default function TabLayout() {
   const router = useRouter()

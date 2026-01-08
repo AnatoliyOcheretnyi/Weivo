@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "158924333996",
+    "project_id": "weivo-62b3d",
+    "storage_bucket": "weivo-62b3d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:158924333996:android:27d630ff720f2642709009",
+        "android_client_info": {
+          "package_name": "com.poets_tololo.Weivo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA5askXyfz--IlY0yZ1z7lfmIdRSA5-PCA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:158924333996:android:27d4fe1556101767709009",
+        "android_client_info": {
+          "package_name": "com.poets_tololo.weivo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA5askXyfz--IlY0yZ1z7lfmIdRSA5-PCA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

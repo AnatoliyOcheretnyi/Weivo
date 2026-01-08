@@ -22,7 +22,7 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.poets_tololo.Weivo"
+      "package": "com.poets_tololo.weivo"
     },
     "web": {
       "output": "static",

@@ -23,7 +23,7 @@ import {
 } from '@/features/weight'
 import { useAppTheme } from '@/theme'
 import { spacing } from '@/theme/spacing'
-import { createHomeStyles } from './_index.styles'
+import { createHomeStyles } from '@/features/weight/screens/Home/HomeScreen.styles'
 import { useTexts } from '@/i18n'
 import { Actions, Screens, Triggers, analyticsService } from '@/shared/services/analytics'
 export default function HomeScreen() {
