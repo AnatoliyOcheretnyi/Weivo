@@ -79,7 +79,7 @@ export const useSegmentCreateScreen = ({
     if (!canSave) {
       return
     }
-    const healthyRange = getHealthyTargetRangeKg(startValue)
+    const healthyRange = getHealthyTargetRangeKg(startValue, profile.heightCm)
     if (!isWithinRange(targetValue, healthyRange.min, healthyRange.max)) {
       Alert.alert(
         texts.validation.goalRangeTitle,

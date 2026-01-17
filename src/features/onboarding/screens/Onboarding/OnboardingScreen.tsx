@@ -147,7 +147,7 @@ export default function OnboardingScreen() {
       </Animated.ScrollView>
       <View style={onboardingStyles.actions}>
         {currentStep === 0 ? (
-          <View />
+          <View style={onboardingStyles.navSpacer} />
         ) : (
           <Pressable style={onboardingStyles.navButton} onPress={handleBack}>
             <IconSymbol name="chevron.left" size={16} color={colors.inkMuted} />

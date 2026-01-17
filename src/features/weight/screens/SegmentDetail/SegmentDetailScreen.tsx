@@ -8,6 +8,7 @@ import { useAppTheme } from '@/theme'
 import { useTexts } from '@/i18n'
 import { IconSymbol } from '@/shared/components/Icon'
 import { useGoalSegments } from '@/features/weight'
+import { useProfileStore } from '@/features/profile'
 import { GOAL_NOTE_MAX_LENGTH } from '@/shared/utils'
 import { createSegmentDetailStyles } from './SegmentDetailScreen.styles'
 import { useSegmentDetailScreen } from './UseSegmentDetailScreen'
@@ -25,6 +26,7 @@ export default function SegmentDetailScreen() {
     })
   }, [])
   const { segments, updateSegment, removeSegment } = useGoalSegments()
+  const { profile } = useProfileStore()
   const {
     segment,
     isCompleted,
@@ -45,6 +47,7 @@ export default function SegmentDetailScreen() {
     segments,
     updateSegment,
     removeSegment,
+    heightCm: profile.heightCm ?? null,
     texts,
     onDone: router.back,
   })

@@ -195,7 +195,7 @@ export const useOnboardingScreen = ({
     if (weightValue > 0 && (goalType === 'lose' || goalType === 'gain')) {
       const targetValue = parseNumberInput(goalTarget)
       if (Number.isFinite(targetValue)) {
-        const healthyRange = getHealthyTargetRangeKg(weightValue)
+        const healthyRange = getHealthyTargetRangeKg(weightValue, heightValue)
         if (!isWithinRange(targetValue, healthyRange.min, healthyRange.max)) {
           Alert.alert(
             texts.validation.goalRangeTitle,
@@ -212,7 +212,7 @@ export const useOnboardingScreen = ({
       const minValue = parseNumberInput(goalRangeMin)
       const maxValue = parseNumberInput(goalRangeMax)
       if (Number.isFinite(minValue) && Number.isFinite(maxValue)) {
-        const healthyRange = getHealthyTargetRangeKg(weightValue)
+        const healthyRange = getHealthyTargetRangeKg(weightValue, heightValue)
         if (
           !isWithinRange(minValue, healthyRange.min, healthyRange.max) ||
           !isWithinRange(maxValue, healthyRange.min, healthyRange.max)

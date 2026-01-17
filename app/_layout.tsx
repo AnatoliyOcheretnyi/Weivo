@@ -1,5 +1,5 @@
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native'
-import { Redirect, Stack, useSegments, useRootNavigationState } from 'expo-router'
+import { Stack, useRouter, useSegments, useRootNavigationState, type Href } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 import { Provider as JotaiProvider } from 'jotai'
 import { useEffect } from 'react'
@@ -24,14 +24,10 @@ function I18nSync() {
   useI18nSync(profile.language)
   return null
 }
-function RootStack({
-  initialRouteName,
-}: {
-  initialRouteName: '(tabs)' | 'onboarding/index'
-}) {
+function RootStack() {
   const { texts } = useTexts()
   return (
-    <Stack initialRouteName={initialRouteName}>
+    <Stack>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen name="onboarding/index" options={{ headerShown: false }} />
       <Stack.Screen
@@ -75,6 +71,7 @@ function RootLayoutContent() {
   const { entries } = useWeightStore()
   const { segments: goalSegments } = useGoalSegments()
   const segments = useSegments()
+  const router = useRouter()
   const rootState = useRootNavigationState()
   useEffect(() => {
     try {
@@ -83,24 +80,30 @@ function RootLayoutContent() {
       console.log('firebase app', 'not initialized')
     }
   }, [])
-  const navigationReady = Boolean(rootState?.key && segments.length)
-  const isOnboardingRoute = segments[0] === 'onboarding'
-  const hasProfileData = Boolean(
-    profile.birthDateISO ||
-      profile.heightCm ||
-      profile.sex ||
-      profile.goalType ||
-      profile.goalTargetKg ||
-      profile.goalRangeMinKg ||
-      profile.goalRangeMaxKg ||
-      profile.activityLevel
-  )
-  const shouldShowOnboarding = !profile.onboardingComplete && !hasProfileData
-  const initialRouteName = shouldShowOnboarding ? 'onboarding/index' : '(tabs)'
-  const shouldBlockUI =
-    !navigationReady ||
-    (shouldShowOnboarding && !isOnboardingRoute) ||
-    (!shouldShowOnboarding && isOnboardingRoute)
+  useEffect(() => {
+    if (!rootState?.key || !segments.length) {
+      return
+    }
+    const isOnboardingRoute = segments[0] === 'onboarding'
+    const hasProfileData = Boolean(
+      profile.birthDateISO ||
+        profile.heightCm ||
+        profile.sex ||
+        profile.goalType ||
+        profile.goalTargetKg ||
+        profile.goalRangeMinKg ||
+        profile.goalRangeMaxKg ||
+        profile.activityLevel
+    )
+    if (!profile.onboardingComplete && !hasProfileData && !isOnboardingRoute) {
+      requestAnimationFrame(() => router.replace('/onboarding'))
+      return
+    }
+    if (profile.onboardingComplete && isOnboardingRoute) {
+      const tabsHref = '/(tabs)' as Href
+      requestAnimationFrame(() => router.replace(tabsHref))
+    }
+  }, [profile.activityLevel, profile.birthDateISO, profile.goalRangeMaxKg, profile.goalRangeMinKg, profile.goalTargetKg, profile.goalType, profile.heightCm, profile.onboardingComplete, profile.sex, rootState?.key, router, segments])
   useEffect(() => {
     void analyticsService.ensureUserId()
     analyticsService.setUserProperties({
@@ -125,34 +128,13 @@ function RootLayoutContent() {
     profile.units,
     goalSegments.length,
   ])
-  if (navigationReady && shouldShowOnboarding && !isOnboardingRoute) {
-    return <Redirect href="/onboarding" />
-  }
-  if (navigationReady && !shouldShowOnboarding && isOnboardingRoute) {
-    return <Redirect href="/(tabs)" />
-  }
   return (
     <ThemeProvider value={scheme === 'dark' ? DarkTheme : DefaultTheme}>
       <SafeAreaProvider>
         <GestureHandlerRootView style={{ flex: 1 }}>
           <I18nSync />
-          <RootStack
-            key={initialRouteName}
-            initialRouteName={initialRouteName}
-          />
+          <RootStack />
           <StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
-          {shouldBlockUI ? (
-            <GestureHandlerRootView
-              style={{
-                backgroundColor: scheme === 'dark' ? '#000' : '#EFE4D7',
-                bottom: 0,
-                left: 0,
-                position: 'absolute',
-                right: 0,
-                top: 0,
-              }}
-            />
-          ) : null}
         </GestureHandlerRootView>
       </SafeAreaProvider>
     </ThemeProvider>

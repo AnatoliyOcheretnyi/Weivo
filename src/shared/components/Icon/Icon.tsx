@@ -14,8 +14,13 @@ const MAPPING = {
   'house.fill': 'home',
   'paperplane.fill': 'send',
   'clock': 'history',
+  'person.fill': 'person',
   'chevron.left.forwardslash.chevron.right': 'code',
+  'chevron.left': 'chevron-left',
   'chevron.right': 'chevron-right',
+  'arrow.up.right': 'open-in-new',
+  'pencil': 'edit',
+  'trash': 'delete',
 } as IconMapping
 /**
  * An icon component that uses native SF Symbols on iOS, and Material Icons on Android and web.

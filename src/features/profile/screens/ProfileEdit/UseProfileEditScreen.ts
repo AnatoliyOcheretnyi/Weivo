@@ -224,7 +224,8 @@ export const useProfileEditScreen = ({
     if (latestWeight != null && (goalType === 'lose' || goalType === 'gain')) {
       const targetValue = parseNumberInput(goalTarget)
       if (Number.isFinite(targetValue)) {
-        const healthyRange = getHealthyTargetRangeKg(latestWeight)
+        const heightValue = parseNumberInput(heightCm)
+        const healthyRange = getHealthyTargetRangeKg(latestWeight, heightValue)
         if (!isWithinRange(targetValue, healthyRange.min, healthyRange.max)) {
           Alert.alert(
             texts.validation.goalRangeTitle,
@@ -241,7 +242,8 @@ export const useProfileEditScreen = ({
       const minValue = parseNumberInput(goalRangeMin)
       const maxValue = parseNumberInput(goalRangeMax)
       if (Number.isFinite(minValue) && Number.isFinite(maxValue)) {
-        const healthyRange = getHealthyTargetRangeKg(latestWeight)
+        const heightValue = parseNumberInput(heightCm)
+        const healthyRange = getHealthyTargetRangeKg(latestWeight, heightValue)
         if (
           !isWithinRange(minValue, healthyRange.min, healthyRange.max) ||
           !isWithinRange(maxValue, healthyRange.min, healthyRange.max)

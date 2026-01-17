@@ -19,6 +19,7 @@ type UseSegmentDetailScreenParams = {
   segments: GoalSegment[]
   updateSegment: (_segment: GoalSegment) => void
   removeSegment: (_id: string) => void
+  heightCm?: number | null
   texts: Texts
   onDone: () => void
 }
@@ -27,6 +28,7 @@ export const useSegmentDetailScreen = ({
   segments,
   updateSegment,
   removeSegment,
+  heightCm,
   texts,
   onDone,
 }: UseSegmentDetailScreenParams) => {
@@ -90,7 +92,7 @@ export const useSegmentDetailScreen = ({
     if (!segment || !canSave) {
       return
     }
-    const healthyRange = getHealthyTargetRangeKg(startValue)
+    const healthyRange = getHealthyTargetRangeKg(startValue, heightCm)
     if (!isWithinRange(targetValue, healthyRange.min, healthyRange.max)) {
       Alert.alert(
         texts.validation.goalRangeTitle,

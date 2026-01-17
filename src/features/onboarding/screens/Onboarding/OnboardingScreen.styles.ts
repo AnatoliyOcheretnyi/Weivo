@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import {  StyleSheet } from 'react-native'
 import type { ThemeColors } from '@/theme'
 import { fontFamilies, fontSizes, letterSpacings } from '@/theme/typography'
 import { radii } from '@/theme/radii'
@@ -150,6 +150,7 @@ export const createOnboardingStyles = (colors: ThemeColors) =>
       marginTop: spacing.md,
     },
     actions: {
+      marginTop: 'auto',
       paddingHorizontal: spacing.xMassive,
       paddingTop: spacing.xMassive,
       paddingBottom: spacing.hugePlus,
@@ -170,6 +171,10 @@ export const createOnboardingStyles = (colors: ThemeColors) =>
     },
     navButtonDisabled: {
       opacity: 0.5,
+    },
+    navSpacer: {
+      width: 46,
+      height: 46,
     },
     stepIndicator: {
       fontSize: fontSizes.sm,
