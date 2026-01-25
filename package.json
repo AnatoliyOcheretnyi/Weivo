@@ -7,6 +7,8 @@
     "reset-project": "node ./scripts/reset-project.js",
     "android": "expo run:android",
     "ios": "expo run:ios",
+    "app:android": "yarn install && expo run:android",
+    "app:ios": "yarn install && npx pod-install && expo run:ios",
     "web": "expo start --web",
     "lint": "expo lint",
     "lint:fix": "expo lint --fix"
