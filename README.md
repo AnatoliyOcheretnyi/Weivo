@@ -14,6 +14,10 @@ Weivo is a weight-tracking app focused on expressive animations, high performanc
 - Prototype animation-heavy interactions without sacrificing performance.
 - Serve as a playground for native modules, gestures, Reanimated, and Skia.
 
+## Product plan
+
+- [Master plan (gap-based)](./docs/MASTER_PLAN.md)
+
 ## Get started
 
 1. Install dependencies

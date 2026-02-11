@@ -10,6 +10,8 @@
     "app:android": "yarn install && expo run:android",
     "app:ios": "yarn install && npx pod-install && expo run:ios",
     "web": "expo start --web",
+    "typecheck": "tsc --noEmit",
+    "test": "node ./scripts/smoke-check.js",
     "lint": "expo lint",
     "lint:fix": "expo lint --fix"
   },
