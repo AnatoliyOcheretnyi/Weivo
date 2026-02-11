@@ -3,6 +3,7 @@ export const Screens = {
   Onboarding: 'Onboarding',
   Entries: 'Entries',
   AddEntry: 'AddEntry',
+  Analytics: 'Analytics',
   CreateNewSegment: 'CreateNewSegment',
   SegmentDetail: 'SegmentDetail',
   Profile: 'Profile',

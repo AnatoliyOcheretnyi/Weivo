@@ -14,6 +14,7 @@ const MAPPING = {
   'house.fill': 'home',
   'paperplane.fill': 'send',
   'clock': 'history',
+  'chart.line.uptrend.xyaxis': 'query-stats',
   'person.fill': 'person',
   'chevron.left.forwardslash.chevron.right': 'code',
   'chevron.left': 'chevron-left',

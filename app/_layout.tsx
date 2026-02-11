@@ -62,6 +62,7 @@ function RootStack() {
           headerShown: false,
         }}
       />
+      <Stack.Screen name="entries/index" options={{ headerShown: false }} />
     </Stack>
   )
 }

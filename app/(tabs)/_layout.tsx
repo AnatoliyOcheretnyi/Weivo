@@ -31,6 +31,15 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="explore"
+        options={{
+          title: texts.tabs.explore,
+          tabBarIcon: ({ color }) => (
+            <IconSymbol size={dimensions.tabBar.iconSize} name="clock" color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="add"
         options={{
           title: texts.tabs.add,
@@ -44,11 +53,11 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="analytics"
         options={{
-          title: texts.tabs.explore,
+          title: texts.tabs.analytics,
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={dimensions.tabBar.iconSize} name="clock" color={color} />
+            <IconSymbol size={dimensions.tabBar.iconSize} name="chart.line.uptrend.xyaxis" color={color} />
           ),
         }}
       />
