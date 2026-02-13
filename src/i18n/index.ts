@@ -288,6 +288,20 @@ const translations = {
       finish: 'Finish',
       stepLabel: 'Step {current} of {total}',
     },
+    auth: {
+      account: 'Use account',
+      logIn: 'Log in',
+      signUp: 'Sign up',
+      continueGuest: 'Continue as guest',
+      accountTitle: 'Choose account option.',
+      accountBody: 'You can log in if you already have an account, or create a new one.',
+      loginTitle: 'Log in is coming next.',
+      loginBody:
+        'Authentication is not connected yet. Continue as guest for now, and we will wire up real login next.',
+      signUpTitle: 'Sign up is coming next.',
+      signUpBody:
+        'Registration is not connected yet. Continue as guest for now, and we will wire up real sign up next.',
+    },
   },
   uk: {
     appName: 'Weivo',
@@ -558,6 +572,20 @@ const translations = {
       back: 'Назад',
       finish: 'Готово',
       stepLabel: 'Крок {current} з {total}',
+    },
+    auth: {
+      account: 'Акаунт',
+      logIn: 'Увійти',
+      signUp: 'Реєстрація',
+      continueGuest: 'Продовжити без акаунта',
+      accountTitle: 'Обери варіант для акаунта.',
+      accountBody: 'Можна увійти в існуючий акаунт або створити новий.',
+      loginTitle: 'Логін буде на наступному етапі.',
+      loginBody:
+        'Авторизація ще не підключена. Поки що можна продовжити як гість, далі підвʼяжемо реальний вхід.',
+      signUpTitle: 'Реєстрація буде на наступному етапі.',
+      signUpBody:
+        'Реєстрація ще не підключена. Поки що можна продовжити як гість, далі підвʼяжемо реальний signup.',
     },
   },
   es: {
@@ -830,6 +858,20 @@ const translations = {
       finish: 'Finalizar',
       stepLabel: 'Paso {current} de {total}',
     },
+    auth: {
+      account: 'Usar cuenta',
+      logIn: 'Iniciar sesión',
+      signUp: 'Registrarse',
+      continueGuest: 'Continuar como invitado',
+      accountTitle: 'Elige una opción de cuenta.',
+      accountBody: 'Puedes iniciar sesión con una cuenta existente o crear una nueva.',
+      loginTitle: 'El inicio de sesión llegará pronto.',
+      loginBody:
+        'La autenticación aún no está conectada. Continúa como invitado por ahora y luego conectaremos el login real.',
+      signUpTitle: 'El registro llegará pronto.',
+      signUpBody:
+        'El registro aún no está conectado. Continúa como invitado por ahora y luego conectaremos el registro real.',
+    },
   },
 }
 export type Texts = typeof translations.en;
@@ -854,14 +896,24 @@ if (!i18n.isInitialized) {
       escapeValue: false,
     },
   })
+} else {
+  i18n.addResourceBundle('en', 'translation', translations.en, true, true)
+  i18n.addResourceBundle('uk', 'translation', translations.uk, true, true)
+  i18n.addResourceBundle('es', 'translation', translations.es, true, true)
 }
 export const useTexts = () => {
   const { i18n: i18nInstance } = useTranslation()
   const language = i18nInstance.language
   const texts = useMemo(() => {
     const bundle = i18nInstance.getResourceBundle(i18nInstance.language, 'translation')
-    return (bundle ?? translations.en) as Texts
-  }, [i18nInstance])
+    if (!bundle) {
+      return translations.en
+    }
+    return {
+      ...translations.en,
+      ...bundle,
+    } as Texts
+  }, [i18nInstance, i18nInstance.language])
   return { texts, locale: language }
 }
 export const useI18nSync = (language?: LanguageOption) => {

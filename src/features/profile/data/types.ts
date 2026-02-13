@@ -5,6 +5,7 @@ export type ActivityLevel = 'sedentary' | 'light' | 'moderate' | 'active' | 'ver
 export type Language = 'system' | 'en' | 'uk' | 'es';
 export type ThemeMode = 'light' | 'dark' | 'rose' | 'sky' | 'mint';
 export type ProfileData = {
+  hasSeenWelcome?: boolean;
   birthDateISO?: string;
   sex?: Sex;
   heightCm?: number;

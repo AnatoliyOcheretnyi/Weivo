@@ -1,5 +1,5 @@
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native'
-import { Stack, useRouter, useSegments, useRootNavigationState, type Href } from 'expo-router'
+import { Stack, useRouter, useSegments, useRootNavigationState, usePathname, type Href } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 import { Provider as JotaiProvider } from 'jotai'
 import { useEffect } from 'react'
@@ -29,6 +29,10 @@ function RootStack() {
   return (
     <Stack>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen name="welcome/index" options={{ headerShown: false }} />
+      <Stack.Screen name="auth/index" options={{ headerShown: false }} />
+      <Stack.Screen name="auth/login" options={{ headerShown: false }} />
+      <Stack.Screen name="auth/signup" options={{ headerShown: false }} />
       <Stack.Screen name="onboarding/index" options={{ headerShown: false }} />
       <Stack.Screen
         name="segment-create/index"
@@ -72,6 +76,7 @@ function RootLayoutContent() {
   const { entries } = useWeightStore()
   const { segments: goalSegments } = useGoalSegments()
   const segments = useSegments()
+  const pathname = usePathname()
   const router = useRouter()
   const rootState = useRootNavigationState()
   useEffect(() => {
@@ -85,7 +90,10 @@ function RootLayoutContent() {
     if (!rootState?.key || !segments.length) {
       return
     }
-    const isOnboardingRoute = segments[0] === 'onboarding'
+    const isWelcomeRoute = pathname.startsWith('/welcome')
+    const isAuthRoute = pathname.startsWith('/auth')
+    const isOnboardingRoute = pathname.startsWith('/onboarding')
+    const isTabsRoute = pathname.startsWith('/(tabs)') || pathname === '/'
     const hasProfileData = Boolean(
       profile.birthDateISO ||
         profile.heightCm ||
@@ -96,15 +104,26 @@ function RootLayoutContent() {
         profile.goalRangeMaxKg ||
         profile.activityLevel
     )
-    if (!profile.onboardingComplete && !hasProfileData && !isOnboardingRoute) {
-      requestAnimationFrame(() => router.replace('/onboarding'))
-      return
+    const shouldShowOnboarding = !profile.onboardingComplete && !hasProfileData
+
+    let targetRoute: Href | null = null
+
+    if (!profile.hasSeenWelcome) {
+      if (!isWelcomeRoute) {
+        targetRoute = '/welcome'
+      }
+    } else if (shouldShowOnboarding) {
+      if (!isOnboardingRoute && !isAuthRoute && !isWelcomeRoute) {
+        targetRoute = '/onboarding'
+      }
+    } else if (isWelcomeRoute || isOnboardingRoute || !isTabsRoute) {
+      targetRoute = '/(tabs)'
     }
-    if (profile.onboardingComplete && isOnboardingRoute) {
-      const tabsHref = '/(tabs)' as Href
-      requestAnimationFrame(() => router.replace(tabsHref))
+
+    if (targetRoute) {
+      requestAnimationFrame(() => router.replace(targetRoute))
     }
-  }, [profile.activityLevel, profile.birthDateISO, profile.goalRangeMaxKg, profile.goalRangeMinKg, profile.goalTargetKg, profile.goalType, profile.heightCm, profile.onboardingComplete, profile.sex, rootState?.key, router, segments])
+  }, [pathname, profile.activityLevel, profile.birthDateISO, profile.goalRangeMaxKg, profile.goalRangeMinKg, profile.goalTargetKg, profile.goalType, profile.hasSeenWelcome, profile.heightCm, profile.onboardingComplete, profile.sex, rootState?.key, router, segments])
   useEffect(() => {
     void analyticsService.ensureUserId()
     analyticsService.setUserProperties({

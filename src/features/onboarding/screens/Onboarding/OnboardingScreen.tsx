@@ -75,7 +75,14 @@ export default function OnboardingScreen() {
   return (
     <SafeAreaView style={onboardingStyles.screen} edges={['top', 'left', 'right']}>
       <View style={onboardingStyles.header}>
-        <Text style={onboardingStyles.title}>{texts.onboarding.title}</Text>
+        <View style={onboardingStyles.headerTitleRow}>
+          <Pressable
+            style={onboardingStyles.headerBackButton}
+            onPress={() => router.replace('/welcome' as Href)}>
+            <IconSymbol name="chevron.left" size={16} color={colors.inkMuted} />
+          </Pressable>
+          <Text style={onboardingStyles.title}>{texts.onboarding.title}</Text>
+        </View>
         <Text style={onboardingStyles.subtitle}>{texts.onboarding.subtitle}</Text>
       </View>
       <View style={onboardingStyles.progressTrack}>
