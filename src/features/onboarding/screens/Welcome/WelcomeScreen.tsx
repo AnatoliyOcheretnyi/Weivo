@@ -4,10 +4,10 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { useRouter, type Href } from 'expo-router'
 import { useProfileStore } from '@/features/profile'
 import { Button } from '@/shared/components/Button'
+import { AuroraBackground } from '@/shared/components/AuroraBackground/AuroraBackground'
 import { useTexts } from '@/i18n'
 import { useAppTheme } from '@/theme'
 import { createWelcomeScreenStyles } from './WelcomeScreen.styles'
-import { WelcomeAuroraBackground } from './WelcomeAuroraBackground'
 
 export default function WelcomeScreen() {
   const router = useRouter()
@@ -23,7 +23,7 @@ export default function WelcomeScreen() {
 
   return (
     <SafeAreaView style={styles.screen} edges={['top', 'left', 'right', 'bottom']}>
-      <WelcomeAuroraBackground />
+      <AuroraBackground />
       <View style={styles.content}>
         <Text style={styles.title}>{texts.onboarding.welcomeTitle}</Text>
         <Text style={styles.subtitle}>{texts.onboarding.subtitle}</Text>

@@ -30,7 +30,7 @@ const withAlpha = (hexColor: string, alpha: number) => {
   return `rgba(${red}, ${green}, ${blue}, ${alpha})`
 }
 
-export function WelcomeAuroraBackground() {
+export function AuroraBackground() {
   const { colors } = useAppTheme()
   const { width, height } = useWindowDimensions()
   const phase = useSharedValue(0)

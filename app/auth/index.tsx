@@ -1,5 +1,5 @@
-import AuthChoiceScreen from '@/features/auth/screens/AuthChoiceScreen'
+import AuthEntryScreen from '@/features/auth/screens/AuthEntryScreen'
 
 export default function AuthIndexRoute() {
-  return <AuthChoiceScreen />
+  return <AuthEntryScreen mode="login" withTabs />
 }
