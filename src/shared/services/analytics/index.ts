@@ -1,13 +1,5 @@
-import { getApp, getApps } from '@react-native-firebase/app'
-import {
-  getAnalytics,
-  logEvent,
-  logScreenView,
-  resetAnalyticsData,
-  setAnalyticsCollectionEnabled,
-  setUserId,
-  setUserProperties,
-} from '@react-native-firebase/analytics'
+import firebase from '@react-native-firebase/app'
+import analytics from '@react-native-firebase/analytics'
 import { createMMKV } from 'react-native-mmkv'
 import {
   buildAnalyticsEventName,
@@ -55,13 +47,12 @@ export const analyticsService = {
       warnMissingFirebase()
       return
     }
-    const analyticsInstance = getAnalytics(getApp())
     if (enabled != null) {
-      await setAnalyticsCollectionEnabled(analyticsInstance, enabled)
+      await analytics().setAnalyticsCollectionEnabled(enabled)
     }
     const userId = getOrCreateUserId()
     if (userId) {
-      await setUserId(analyticsInstance, userId)
+      await analytics().setUserId(userId)
     }
     isInitialized = true
   },
@@ -70,10 +61,9 @@ export const analyticsService = {
       warnMissingFirebase()
       return null
     }
-    const analyticsInstance = getAnalytics(getApp())
     const userId = getOrCreateUserId()
     if (userId) {
-      await setUserId(analyticsInstance, userId)
+      await analytics().setUserId(userId)
     }
     return userId
   },
@@ -82,7 +72,7 @@ export const analyticsService = {
       warnMissingFirebase()
       return resolveVoid
     }
-    return logEvent(getAnalytics(getApp()), name, params)
+    return analytics().logEvent(name, params)
   },
   createAnalyticEvent: ({
     screen,
@@ -108,21 +98,21 @@ export const analyticsService = {
       warnMissingFirebase()
       return resolveVoid
     }
-    return logEvent(getAnalytics(getApp()), 'view_screen', { screen })
+    return analytics().logEvent('view_screen', { screen })
   },
   logClick: (target: string, screen?: string) => {
     if (!hasFirebaseApp()) {
       warnMissingFirebase()
       return resolveVoid
     }
-    return logEvent(getAnalytics(getApp()), 'click', screen ? { target, screen } : { target })
+    return analytics().logEvent('click', screen ? { target, screen } : { target })
   },
   logScreenView: (screenName: string, screenClass?: string) => {
     if (!hasFirebaseApp()) {
       warnMissingFirebase()
       return resolveVoid
     }
-    return logScreenView(getAnalytics(getApp()), {
+    return analytics().logScreenView({
       screen_name: screenName,
       screen_class: screenClass,
     })
@@ -132,21 +122,21 @@ export const analyticsService = {
       warnMissingFirebase()
       return resolveVoid
     }
-    return setUserId(getAnalytics(getApp()), id)
+    return analytics().setUserId(id)
   },
   setUserProperties: (properties: AnalyticsUserProperties) => {
     if (!hasFirebaseApp()) {
       warnMissingFirebase()
       return resolveVoid
     }
-    return setUserProperties(getAnalytics(getApp()), properties)
+    return analytics().setUserProperties(properties)
   },
   resetAnalyticsData: () => {
     if (!hasFirebaseApp()) {
       warnMissingFirebase()
       return resolveVoid
     }
-    return resetAnalyticsData(getAnalytics(getApp()))
+    return analytics().resetAnalyticsData()
   },
 }
 const warnMissingFirebase = () => {
@@ -156,7 +146,7 @@ const warnMissingFirebase = () => {
 }
 const hasFirebaseApp = () => {
   try {
-    return getApps().length > 0
+    return firebase.apps.length > 0
   } catch {
     return false
   }

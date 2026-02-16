@@ -3,6 +3,7 @@ import { Stack, useRouter, useSegments, useRootNavigationState, usePathname, typ
 import { StatusBar } from 'expo-status-bar'
 import { Provider as JotaiProvider } from 'jotai'
 import { useEffect } from 'react'
+import 'react-native-url-polyfill/auto'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import 'react-native-reanimated'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
@@ -12,7 +13,7 @@ import { useI18nSync, useTexts } from '@/i18n'
 import { useAppTheme } from '@/theme'
 import { crashlytics } from '@/shared/services/crashlytics'
 import { analyticsService } from '@/shared/services/analytics'
-import { getApp } from '@react-native-firebase/app'
+import firebase from '@react-native-firebase/app'
 crashlytics.init({ dsn: process.env.EXPO_PUBLIC_SENTRY_DSN })
 // TODO: Disable analytics in dev before release.
 void analyticsService.init({ enabled: true })
@@ -81,7 +82,7 @@ function RootLayoutContent() {
   const rootState = useRootNavigationState()
   useEffect(() => {
     try {
-      console.log('firebase app', getApp().name)
+      console.log('firebase app', firebase.app().name)
     } catch {
       console.log('firebase app', 'not initialized')
     }
