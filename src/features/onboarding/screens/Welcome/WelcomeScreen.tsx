@@ -1,5 +1,5 @@
-import { useMemo } from 'react'
-import { Text, View } from 'react-native'
+import { useMemo, useState } from 'react'
+import { Alert, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useRouter, type Href } from 'expo-router'
 import { useProfileStore } from '@/features/profile'
@@ -7,16 +7,36 @@ import { Button } from '@/shared/components/Button'
 import { AuroraBackground } from '@/shared/components/AuroraBackground/AuroraBackground'
 import { useTexts } from '@/i18n'
 import { useAppTheme } from '@/theme'
+import { authService } from '@/features/auth/data/authService'
 import { createWelcomeScreenStyles } from './WelcomeScreen.styles'
 
 export default function WelcomeScreen() {
   const router = useRouter()
   const { updateProfile } = useProfileStore()
+  const [isSigningIn, setIsSigningIn] = useState(false)
   const { texts } = useTexts()
   const { colors } = useAppTheme()
   const styles = useMemo(() => createWelcomeScreenStyles(colors), [colors])
 
   const handleContinueAsGuest = () => {
+    updateProfile({ hasSeenWelcome: true })
+    router.replace('/onboarding' as Href)
+  }
+
+  const handleUseAccount = async () => {
+    if (isSigningIn) {
+      return
+    }
+
+    setIsSigningIn(true)
+    const result = await authService.signInWithGoogle()
+    setIsSigningIn(false)
+
+    if (!result.ok) {
+      Alert.alert('Sign-in failed', result.message)
+      return
+    }
+
     updateProfile({ hasSeenWelcome: true })
     router.replace('/onboarding' as Href)
   }
@@ -34,15 +54,14 @@ export default function WelcomeScreen() {
       <View style={styles.actions}>
         <Button
           title={texts.auth.account}
-          onPress={() => {
-            updateProfile({ hasSeenWelcome: true })
-            router.replace('/auth' as Href)
-          }}
+          onPress={handleUseAccount}
+          disabled={isSigningIn}
         />
         <Button
           title={texts.auth.continueGuest}
           variant="inverse"
           onPress={handleContinueAsGuest}
+          disabled={isSigningIn}
         />
       </View>
     </SafeAreaView>
