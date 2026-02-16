@@ -60,4 +60,9 @@ export const goalSegmentsStorage = {
     savePayload({ segments: [] })
     return []
   },
+  replaceSegments(segments: GoalSegment[]) {
+    const next = [...segments].sort((a, b) => b.createdAtISO.localeCompare(a.createdAtISO))
+    savePayload({ segments: next })
+    return next
+  },
 }

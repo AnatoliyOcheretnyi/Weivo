@@ -5,6 +5,9 @@ export type ActivityLevel = 'sedentary' | 'light' | 'moderate' | 'active' | 'ver
 export type Language = 'system' | 'en' | 'uk' | 'es';
 export type ThemeMode = 'light' | 'dark' | 'rose' | 'sky' | 'mint';
 export type ProfileData = {
+  email?: string;
+  username?: string;
+  avatarUrl?: string;
   hasSeenWelcome?: boolean;
   birthDateISO?: string;
   sex?: Sex;
@@ -20,4 +23,9 @@ export type ProfileData = {
   theme?: ThemeMode;
   onboardingComplete?: boolean;
   hasSeenSegmentsHint?: boolean;
+  latestWeightKg?: number;
+  bmi?: number;
+  caloriesMaintenance?: number;
+  caloriesTarget?: number;
+  etaWeeks?: number;
 };

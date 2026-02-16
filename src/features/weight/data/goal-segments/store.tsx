@@ -8,6 +8,7 @@ type GoalSegmentsStore = {
   updateSegment: (_segment: GoalSegment) => void;
   removeSegment: (_id: string) => void;
   clearSegments: () => void;
+  replaceSegments: (_segments: GoalSegment[]) => void;
   reconcileCompletion: (_currentKg: number | null) => void;
 };
 const segmentsAtom = atom<GoalSegment[]>(goalSegmentsStorage.loadSegments())
@@ -25,6 +26,10 @@ const removeSegmentAtom = atom(null, (get, set, id: string) => {
 })
 const clearSegmentsAtom = atom(null, (_get, set) => {
   const next = goalSegmentsStorage.clearSegments()
+  set(segmentsAtom, next)
+})
+const replaceSegmentsAtom = atom(null, (_get, set, segments: GoalSegment[]) => {
+  const next = goalSegmentsStorage.replaceSegments(segments)
   set(segmentsAtom, next)
 })
 const REVERT_TOLERANCE_KG = 1
@@ -74,6 +79,7 @@ export function useGoalSegments() {
   const updateSegment = useSetAtom(updateSegmentAtom)
   const removeSegment = useSetAtom(removeSegmentAtom)
   const clearSegments = useSetAtom(clearSegmentsAtom)
+  const replaceSegments = useSetAtom(replaceSegmentsAtom)
   const reconcileCompletion = useSetAtom(reconcileCompletionAtom)
   return useMemo<GoalSegmentsStore>(
     () => ({
@@ -82,8 +88,17 @@ export function useGoalSegments() {
       updateSegment,
       removeSegment,
       clearSegments,
+      replaceSegments,
       reconcileCompletion,
     }),
-    [segments, addSegment, updateSegment, removeSegment, clearSegments, reconcileCompletion]
+    [
+      segments,
+      addSegment,
+      updateSegment,
+      removeSegment,
+      clearSegments,
+      replaceSegments,
+      reconcileCompletion,
+    ]
   )
 }

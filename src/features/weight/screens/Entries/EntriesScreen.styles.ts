@@ -34,6 +34,25 @@ export const createEntriesStyles = (colors: ThemeColors) =>
       paddingHorizontal: spacing.xxl,
       paddingVertical: spacing.lg,
     },
+    actionsRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.md,
+    },
+    seedButton: {
+      borderRadius: radii.full,
+      borderWidth: 1,
+      borderColor: colors.inkSoft,
+      backgroundColor: colors.cream,
+      paddingHorizontal: spacing.xxl,
+      paddingVertical: spacing.lg,
+    },
+    seedText: {
+      fontSize: fontSizes.sm,
+      color: colors.inkSoft,
+      textTransform: 'uppercase',
+      letterSpacing: letterSpacings.sm,
+    },
     clearText: {
       fontSize: fontSizes.sm,
       color: colors.inkMuted,

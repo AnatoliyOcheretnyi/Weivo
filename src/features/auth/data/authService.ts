@@ -68,12 +68,22 @@ const ensureProfileRow = async () => {
     return
   }
 
+  const fullName =
+    (typeof user.user_metadata?.full_name === 'string' && user.user_metadata.full_name) ||
+    (typeof user.user_metadata?.name === 'string' && user.user_metadata.name) ||
+    null
+  const avatarUrl =
+    (typeof user.user_metadata?.avatar_url === 'string' && user.user_metadata.avatar_url) || null
+
   const { error: profileError } = await supabase.from('profiles').upsert(
     {
       id: user.id,
       email: user.email ?? null,
+      username: fullName,
+      avatar_url: avatarUrl,
+      updated_at: new Date().toISOString(),
     },
-    { onConflict: 'id', ignoreDuplicates: true }
+    { onConflict: 'id' }
   )
 
   if (profileError) {

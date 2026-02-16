@@ -63,4 +63,9 @@ export const weightStorage = {
     weightStorage.saveEntries(next)
     return next
   },
+  replaceEntries(entries: WeightEntry[]) {
+    const next = [...entries].sort((a, b) => a.dateISO.localeCompare(b.dateISO))
+    weightStorage.saveEntries(next)
+    return next
+  },
 }

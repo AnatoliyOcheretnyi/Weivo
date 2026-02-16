@@ -10,7 +10,7 @@ import { EntryRow } from './EntriesRow'
 import { Actions, Screens, Triggers, analyticsService } from '@/shared/services/analytics'
 type Entry = ReturnType<typeof useWeightStore>['entries'][number]
 export default function EntriesScreen() {
-  const { entries, clearEntries, removeEntry } = useWeightStore()
+  const { entries, clearEntries, removeEntry, seedDevEntries } = useWeightStore()
   const { reconcileCompletion } = useGoalSegments()
   const { texts, locale } = useTexts()
   const { colors } = useAppTheme()
@@ -78,6 +78,12 @@ export default function EntriesScreen() {
     },
     [reconcileCompletion, removeEntry]
   )
+  const handleSeedDevEntries = useCallback(() => {
+    if (!__DEV__) {
+      return
+    }
+    seedDevEntries()
+  }, [seedDevEntries])
   const renderItem = useCallback(
     ({ item, index }: { item: Entry; index: number }) => (
       <EntryRow
@@ -108,13 +114,26 @@ export default function EntriesScreen() {
               {data.length} {texts.entries.recordsSuffix}
             </Text>
           </View>
-          <Pressable style={entriesStyles.clearButton} onPress={handleClearAll}>
-            <Text style={entriesStyles.clearText}>{texts.entries.clearAll}</Text>
-          </Pressable>
+          <View style={entriesStyles.actionsRow}>
+            {__DEV__ ? (
+              <Pressable style={entriesStyles.seedButton} onPress={handleSeedDevEntries}>
+                <Text style={entriesStyles.seedText}>{texts.entries.seedDemo}</Text>
+              </Pressable>
+            ) : null}
+            <Pressable style={entriesStyles.clearButton} onPress={handleClearAll}>
+              <Text style={entriesStyles.clearText}>{texts.entries.clearAll}</Text>
+            </Pressable>
+          </View>
         </View>
       </View>
     ),
-    [data.length, entriesStyles, handleClearAll, texts]
+    [
+      data.length,
+      entriesStyles,
+      handleClearAll,
+      handleSeedDevEntries,
+      texts,
+    ]
   )
   const keyExtractor = useCallback((item: Entry) => item.dateISO, [])
   return (

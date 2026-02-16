@@ -2,17 +2,20 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native
 import { Stack, useRouter, useSegments, useRootNavigationState, type Href } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 import { Provider as JotaiProvider } from 'jotai'
-import { useEffect } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import 'react-native-url-polyfill/auto'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import 'react-native-reanimated'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
+import { AppState } from 'react-native'
 import { useProfileStore } from '@/features/profile'
 import { useGoalSegments, useWeightStore } from '@/features/weight'
 import { useI18nSync, useTexts } from '@/i18n'
 import { useAppTheme } from '@/theme'
 import { crashlytics } from '@/shared/services/crashlytics'
 import { analyticsService } from '@/shared/services/analytics'
+import { dataSyncService } from '@/shared/services/supabase/dataSyncService'
+import { supabase } from '@/shared/services/supabase/client'
 import firebase from '@react-native-firebase/app'
 crashlytics.init({ dsn: process.env.EXPO_PUBLIC_SENTRY_DSN })
 // TODO: Disable analytics in dev before release.
@@ -73,12 +76,127 @@ function RootStack() {
 }
 function RootLayoutContent() {
   const { scheme } = useAppTheme()
-  const { profile } = useProfileStore()
-  const { entries } = useWeightStore()
-  const { segments: goalSegments } = useGoalSegments()
+  const { profile, replaceProfile } = useProfileStore()
+  const { entries, replaceEntries } = useWeightStore()
+  const { segments: goalSegments, replaceSegments } = useGoalSegments()
   const segments = useSegments()
   const router = useRouter()
   const rootState = useRootNavigationState()
+  const [signedInUserId, setSignedInUserId] = useState<string | null>(null)
+  const isHydratingRef = useRef(false)
+  const bootstrapCompleteRef = useRef(false)
+  const syncTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const profileRef = useRef(profile)
+  const entriesRef = useRef(entries)
+  const goalSegmentsRef = useRef(goalSegments)
+
+  useEffect(() => {
+    profileRef.current = profile
+  }, [profile])
+
+  useEffect(() => {
+    entriesRef.current = entries
+  }, [entries])
+
+  useEffect(() => {
+    goalSegmentsRef.current = goalSegments
+  }, [goalSegments])
+
+  const runBootstrapSync = useCallback(async () => {
+    if (isHydratingRef.current) {
+      return
+    }
+    isHydratingRef.current = true
+    try {
+      const merged = await dataSyncService.bootstrap({
+        profile: profileRef.current,
+        entries: entriesRef.current,
+        segments: goalSegmentsRef.current,
+      })
+      if (merged) {
+        replaceProfile(merged.profile)
+        replaceEntries(merged.entries)
+        replaceSegments(merged.segments)
+      }
+    } finally {
+      isHydratingRef.current = false
+      bootstrapCompleteRef.current = true
+    }
+  }, [replaceEntries, replaceProfile, replaceSegments])
+
+  useEffect(() => {
+    let mounted = true
+    const initAuth = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+      if (!mounted) {
+        return
+      }
+      setSignedInUserId(user?.id ?? null)
+      if (user) {
+        bootstrapCompleteRef.current = false
+        await runBootstrapSync()
+      } else {
+        bootstrapCompleteRef.current = true
+      }
+    }
+    void initAuth()
+
+    const { data: subscription } = supabase.auth.onAuthStateChange((_event, session) => {
+      const nextUserId = session?.user?.id ?? null
+      setSignedInUserId(nextUserId)
+      if (nextUserId) {
+        bootstrapCompleteRef.current = false
+        void runBootstrapSync()
+      } else {
+        bootstrapCompleteRef.current = true
+      }
+    })
+
+    return () => {
+      mounted = false
+      subscription.subscription.unsubscribe()
+    }
+  }, [runBootstrapSync])
+
+  useEffect(() => {
+    const sub = AppState.addEventListener('change', (nextState) => {
+      if (nextState === 'active' && signedInUserId) {
+        bootstrapCompleteRef.current = false
+        void runBootstrapSync()
+      }
+    })
+
+    return () => {
+      sub.remove()
+    }
+  }, [runBootstrapSync, signedInUserId])
+
+  useEffect(() => {
+    if (!signedInUserId || !bootstrapCompleteRef.current || isHydratingRef.current) {
+      return
+    }
+
+    if (syncTimerRef.current) {
+      clearTimeout(syncTimerRef.current)
+    }
+
+    syncTimerRef.current = setTimeout(() => {
+      void dataSyncService.syncFromLocal({
+        profile: profileRef.current,
+        entries: entriesRef.current,
+        segments: goalSegmentsRef.current,
+      })
+    }, 600)
+
+    return () => {
+      if (syncTimerRef.current) {
+        clearTimeout(syncTimerRef.current)
+      }
+    }
+  }, [signedInUserId, profile, entries, goalSegments])
+
   useEffect(() => {
     try {
       console.log('firebase app', firebase.app().name)
