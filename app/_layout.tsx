@@ -1,5 +1,5 @@
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native'
-import { Stack, useRouter, useSegments, useRootNavigationState, usePathname, type Href } from 'expo-router'
+import { Stack, useRouter, useSegments, useRootNavigationState, type Href } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 import { Provider as JotaiProvider } from 'jotai'
 import { useEffect } from 'react'
@@ -77,7 +77,6 @@ function RootLayoutContent() {
   const { entries } = useWeightStore()
   const { segments: goalSegments } = useGoalSegments()
   const segments = useSegments()
-  const pathname = usePathname()
   const router = useRouter()
   const rootState = useRootNavigationState()
   useEffect(() => {
@@ -91,10 +90,18 @@ function RootLayoutContent() {
     if (!rootState?.key || !segments.length) {
       return
     }
-    const isWelcomeRoute = pathname.startsWith('/welcome')
-    const isAuthRoute = pathname.startsWith('/auth')
-    const isOnboardingRoute = pathname.startsWith('/onboarding')
-    const isTabsRoute = pathname.startsWith('/(tabs)') || pathname === '/'
+    const topSegment = segments[0]
+    const isWelcomeRoute = topSegment === 'welcome'
+    const isAuthRoute = topSegment === 'auth'
+    const isOnboardingRoute = topSegment === 'onboarding'
+    const isTabsRoute = topSegment === '(tabs)'
+    const isAppFlowRoute =
+      isTabsRoute ||
+      topSegment === 'modal' ||
+      topSegment === 'entries' ||
+      topSegment === 'profile-edit' ||
+      topSegment === 'segment-create' ||
+      topSegment === 'segment-detail'
     const hasProfileData = Boolean(
       profile.birthDateISO ||
         profile.heightCm ||
@@ -117,14 +124,14 @@ function RootLayoutContent() {
       if (!isOnboardingRoute && !isAuthRoute && !isWelcomeRoute) {
         targetRoute = '/onboarding'
       }
-    } else if (isWelcomeRoute || isOnboardingRoute || !isTabsRoute) {
+    } else if (isWelcomeRoute || isOnboardingRoute || isAuthRoute || !isAppFlowRoute) {
       targetRoute = '/(tabs)'
     }
 
     if (targetRoute) {
       requestAnimationFrame(() => router.replace(targetRoute))
     }
-  }, [pathname, profile.activityLevel, profile.birthDateISO, profile.goalRangeMaxKg, profile.goalRangeMinKg, profile.goalTargetKg, profile.goalType, profile.hasSeenWelcome, profile.heightCm, profile.onboardingComplete, profile.sex, rootState?.key, router, segments])
+  }, [profile.activityLevel, profile.birthDateISO, profile.goalRangeMaxKg, profile.goalRangeMinKg, profile.goalTargetKg, profile.goalType, profile.hasSeenWelcome, profile.heightCm, profile.onboardingComplete, profile.sex, rootState?.key, router, segments])
   useEffect(() => {
     void analyticsService.ensureUserId()
     analyticsService.setUserProperties({

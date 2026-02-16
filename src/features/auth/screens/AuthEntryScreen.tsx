@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from 'react'
 import { Pressable, Text, View } from 'react-native'
 import { useRouter, type Href } from 'expo-router'
 import { Button } from '@/shared/components/Button'
-import { Input } from '@/shared/components/Input'
 import { IconSymbol } from '@/shared/components/Icon'
 import { useTexts } from '@/i18n'
 import { useAppTheme } from '@/theme'
@@ -26,9 +25,6 @@ export default function AuthEntryScreen({
   const { colors } = useAppTheme()
   const styles = useMemo(() => createAuthEntryScreenStyles(colors), [colors])
   const [activeMode, setActiveMode] = useState<'login' | 'signup'>(mode)
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
   const [errorText, setErrorText] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -38,8 +34,7 @@ export default function AuthEntryScreen({
 
   const isLogin = activeMode === 'login'
   const title = isLogin ? texts.auth.loginTitle : texts.auth.signUpTitle
-  const body = isLogin ? texts.auth.loginBody : texts.auth.signUpBody
-  const submitTitle = isLogin ? texts.auth.logIn : texts.auth.signUp
+  const body = texts.auth.googleOnlyBody
 
   const hasProfileData = Boolean(
     profile.birthDateISO ||
@@ -56,29 +51,10 @@ export default function AuthEntryScreen({
     : '/(tabs)') as Href
 
   const handleSubmit = async () => {
-    if (!email.trim()) {
-      setErrorText(texts.auth.errors.emailRequired)
-      return
-    }
-    if (!password) {
-      setErrorText(texts.auth.errors.passwordRequired)
-      return
-    }
-    if (!isLogin && password.length < 6) {
-      setErrorText(texts.auth.errors.passwordMin)
-      return
-    }
-    if (!isLogin && password !== confirmPassword) {
-      setErrorText(texts.auth.errors.passwordMismatch)
-      return
-    }
-
     setErrorText('')
     setIsSubmitting(true)
 
-    const result = isLogin
-      ? await authService.signIn(email, password)
-      : await authService.signUp(email, password)
+    const result = await authService.signInWithGoogle()
 
     setIsSubmitting(false)
 
@@ -131,39 +107,9 @@ export default function AuthEntryScreen({
             </View>
           ) : null}
 
-          <Input
-            value={email}
-            onChangeText={setEmail}
-            placeholder={texts.auth.emailPlaceholder}
-            autoCapitalize="none"
-            autoCorrect={false}
-            keyboardType="email-address"
-            textContentType="emailAddress"
-          />
-          <Input
-            value={password}
-            onChangeText={setPassword}
-            placeholder={texts.auth.passwordPlaceholder}
-            autoCapitalize="none"
-            autoCorrect={false}
-            secureTextEntry
-            textContentType={isLogin ? 'password' : 'newPassword'}
-          />
-          {!isLogin ? (
-            <Input
-              value={confirmPassword}
-              onChangeText={setConfirmPassword}
-              placeholder={texts.auth.confirmPasswordPlaceholder}
-              autoCapitalize="none"
-              autoCorrect={false}
-              secureTextEntry
-              textContentType="password"
-            />
-          ) : null}
-          <Text style={styles.helperText}>{texts.auth.passwordHint}</Text>
           {errorText ? <Text style={styles.errorText}>{errorText}</Text> : null}
           <Button
-            title={submitTitle}
+            title={texts.auth.continueWithGoogle}
             variant="primary"
             onPress={handleSubmit}
             disabled={isSubmitting}
