@@ -33,9 +33,9 @@ export default function TabLayout() {
       <Tabs.Screen
         name="explore"
         options={{
-          title: texts.tabs.explore,
+          title: texts.tabs.buddies,
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={dimensions.tabBar.iconSize} name="clock" color={color} />
+            <IconSymbol size={dimensions.tabBar.iconSize} name="person.2.fill" color={color} />
           ),
         }}
       />

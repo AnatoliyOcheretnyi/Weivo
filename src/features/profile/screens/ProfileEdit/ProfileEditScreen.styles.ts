@@ -163,6 +163,9 @@ export const createProfileEditStyles = (colors: ThemeColors) =>
       color: colors.inkMuted,
       letterSpacing: letterSpacings.sm,
     },
+    helperError: {
+      color: colors.accentOrange,
+    },
     rangeCurrent: {
       alignItems: 'center',
       justifyContent: 'center',

@@ -31,6 +31,7 @@ export default function ProfileScreen() {
     })
   }, [])
   const {
+    usernameLabel,
     latestWeight,
     birthDateLabel,
     ageLabel,
@@ -76,10 +77,14 @@ export default function ProfileScreen() {
         <View style={profileStyles.section}>
           <Text style={profileStyles.sectionTitle}>{texts.profile.sections.basics}</Text>
           <View style={profileStyles.card}>
-            <View style={profileStyles.row}>
-              <Text style={profileStyles.label}>{texts.profile.fields.birthDate}</Text>
-              <Text style={profileStyles.value}>{birthDateLabel}</Text>
-            </View>
+          <View style={profileStyles.row}>
+            <Text style={profileStyles.label}>{texts.profile.fields.username}</Text>
+            <Text style={profileStyles.value}>{usernameLabel}</Text>
+          </View>
+          <View style={profileStyles.row}>
+            <Text style={profileStyles.label}>{texts.profile.fields.birthDate}</Text>
+            <Text style={profileStyles.value}>{birthDateLabel}</Text>
+          </View>
           <View style={profileStyles.row}>
             <Text style={profileStyles.label}>{texts.profile.fields.age}</Text>
             <Text style={profileStyles.value}>{ageLabel}</Text>

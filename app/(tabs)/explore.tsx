@@ -1,2 +1,3 @@
-import { EntriesScreen } from '@/features/weight/screens'
-export default EntriesScreen
+import { BuddiesScreen } from '@/features/friends'
+
+export default BuddiesScreen

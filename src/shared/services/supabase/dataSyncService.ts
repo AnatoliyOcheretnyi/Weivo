@@ -89,6 +89,7 @@ const compactProfile = (profile: ProfileData): ProfileData => {
 const scoreProfile = (profile: ProfileData) =>
   [
     profile.birthDateISO,
+    profile.username,
     profile.sex,
     profile.heightCm,
     profile.activityLevel,
@@ -286,9 +287,13 @@ const getUserProfileSeed = (user: User) => {
 
 const mapProfileToRow = (profile: ProfileData, entries: WeightEntry[], user: User) => {
   const metrics = computeDerivedMetrics(profile, entries)
+  const seed = getUserProfileSeed(user)
+  const normalizedUsername = profile.username?.trim() ? profile.username.trim() : null
   return {
     id: user.id,
-    ...getUserProfileSeed(user),
+    email: seed.email,
+    username: normalizedUsername ?? seed.username,
+    avatar_url: seed.avatar_url,
     has_seen_welcome: profile.hasSeenWelcome ?? false,
     birth_date_iso: profile.birthDateISO ?? null,
     sex: profile.sex ?? null,
@@ -314,10 +319,12 @@ const mapProfileToRow = (profile: ProfileData, entries: WeightEntry[], user: Use
 }
 
 const ensureProfileRow = async (user: User) => {
+  const seed = getUserProfileSeed(user)
   const { error } = await supabase.from('profiles').upsert(
     {
       id: user.id,
-      ...getUserProfileSeed(user),
+      email: seed.email,
+      avatar_url: seed.avatar_url,
       updated_at: new Date().toISOString(),
     },
     { onConflict: 'id' }

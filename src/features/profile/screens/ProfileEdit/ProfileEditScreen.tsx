@@ -57,6 +57,10 @@ export default function ProfileEditScreen() {
     theme,
     setTheme,
     canSave,
+    username,
+    setUsername,
+    usernameError,
+    isSaving,
     themeLabel,
     handleSave,
     tabs,
@@ -315,6 +319,25 @@ export default function ProfileEditScreen() {
             ) : (
               <>
               <View style={profileEditStyles.section}>
+                <Text style={profileEditStyles.label}>{texts.profileEdit.username}</Text>
+                <Input
+                  variant="compact"
+                  value={username}
+                  onChangeText={setUsername}
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  placeholder={texts.profileEdit.usernamePlaceholder}
+                  inputStyle={profileEditStyles.input}
+                />
+                <Text
+                  style={[
+                    profileEditStyles.helper,
+                    usernameError ? profileEditStyles.helperError : null,
+                  ]}>
+                  {usernameError ?? texts.profileEdit.usernameHint}
+                </Text>
+              </View>
+              <View style={profileEditStyles.section}>
                 <Text style={profileEditStyles.label}>{texts.profileEdit.language}</Text>
                 <View style={profileEditStyles.segmentedRow}>
                   {languageOptions.map((option) => (
@@ -405,9 +428,9 @@ export default function ProfileEditScreen() {
               style={profileEditStyles.actionButton}
             />
             <Button
-              title={texts.profileEdit.save}
+              title={isSaving ? texts.profileEdit.checkingUsername : texts.profileEdit.save}
               onPress={handleSave}
-              disabled={!canSave}
+              disabled={!canSave || isSaving}
               style={profileEditStyles.actionButton}
             />
           </View>

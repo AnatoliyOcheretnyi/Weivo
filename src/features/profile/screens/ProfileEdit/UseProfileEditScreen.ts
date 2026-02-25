@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from 'react'
 import { Alert, Platform } from 'react-native'
+import { supabase } from '@/shared/services/supabase/client'
 import type {
   ActivityLevel,
   GoalType,
@@ -34,6 +35,7 @@ import {
   parseNumberInput,
   sanitizeDecimalInput,
 } from '@/shared/utils'
+import { usernameService } from '@/features/profile/data/usernameService'
 type UseProfileEditScreenParams = {
   profile: ProfileData
   entries: WeightEntry[]
@@ -81,6 +83,9 @@ export const useProfileEditScreen = ({
   )
   const [theme, setTheme] = useState<ThemeMode>(profile.theme ?? scheme)
   const [showDatePicker, setShowDatePicker] = useState(false)
+  const [username, setUsername] = useState(profile.username ?? '')
+  const [usernameError, setUsernameError] = useState<string | null>(null)
+  const [isSaving, setIsSaving] = useState(false)
   const canSave = useMemo(() => {
     if (heightCm && Number.isNaN(parseNumberInput(heightCm))) {
       return false
@@ -131,8 +136,16 @@ export const useProfileEditScreen = ({
         return false
       }
     }
+    const normalizedUsername = usernameService.sanitize(username.trim())
+    if (normalizedUsername && !usernameService.isValid(normalizedUsername)) {
+      return false
+    }
     return true
-  }, [heightCm, goalRangeMax, goalRangeMin, goalRate, goalTarget, goalType])
+  }, [heightCm, goalRangeMax, goalRangeMin, goalRate, goalTarget, goalType, username])
+  const handleUsernameChange = useCallback((value: string) => {
+    setUsername(usernameService.sanitize(value))
+    setUsernameError(null)
+  }, [])
   const handleHeightChange = useCallback((value: string) => {
     setHeightCm((prev) => {
       const next = sanitizeDecimalInput(value, { maxDecimals: 1 })
@@ -217,10 +230,16 @@ export const useProfileEditScreen = ({
     },
     []
   )
-  const handleSave = useCallback(() => {
+  const handleSave = useCallback(async () => {
     if (!canSave) {
       return
     }
+    const normalizedUsername = usernameService.sanitize(username.trim())
+    if (normalizedUsername && !usernameService.isValid(normalizedUsername)) {
+      setUsernameError(texts.profileEdit.usernameInvalid)
+      return
+    }
+    setIsSaving(true)
     if (latestWeight != null && (goalType === 'lose' || goalType === 'gain')) {
       const targetValue = parseNumberInput(goalTarget)
       if (Number.isFinite(targetValue)) {
@@ -234,6 +253,7 @@ export const useProfileEditScreen = ({
               .replace('{max}', formatKg(healthyRange.max))
               .replace('{unit}', texts.home.units.kg)
           )
+          setIsSaving(false)
           return
         }
       }
@@ -255,11 +275,36 @@ export const useProfileEditScreen = ({
               .replace('{max}', formatKg(healthyRange.max))
               .replace('{unit}', texts.home.units.kg)
           )
+          setIsSaving(false)
           return
         }
       }
     }
+    const previousUsername = profile.username ? usernameService.sanitize(profile.username) : ''
+    if (normalizedUsername && normalizedUsername !== previousUsername) {
+      try {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser()
+        if (!user) {
+          setUsernameError(texts.profileEdit.usernameCheckFailed)
+          setIsSaving(false)
+          return
+        }
+        const isAvailable = await usernameService.checkAvailability(normalizedUsername, user.id)
+        if (!isAvailable) {
+          setUsernameError(texts.profileEdit.usernameTaken)
+          setIsSaving(false)
+          return
+        }
+      } catch {
+        setUsernameError(texts.profileEdit.usernameCheckFailed)
+        setIsSaving(false)
+        return
+      }
+    }
     const nextProfile: Partial<ProfileData> = {
+      username: normalizedUsername || undefined,
       birthDateISO: birthDate ? birthDate.toISOString() : undefined,
       heightCm: heightCm ? parseNumberInput(heightCm) : undefined,
       goalType,
@@ -281,6 +326,7 @@ export const useProfileEditScreen = ({
       nextProfile.goalRangeMaxKg = undefined
     }
     updateProfile(nextProfile)
+    setIsSaving(false)
     onDone()
   }, [
     activityLevel,
@@ -292,8 +338,10 @@ export const useProfileEditScreen = ({
     goalTarget,
     goalType,
     heightCm,
+    username,
     language,
     onDone,
+    profile.username,
     sex,
     theme,
     units,
@@ -333,6 +381,10 @@ export const useProfileEditScreen = ({
     theme,
     setTheme,
     canSave,
+    username,
+    setUsername: handleUsernameChange,
+    usernameError,
+    isSaving,
     themeLabel,
     handleSave,
     tabs: PROFILE_TABS,

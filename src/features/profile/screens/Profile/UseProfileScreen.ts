@@ -24,6 +24,7 @@ export const useProfileScreen = ({
 }: UseProfileScreenParams) => {
   const latestWeight = entries.length > 0 ? entries[entries.length - 1].weightKg : null
   const birthDateISO = profile.birthDateISO ?? null
+  const username = profile.username?.trim() ?? ''
   const heightCm = profile.heightCm ?? null
   const goalType = profile.goalType ?? 'maintain'
   const goalTargetKg = profile.goalTargetKg ?? null
@@ -48,6 +49,7 @@ export const useProfileScreen = ({
     }
     return calculateAge(birthDateISO).toString()
   }, [birthDateISO, texts])
+  const usernameLabel = username ? `@${username}` : texts.profile.values.notSet
   const heightLabel =
     formatHeightCm(heightCm, { m: texts.home.units.m, cm: texts.home.units.cm }) ??
     texts.profile.values.notSet
@@ -148,6 +150,7 @@ export const useProfileScreen = ({
             ? texts.profile.values.themeMint
             : texts.profile.values.themeLight
   return {
+    usernameLabel,
     latestWeight,
     birthDateLabel,
     ageLabel,
