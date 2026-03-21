@@ -62,7 +62,11 @@ if (!plistText.includes(`<string>${iosBundleId}</string>`)) {
 }
 
 const iosProjectText = readText(iosProjectPath)
-if (!iosProjectText.includes(`PRODUCT_BUNDLE_IDENTIFIER = ${iosBundleId};`)) {
+const hasIosBundleId =
+  iosProjectText.includes(`PRODUCT_BUNDLE_IDENTIFIER = ${iosBundleId};`) ||
+  iosProjectText.includes(`PRODUCT_BUNDLE_IDENTIFIER = "${iosBundleId}";`)
+
+if (!hasIosBundleId) {
   fail(`Xcode project bundle id is not synced with app.json (${iosBundleId})`)
 }
 

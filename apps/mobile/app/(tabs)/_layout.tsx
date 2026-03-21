@@ -62,6 +62,15 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="voice-poc"
+        options={{
+          title: 'POC',
+          tabBarIcon: ({ color }) => (
+            <IconSymbol size={dimensions.tabBar.iconSize} name="waveform" color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="profile"
         options={{
           title: texts.tabs.profile,

@@ -5,6 +5,12 @@
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "@weivo/contracts": [
+        "../../packages/contracts/src/index.ts"
+      ],
+      "@weivo/contracts/*": [
+        "../../packages/contracts/src/*"
       ]
     }
   },

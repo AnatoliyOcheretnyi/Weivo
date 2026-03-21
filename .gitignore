@@ -5,9 +5,11 @@ node_modules/
 
 # Expo
 .expo/
+apps/mobile/.expo/
 dist/
 web-build/
 expo-env.d.ts
+apps/web/.next/
 
 # Native
 .kotlin/
@@ -42,3 +44,15 @@ app-example
 
 # Supabase local/CLI temp artifacts
 supabase/.temp/
+
+
+
+.nx/cache
+.nx/workspace-data
+.nx/installation
+coverage
+.turbo
+
+# Next.js
+.next
+out
